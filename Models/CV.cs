@@ -1,6 +1,5 @@
 ﻿using ResumeStripper.Models.Enums;
 using ResumeStripper.Models.Experiences;
-using ResumeStripper.Models.Security;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,17 +11,15 @@ namespace ResumeStripper.Models
     {
         [Key]
         public int ID { get; set; }
-
         public string Name { get; set; }
         public string Prefix { get; set; }
         public string Surname { get; set; }
         public string Residence { get; set; }
         public string Country { get; set; }
         public DateTime DateOfBirth { get; set; }
-
+        public ICollection<int> LicenseCategoryIds { get; set; }
         //List of license enum, since a person can have multiple licenses, can be null
-        public virtual ICollection<DriversLicense> LicenseCategory { get; set; }
-
+        public virtual ICollection<License> LicenseCategory { get; set; }
         public string Profile { get; set; }
         public virtual ICollection<EducationExperience> Educations { get; set; }
         public virtual ICollection<WorkExperience> WorkExperiences { get; set; }
@@ -38,7 +35,7 @@ namespace ResumeStripper.Models
         public ICollection<int> SkillIds { get; set; }
         public virtual ICollection<Skill> Skills { get; set; }
 
-        public CV(string name, string prefix, string surname, string residence, string country, DateTime dateOfBirth, ICollection<DriversLicense> licenseCategory, string profile, ICollection<EducationExperience> educations, ICollection<WorkExperience> workExperiences, ICollection<CourseExperience> courses, ICollection<int> languageIds, ICollection<Language> languages, ICollection<string> competences, ICollection<string> hobbies, ICollection<SidelineExperience> sideLines, ICollection<Reference> references, ICollection<int> skillIds, ICollection<Skill> skills)
+        public CV(string name, string prefix, string surname, string residence, string country, DateTime dateOfBirth, ICollection<License> licenseCategory, string profile, ICollection<EducationExperience> educations, ICollection<WorkExperience> workExperiences, ICollection<CourseExperience> courses, ICollection<int> languageIds, ICollection<Language> languages, ICollection<string> competences, ICollection<string> hobbies, ICollection<SidelineExperience> sideLines, ICollection<Reference> references, ICollection<int> skillIds, ICollection<Skill> skills)
         {
             Name = name;
             Prefix = prefix;

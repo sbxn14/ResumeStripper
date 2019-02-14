@@ -1,6 +1,7 @@
 ﻿using ResumeStripper.DAL;
 using ResumeStripper.Models;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -14,7 +15,25 @@ namespace ResumeStripper.Controllers
         // GET: CV
         public ActionResult Index()
         {
-            return View(db.CVS.ToList());
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            //select file button has been pressed
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    var filename = Path.GetFileName(file.FileName);
+                    var path = Path.Combine(Server.MapPath("~/App_Data/uploads"), filename);
+                    file.SaveAs(path);
+                }
+            }
+            return RedirectToAction("Index");
         }
 
         // GET: CV/Details/5

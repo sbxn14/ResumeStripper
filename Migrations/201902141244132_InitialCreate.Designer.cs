@@ -13,7 +13,7 @@ namespace ResumeStripper.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201902131025247_InitialCreate"; }
+            get { return "201902141244132_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

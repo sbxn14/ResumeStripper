@@ -158,9 +158,9 @@
     </Compile>
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFCreator.cs" />
-    <Compile Include="Migrations\201902131025247_InitialCreate.cs" />
-    <Compile Include="Migrations\201902131025247_InitialCreate.Designer.cs">
-      <DependentUpon>201902131025247_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201902141244132_InitialCreate.cs" />
+    <Compile Include="Migrations\201902141244132_InitialCreate.Designer.cs">
+      <DependentUpon>201902141244132_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CV.cs" />
@@ -172,6 +172,7 @@
     <Compile Include="Models\Experiences\SidelineExperience.cs" />
     <Compile Include="Models\Experiences\WorkExperience.cs" />
     <Compile Include="Models\Language.cs" />
+    <Compile Include="Models\License.cs" />
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="PdfConvert.cs" />
@@ -275,8 +276,8 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902131025247_InitialCreate.resx">
-      <DependentUpon>201902131025247_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902141244132_InitialCreate.resx">
+      <DependentUpon>201902141244132_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
