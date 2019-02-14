@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResumeStripper", "ResumeStripper.csproj", "{1AB13EF2-DD5A-456C-9996-7ED5A94D4320}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AB13EF2-DD5A-456C-9996-7ED5A94D4320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AB13EF2-DD5A-456C-9996-7ED5A94D4320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AB13EF2-DD5A-456C-9996-7ED5A94D4320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AB13EF2-DD5A-456C-9996-7ED5A94D4320}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4EBC83A7-22CB-4602-9C10-173BB65EF484}
+	EndGlobalSection
+EndGlobal

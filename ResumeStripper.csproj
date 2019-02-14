@@ -186,6 +186,16 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\animate.min.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\demo.css" />
+    <Content Include="Content\css\light-bootstrap-dashboard.css" />
+    <Content Include="Content\css\pe-icon-7-stroke.css" />
+    <Content Include="Content\img\ehv-talent-logo.png" />
+    <Content Include="Content\img\icon-download.PNG" />
+    <Content Include="Content\img\icon-upload.PNG" />
+    <Content Include="Content\img\logo-glow.png" />
+    <Content Include="Content\img\sidebar.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -258,11 +268,11 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\CV\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\ReferenceTables\" />
-    <Folder Include="Views\CV\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

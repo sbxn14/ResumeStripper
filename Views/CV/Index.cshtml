@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "EHV Talent - Dashboard";
+}
+
+
+<div class="wrapper">
+    <div class="sidebar" data-color="orange" data-image="assets/img/sidebar.jpg">
+
+        <!--
+
+            Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
+            Tip 2: you can also add an image using data-image tag
+
+        -->
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <img class="sidebar-logo" src="assets/img/logo-glow.png" alt="EHV Talent" width="100%" />
+            </div>
+
+            <ul class="nav">
+                <li class="active">
+                    <a href="dashboard.html">
+                        <i class="pe-7s-graph"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
+                <li class="active-pro">
+                    <a href="#">
+                        <i class="pe-7s-door-lock"></i>
+                        <p>Log out</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default navbar-fixed">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#navigation-example-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Dashboard</a>
+                </div>
+                <div class="collapse navbar-collapse">
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="">
+                                <p>My account</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <p>Log out</p>
+                            </a>
+                        </li>
+                        <li class="separator hidden-lg"></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="content all-icons">
+
+            <div class="container-fluid">
+                <div class="row">
+
+                    <!-- Kaart links -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="header">
+                                <h4 style="display: inline-block;" class="title">Resume applicant</h4><img align="right"
+                                                                                                           src="assets/img/icon-upload.png" />
+                                <hr>
+
+                                <!-- Change these breaks in CV viewer -->
+                                <BR><BR><BR><BR><BR><BR><BR>
+                                <BR><BR><BR><BR><BR><BR>
+                                <BR><BR><BR><BR><BR><BR>
+                                <BR><BR><BR><BR><BR>
+                                <BR><BR><BR><BR>
+                                <BR><BR><BR>
+                                <BR><BR>
+                                <BR>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kaart rechts -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="header">
+                                <h4 style="display: inline-block;" class="title">Resume EHV</h4><img align="right"
+                                                                                                     src="assets/img/icon-download.png" />
+                                <hr>
+
+                                <img src="assets/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
+
+                                <style>
+                                    .divsenn {
+                                        margin-top: 150px;
+                                    }
+
+                                    h4 {
+                                        font-weight: bold;
+                                    }
+                                </style>
+
+                                <div class="divsenn">
+                                    <h3><strong>CV (Naam kandidaat)</strong></h3>
+                                    <hr>
+                                </div>
+
+                                <!-- Personalia -->
+                                <div margin-top="40px">
+                                    <h4>Personalia</h4>
+                                    <span>Voornaam</span><br />
+                                    <span>Tussenvoegsel</span><br />
+                                    <span>Achternaam</span><br />
+                                    <span>Woonplaats</span><br />
+                                    <span>Land</span><br />
+                                    <span>Geboortedatum</span><br />
+                                    <span>Rijbewijs categorie</span><br />
+                                </div>
+
+                                <!-- profielschets -->
+                                <div margin-top="40px">
+                                    <h4>Profielschets</h4>
+                                    <span>Profielschets</span>
+                                </div>
+
+                                <!-- Opleidingen -->
+                                <div margin-top="40px">
+                                    <h4>Opleidingen</h4>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>Begindatum</span> -
+                                            <span>Einddatum</span><br /><span>Studirichting</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Naam opleidingsinstituut</span><br /><span>Niveau</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Plaats opleidingsinstituut</span>
+                                        </div>
+                                    </div>
+                                    <span>Diploma <u>Ja</u>/<u>Nee</u></span><br /><span>+</span>
+                                </div>
+
+                                <!-- Werkervaring -->
+                                <div margin-top="40px">
+                                    <h4>Werkervaring</h4>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>Begindatum</span> - <span>Einddatum</span><br />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Bedrijf</span><br />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Plaats</span>
+                                        </div>
+                                    </div>
+                                    <span>Functie</span><br /><span>Taakomschrijving</span><br /><span>+</span>
+                                </div>
+
+                                <!-- Cursussen en trainingen -->
+                                <div margin-top="40px">
+                                    <h4>Cursussen en trainingen</h4>
+                                    <span>Jaartal</span><br /><span>Naam cursus/training</span><br /><span>Certificaat</span><br /><span>+</span>
+                                </div>
+
+                                <!-- Vaardigheden -->
+                                <div margin-top="40px">
+                                    <h4>Vaardigheden</h4>
+                                    <h5><strong>Talenkennis</strong></h5>
+                                    <span>Taal</span>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>Luistervaardigheid</span><br /><span>Beoordeling</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Spreekvaardigheid</span><br /><span>Beoordeling</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>Schrijfvaardigheid</span><br /><span>Beoordeling</span>
+                                        </div>
+                                    </div>
+                                    <span>+</span>
+
+                                    <BR><BR>
+                                    <h5><strong>Competenties</strong></h5>
+                                    <span>Competenties</span><br /><br />
+                                    <h5><strong>Hobby's</strong></h5>
+                                    <span>Hobby's</span><br /><br />
+                                    <h5><strong>Nevenactiviteiten</strong></h5>
+                                    <span>Nevenactiviteiten</span><br /><br />
+                                    <h5><strong>Referenties</strong></h5>
+                                    <span>Referenties</span><br /><br />
+                                    <h5><strong>Skills</strong></h5>
+                                    <span>Skills</span><br /><br />
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <nav class="pull-left">
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    My account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    EHV Talent
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    EHV Projects
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <p class="copyright pull-right">
+                        &copy;
+                        <script>document.write(new Date().getFullYear())</script>
+                        <a href="http://www.ehv.nl">EHV Talent</a>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+</div>
