@@ -2,9 +2,11 @@
     ViewBag.Title = "EHV Talent - Dashboard";
 }
 
+@Styles.Render("~/Content/css")
+
 
 <div class="wrapper">
-    <div class="sidebar" data-color="orange" data-image="assets/img/sidebar.jpg">
+    <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
 
         <!--
 
@@ -15,7 +17,7 @@
 
         <div class="sidebar-wrapper">
             <div class="logo">
-                <img class="sidebar-logo" src="assets/img/logo-glow.png" alt="EHV Talent" width="100%" />
+                <img class="sidebar-logo" src="~/Content/img/logo-glow.png" alt="EHV Talent" width="100%" />
             </div>
 
             <ul class="nav">
@@ -79,7 +81,7 @@
                         <div class="card">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume applicant</h4><img align="right"
-                                                                                                           src="assets/img/icon-upload.png" />
+                                                                                                           src="~/Content/img/icon-upload.png" />
                                 <hr>
 
                                 <!-- Change these breaks in CV viewer -->
@@ -102,10 +104,10 @@
                         <div class="card">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume EHV</h4><img align="right"
-                                                                                                     src="assets/img/icon-download.png" />
+                                                                                                     src="~/Content/img/icon-download.png" />
                                 <hr>
 
-                                <img src="assets/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
+                                <img src="~/Content/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
 
                                 <style>
                                     .divsenn {

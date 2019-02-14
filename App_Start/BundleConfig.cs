@@ -22,8 +22,11 @@ namespace ResumeStripper
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/css/animate.min.css",
+                      "~/Content/css/bootstrap.min.css",
+                      "~/Content/css/light-bootstrap-dashboard.css",
+                      "~/Content/css/pe-icon-7-stroke.css",
+                      "~/Content/css/demo.css"));
         }
     }
 }
