@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using ResumeStripper.Filters;
+using System.Web.Mvc;
 
 namespace ResumeStripper
 {
@@ -7,6 +8,7 @@ namespace ResumeStripper
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            //filters.Add(new CustomRequireHttpsFilter());
         }
     }
 }

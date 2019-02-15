@@ -72,11 +72,17 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PdfExtract, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdf-extract.1.0.1.0\lib\net45\PdfExtract.dll</HintPath>
+    </Reference>
     <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.Charting.dll</HintPath>
+    </Reference>
+    <Reference Include="SautinSoft.PdfFocus, Version=6.9.7.6, Culture=neutral, PublicKeyToken=0b79b934109b3e9e, processorArchitecture=MSIL">
+      <HintPath>..\packages\sautinsoft.pdffocus.6.9.7.6\lib\net461\SautinSoft.PdfFocus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
@@ -153,11 +159,12 @@
     <Compile Include="DAL\CVRepository.cs" />
     <Compile Include="DAL\DatabaseInitializer.cs" />
     <Compile Include="DAL\StripperContext.cs" />
+    <Compile Include="Filters\CustomRequireHttpsFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Hasher.cs" />
-    <Compile Include="Helpers\PDFCreator.cs" />
+    <Compile Include="Helpers\PDFHelper.cs" />
     <Compile Include="Migrations\201902141244132_InitialCreate.cs" />
     <Compile Include="Migrations\201902141244132_InitialCreate.Designer.cs">
       <DependentUpon>201902141244132_InitialCreate.cs</DependentUpon>
@@ -175,7 +182,8 @@
     <Compile Include="Models\License.cs" />
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Skill.cs" />
-    <Compile Include="PdfConvert.cs" />
+    <Compile Include="Helpers\PdfConvert.cs" />
+    <Compile Include="Models\Viewmodels\MessageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +208,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Helpers\pdftohtml.exe" />
     <Content Include="Scripts\bootstrap-notify.js" />
     <Content Include="Scripts\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />

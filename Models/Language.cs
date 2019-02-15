@@ -7,7 +7,6 @@ namespace ResumeStripper.Models
     {
         [Key]
         public int ID { get; set; }
-
         public string Name { get; set; }
 
         //Level is used if CV doesn't separate listening, speaking and writing

@@ -1,9 +1,12 @@
 ﻿using ResumeStripper.DAL;
+using ResumeStripper.Helpers;
 using ResumeStripper.Models;
+using ResumeStripper.Models.Viewmodels;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 
 namespace ResumeStripper.Controllers
@@ -12,25 +15,44 @@ namespace ResumeStripper.Controllers
     {
         private StripperContext db = new StripperContext();
 
-        // GET: CV
+        [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            MessageViewModel model = (MessageViewModel)TempData["text"];
+            if (model != null)
+            {
+                //ViewData["UploadedPdf"] = model;
+                return View(model);
+            }
+            else
+            {
+                return View();
+            }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Upload()
+        public ActionResult Upload(HttpPostedFileBase pdf)
         {
             //select file button has been pressed
-            if (Request.Files.Count > 0)
+            //if (Request.Files.Count > 0)
+            if (pdf.ContentLength > 0)
             {
                 var file = Request.Files[0];
 
                 if (file != null && file.ContentLength > 0)
                 {
-                    var filename = Path.GetFileName(file.FileName);
-                    var path = Path.Combine(Server.MapPath("~/App_Data/uploads"), filename);
-                    file.SaveAs(path);
+                    //var filename = path.getfilename(file.filename);
+                    //var path = path.combine(server.mappath("~/app_data/uploads"), filename);
+                    //file.saveas(path);
+                    PDFHelper helper = new PDFHelper();
+                    MessageViewModel mod = new MessageViewModel
+                    {
+                        //Text = helper.getTextFromPdf(file)
+                        Text = file.FileName
+                    };
+                    TempData["text"] = mod;
+                    return RedirectToAction("Index");
                 }
             }
             return RedirectToAction("Index");

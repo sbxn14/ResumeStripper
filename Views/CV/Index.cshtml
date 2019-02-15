@@ -1,16 +1,19 @@
-﻿@{
-    ViewBag.Title = "EHV Talent - Dashboard";
+﻿@model ResumeStripper.Models.Viewmodels.MessageViewModel
+
+@{
+    ViewBag.Title = "Resume Stripper";
 }
 
 @Styles.Render("~/Content/css")
+@Scripts.Render("~/Scripts/Dashboard")
 
 
 
 <div class="wrapper">
-    <div class="sidebar" data-color="orange" data-image="assets/img/sidebar.jpg">
+    <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
         <div class="sidebar-wrapper">
             <div class="logo">
-                <img class="sidebar-logo" src="assets/img/logo-glow.png" alt="EHV Talent" width="100%" />
+                <img class="sidebar-logo" src="~/Content/img/logo-glow.png" alt="EHV Talent" width="100%" />
             </div>
 
             <ul class="nav">
@@ -73,21 +76,29 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="header">
-                                <h4 style="display: inline-block;" class="title">Resume applicant</h4><img align="right"
-                                                                                                           src="assets/img/icon-upload.png" />
+                                <h4 style="display: inline-block;" class="title">Resume applicant</h4>
+                                @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    //<input type="file" name="pdf" accept="application/pdf" />
+                                    <input type="file" name="pdf" accept="application/pdf" onchange="this.form.submit();" />
+
+                                    //<input type="submit" value="Upload" />
+                                }
                                 <hr>
+                                <br />
+                                @{
 
-                                <!-- Change these breaks in CV viewer -->
-                                <BR><BR><BR><BR><BR><BR><BR>
-                                <BR><BR><BR><BR><BR><BR>
-                                <BR><BR><BR><BR><BR><BR>
-                                <BR><BR><BR><BR><BR>
-                                <BR><BR><BR><BR>
-                                <BR><BR><BR>
-                                <BR><BR>
-                                <BR>
+                                    //var mod = (ResumeStripper.Models.Viewmodels.MessageViewModel)ViewData["UploadedPdf"];
+                                    if (Model != null)
+                                    {
+                                        <embed src="@Model.Text" type="application/pdf" width="100%" height="100%" />
 
-
+                                        @*HtmlString s = new HtmlString(Model.Text);
+                                            @s*@
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -97,10 +108,10 @@
                         <div class="card">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume EHV</h4><img align="right"
-                                                                                                     src="assets/img/icon-download.png" />
+                                                                                                     src="~/Content/img/icon-download.png" />
                                 <hr>
 
-                                <img src="assets/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
+                                <img src="~/Content/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
 
                                 <style>
                                     .divsenn {
