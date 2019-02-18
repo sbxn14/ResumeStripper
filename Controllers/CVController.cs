@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Collections.Generic;
+
 
 namespace ResumeStripper.Controllers
 {

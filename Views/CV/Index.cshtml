@@ -5,7 +5,7 @@
 }
 
 @Styles.Render("~/Content/css")
-@Scripts.Render("~/Scripts/Dashboard")
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
 
 
 
@@ -93,15 +93,24 @@
                                     //var mod = (ResumeStripper.Models.Viewmodels.MessageViewModel)ViewData["UploadedPdf"];
                                     if (Model != null)
                                     {
-                                        <embed src="@Model.Text" type="application/pdf" width="100%" height="100%" />
-
-                                        @*HtmlString s = new HtmlString(Model.Text);
-                                            @s*@
+                                        <embed id="pdfviewer" src="@Model.Text" type="application/pdf" width="100%" height="80%" />
                                     }
                                 }
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        var viewer = document.getElementById('pdfviewer');
+                        var clipboard = new ClipboardJS(viewer);
+
+                        clipboard.on('success', function (e) {
+                            console.log(e);
+                        });
+                        clipboard.on('error', function (e) {
+                            console.log(e);
+                        });
+                    </script>
 
                     <!-- Kaart rechts -->
                     <div class="col-md-6">
@@ -140,7 +149,7 @@
                                     <span>Rijbewijs categorie</span><br />
                                 </div>
 
-                                <!-- profielschets -->
+                                <!-- Profielschets -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Profielschets</h4>
                                     <span>Profielschets</span>
@@ -149,7 +158,6 @@
                                 <!-- Opleidingen -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Opleidingen</h4>
-
 
                                     <div class="row">
                                         <div class="col-md-4">
