@@ -9,7 +9,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Collections.Generic;
-
+using System;
 
 namespace ResumeStripper.Controllers
 {
@@ -20,10 +20,18 @@ namespace ResumeStripper.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            MessageViewModel model = (MessageViewModel)TempData["text"];
+            MessageViewModel model = (MessageViewModel)TempData["Message"];
             if (model != null)
             {
-                //ViewData["UploadedPdf"] = model;
+                string filename = (string)TempData["filename"];
+
+                if(filename.Contains(":"))
+                {
+                    //edge filename
+                    filename = Path.GetFileName(filename);
+                }
+
+                model.serverPath = "http://127.0.0.1:8887/" + filename;
                 return View(model);
             }
             else
@@ -40,20 +48,32 @@ namespace ResumeStripper.Controllers
             //if (Request.Files.Count > 0)
             if (pdf.ContentLength > 0)
             {
-                var file = Request.Files[0];
-
-                if (file != null && file.ContentLength > 0)
+                string extension = Path.GetExtension(pdf.FileName).ToUpper();
+                //checks if file is pdf, if not will give error
+                if (extension.Equals(".PDF"))
                 {
-                    //var filename = path.getfilename(file.filename);
-                    //var path = path.combine(server.mappath("~/app_data/uploads"), filename);
-                    //file.saveas(path);
-                    PDFHelper helper = new PDFHelper();
-                    MessageViewModel mod = new MessageViewModel
+                    if (pdf != null && pdf.ContentLength > 0)
                     {
-                        //Text = helper.getTextFromPdf(file)
-                        Text = file.FileName
-                    };
-                    TempData["text"] = mod;
+                        //temporarily saves file
+                        var filePath = Path.Combine(Server.MapPath("~/Content/pdf"), pdf.FileName);
+                        TempData["filename"] = pdf.FileName;
+                        pdf.SaveAs(filePath);
+
+                        PDFHelper helper = new PDFHelper();
+
+                        MessageViewModel mod = new MessageViewModel
+                        {
+                            //Text = helper.getTextFromPdf(filePath, pdf.FileName),
+                            Text = helper.GetHTMLText(filePath),
+                            Path = pdf.FileName
+                            //PDF = GetPDF(filePath)
+                        };
+                        TempData["Message"] = mod;
+                    }
+                }
+                else
+                {
+                    ViewBag.FileStatus = "Invalid File Format.";
                     return RedirectToAction("Index");
                 }
             }

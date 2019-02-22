@@ -27,10 +27,6 @@ namespace ResumeStripper
                       "~/Content/css/light-bootstrap-dashboard.css",
                       "~/Content/css/pe-icon-7-stroke.css",
                       "~/Content/css/demo.css"));
-
-            bundles.Add(new ScriptBundle("~/bundles/clipboard").Include(
-                      "~/Scripts/Clipboard/clipboard.js",
-                      "~/Scripts/Clipboard/clipboard-action.js"));
         }
     }
 }

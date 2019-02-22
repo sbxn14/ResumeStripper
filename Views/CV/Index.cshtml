@@ -5,9 +5,10 @@
 }
 
 @Styles.Render("~/Content/css")
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-
-
+@Scripts.Render("~/Scripts/jquery-3.3.1.min.js")
+@*//@Scripts.Render("~/Scripts/PDFSCRIPT.js")
+    //<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>
 
 <div class="wrapper">
     <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
@@ -74,26 +75,46 @@
 
                     <!-- Kaart links -->
                     <div class="col-md-6">
-                        <div class="card">
+                        <div class="card" height="1000px">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume applicant</h4>
                                 @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
-
-                                    //<input type="file" name="pdf" accept="application/pdf" />
-                                    <input type="file" name="pdf" accept="application/pdf" onchange="this.form.submit();" />
-
-                                    //<input type="submit" value="Upload" />
+                                    <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" />
+                                    @ViewBag.FileStatus
                                 }
+                                <button id="chooseBtn" onclick="switchView()">Change to Text!</button>
                                 <hr>
+
+                                <script>
+                                    function switchView() {
+                                        var x = document.getElementById("pdfChoice");
+                                        var y = document.getElementById("textChoice")
+                                        if (x.style.display == "none") {
+                                            x.style.display = "block";
+                                            y.style.display = "none";
+                                        } else {
+                                            x.style.display = "none";
+                                            y.style.display = "block";
+                                        }
+                                    }
+                                </script>
+
                                 <br />
                                 @{
-
-                                    //var mod = (ResumeStripper.Models.Viewmodels.MessageViewModel)ViewData["UploadedPdf"];
                                     if (Model != null)
                                     {
-                                        <embed id="pdfviewer" src="@Model.Text" type="application/pdf" width="100%" height="80%" />
+                                        <div id="pdfChoice">
+                                            <div id="pdfview"></div>
+                                            <script>
+                                            PDFObject.embed("@Model.serverPath", "#pdfview");
+                                            </script>
+                                        </div>
+                                        <div id="textChoice" style="display:none">
+                                            @*<pre>@Model.Text</pre>*@
+                                            @Html.Raw(Model.Text)
+                                        </div>
                                     }
                                 }
                             </div>
@@ -101,15 +122,31 @@
                     </div>
 
                     <script>
-                        var viewer = document.getElementById('pdfviewer');
-                        var clipboard = new ClipboardJS(viewer);
+                        function getSelectionText() {
+                            var selectedText = ""
+                            if (window.getSelection) { // all modern browsers and IE9+
+                                selectedText = window.getSelection().toString()
+                            }
+                            return selectedText
+                        }
 
-                        clipboard.on('success', function (e) {
-                            console.log(e);
-                        });
-                        clipboard.on('error', function (e) {
-                            console.log(e);
-                        });
+                        function changeName() {
+                            var newText = getSelectionText()
+                            var elem = document.getElementById("btnName");
+                            if (elem.value !== newText) elem.innerHTML = newText;
+                        }
+
+                        function changePrefix() {
+                            var newText = getSelectionText()
+                            var elem = document.getElementById("btnPrefix");
+                            if (elem.innerHTML !== newText) elem.innerHTML = newText;
+                        }
+
+                        function changeSurname() {
+                            var newText = getSelectionText()
+                            var elem = document.getElementById("btnSurname");
+                            if (elem.innerHTML !== newText) elem.innerHTML = newText;
+                        }
                     </script>
 
                     <!-- Kaart rechts -->
@@ -140,19 +177,19 @@
                                 <!-- Personalia -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Personalia</h4>
-                                    <span><button>Voornaam</button></span><br />
-                                    <span><button>Tussenvoegsel</button></span><br />
-                                    <span><button>Achternaam</button></span><br />
-                                    <span><button>Woonplaats</button></span><br />
-                                    <span><button>Land</button></span><br />
-                                    <span><button>Geboortedatum</button></span><br />
-                                    <span><button>Rijbewijs categorie</button></span><br />
+                                    <span><button id="btnName" onclick="changeName()">Voornaam</button></span><br />
+                                    <span><button id="btnPrefix" onclick="changePrefix()">Tussenvoegsel</button></span><br />
+                                    <span><button id="btnSurname" onclick="changeSurname()">Achternaam</button></span><br />
+                                    <span><button id="btn">Woonplaats</button></span><br />
+                                    <span><button id="btn">Land</button></span><br />
+                                    <span><button id="btn">Geboortedatum</button></span><br />
+                                    <span><button id="btn">Rijbewijs categorie</button></span><br /><span><button id="btn">+</button></span>
                                 </div>
 
                                 <!-- Profielschets -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Profielschets</h4>
-                                    <span><button>Profielschets</button></span>
+                                    <span><button id="btn">Profielschets</button></span>
                                 </div>
 
                                 <!-- Opleidingen -->
@@ -161,17 +198,17 @@
 
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button>Begindatum</button></span> -
-                                            <span><button>Einddatum</button></span><br /><span><button>Studirichting</button></span>
+                                            <span><button id="btn">Begindatum</button></span> -
+                                            <span><button id="btn">Einddatum</button></span><br /><span><button id="btn">Studirichting</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Naam opleidingsinstituut</button></span><br /><span><button>Niveau</button></span>
+                                            <span><button id="btn">Naam opleidingsinstituut</button></span><br /><span><button id="btn">Niveau</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Plaats opleidingsinstituut</button></span>
+                                            <span><button id="btn">Plaats opleidingsinstituut</button></span>
                                         </div>
                                     </div>
-                                    <span>Diploma <u><button>Ja</button></u>/<u><button>Nee</button></u></span><br /><span><button>+</button></span>
+                                    <span>Diploma <u><button id="btn">Ja</button></u>/<u><button id="btn">Nee</button></u></span><br /><span><button id="btn">+</button></span>
                                 </div>
 
                                 <!-- Werkervaring -->
@@ -179,53 +216,53 @@
                                     <h4 style="color: #ff700d">Werkervaring</h4>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button>Begindatum</button></span> - <span><button>Einddatum</button></span><br />
+                                            <span><button id="btn">Begindatum</button></span> - <span><button id="btn">Einddatum</button></span><br />
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Bedrijf</button></span><br />
+                                            <span><button id="btn">Bedrijf</button></span><br />
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Plaats</button></span>
+                                            <span><button id="btn">Plaats</button></span>
                                         </div>
                                     </div>
-                                    <span><button>Functie</button></span><br /><span><button>Taakomschrijving</button></span><br /><span><button>+</button></span>
+                                    <span><button id="btn">Functie</button></span><br /><span><button id="btn">Taakomschrijving</button></span><br /><span><button id="btn">+</button></span>
                                 </div>
 
                                 <!-- Cursussen en trainingen -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Cursussen en trainingen</h4>
-                                    <span><button>Jaartal</button></span><br /><span><button>Naam cursus/training</button></span><br /><span><button>Certificaat</button></span><br /><span><button>+</button></span>
+                                    <span><button id="btn">Jaartal</button></span><br /><span><button id="btn">Naam cursus/training</button></span><br /><span><button id="btn">Certificaat</button></span><br /><span><button id="btn">+</button></span>
                                 </div>
 
                                 <!-- Vaardigheden -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Vaardigheden</h4>
                                     <h5 style="color: #ff700d"><strong>Talenkennis</strong></h5>
-                                    <span><button>Taal</button></span>
+                                    <span><button id="btn">Taal</button></span>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button>Luistervaardigheid</button></span><br /><span><button>Beoordeling</button></span>
+                                            <span><button id="btn">Luistervaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Spreekvaardigheid</button></span><br /><span><button>Beoordeling</button></span>
+                                            <span><button id="btn">Spreekvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button>Schrijfvaardigheid</button></span><br /><span><button>Beoordeling</button></span>
+                                            <span><button id="btn">Schrijfvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                     </div>
-                                    <span><button>+</button></span>
+                                    <span><button id="btn">+</button></span>
 
                                     <BR><BR>
                                     <h5 style="color: #ff700d"><strong>Competenties</strong></h5>
-                                    <span><button>Competenties</button></span><br /><br />
+                                    <span><button id="btn">Competenties</button></span><br /><br />
                                     <h5 style="color: #ff700d"><strong>Hobby's</strong></h5>
-                                    <span><button>Hobby's</button></span><br /><br />
+                                    <span><button id="btn">Hobby's</button></span><br /><br />
                                     <h5 style="color: #ff700d"><strong>Nevenactiviteiten</strong></h5>
-                                    <span><button>Nevenactiviteiten</button></span><br /><br />
+                                    <span><button id="btn">Nevenactiviteiten</button></span><br /><br />
                                     <h5 style="color: #ff700d"><strong>Referenties</strong></h5>
-                                    <span><button>Referenties</button></span><br /><br />
+                                    <span><button id="btn">Referenties</button></span><br /><br />
                                     <h5 style="color: #ff700d"><strong>Skills</strong></h5>
-                                    <span><button>Skills</button></span><br /><br />
+                                    <span><button id="btn">Skills</button></span><br /><br />
                                 </div>
 
 
@@ -267,8 +304,6 @@
                     </p>
                 </div>
             </footer>
-
         </div>
     </div>
-
 </div>
