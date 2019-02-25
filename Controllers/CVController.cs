@@ -32,6 +32,7 @@ namespace ResumeStripper.Controllers
                 }
 
                 model.serverPath = "http://127.0.0.1:8887/" + filename;
+                ViewBag.JavaScriptFunction = "newPDFArrived('"+ model.serverPath + "');";
                 return View(model);
             }
             else

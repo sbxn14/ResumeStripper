@@ -5,10 +5,13 @@
 }
 
 @Styles.Render("~/Content/css")
-@Scripts.Render("~/Scripts/jquery-3.3.1.min.js")
-@*//@Scripts.Render("~/Scripts/PDFSCRIPT.js")
-    //<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js"></script>*@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>
+@Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
+@Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js")
+@Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.worker.min.js")
+@Scripts.Render("~/Scripts/js/ChooseScript.js")
+@Scripts.Render("~/Scripts/PDFSCRIPT.js")
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js")
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>*@
 
 <div class="wrapper">
     <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
@@ -81,35 +84,29 @@
                                 @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
-                                    <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" />
+                                    <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" @*onchange="newPdf()"*@ />
                                     @ViewBag.FileStatus
                                 }
-                                <button id="chooseBtn" onclick="switchView()">Change to Text!</button>
+                                <button id="chooseBtn" onclick="" data-text-swap="Switch to PDF View!">Switch to Text View!</button>
+                                <p id="result">test</p>
                                 <hr>
-
-                                <script>
-                                    function switchView() {
-                                        var x = document.getElementById("pdfChoice");
-                                        var y = document.getElementById("textChoice")
-                                        if (x.style.display == "none") {
-                                            x.style.display = "block";
-                                            y.style.display = "none";
-                                        } else {
-                                            x.style.display = "none";
-                                            y.style.display = "block";
-                                        }
-                                    }
-                                </script>
 
                                 <br />
                                 @{
                                     if (Model != null)
                                     {
                                         <div id="pdfChoice">
-                                            <div id="pdfview"></div>
-                                            <script>
-                                            PDFObject.embed("@Model.serverPath", "#pdfview");
-                                            </script>
+                                            @if (ViewBag.JavaScriptFunction != null)
+                                            {
+                                                <script type="text/javascript">
+                                                @Html.Raw(ViewBag.JavaScriptFunction)
+                                                </script>
+                                            }
+                                            <canvas id="viewer"></canvas>
+                                            @*<div id="pdfview"></div>
+                                                <script>
+                                                        PDFObject.embed("@Model.serverPath", "#pdfview");
+                                                </script>*@
                                         </div>
                                         <div id="textChoice" style="display:none">
                                             @*<pre>@Model.Text</pre>*@
@@ -121,33 +118,7 @@
                         </div>
                     </div>
 
-                    <script>
-                        function getSelectionText() {
-                            var selectedText = ""
-                            if (window.getSelection) { // all modern browsers and IE9+
-                                selectedText = window.getSelection().toString()
-                            }
-                            return selectedText
-                        }
 
-                        function changeName() {
-                            var newText = getSelectionText()
-                            var elem = document.getElementById("btnName");
-                            if (elem.value !== newText) elem.innerHTML = newText;
-                        }
-
-                        function changePrefix() {
-                            var newText = getSelectionText()
-                            var elem = document.getElementById("btnPrefix");
-                            if (elem.innerHTML !== newText) elem.innerHTML = newText;
-                        }
-
-                        function changeSurname() {
-                            var newText = getSelectionText()
-                            var elem = document.getElementById("btnSurname");
-                            if (elem.innerHTML !== newText) elem.innerHTML = newText;
-                        }
-                    </script>
 
                     <!-- Kaart rechts -->
                     <div class="col-md-6">
@@ -170,26 +141,47 @@
                                 </style>
 
                                 <div class="divsenn">
-                                    <h3 style="color: #ff700d"><strong>CV (Naam kandidaat)</strong></h3>
+                                    <h3 id="topname" style="color: #ff700d">
+                                        <strong>
+                                            CV
+                                            <span id="topFirst"></span>
+                                            <span id="topPrefix"></span>
+                                            <span id="topSur"></span>
+                                        </strong>
+                                    </h3>
                                     <hr>
                                 </div>
 
                                 <!-- Personalia -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Personalia</h4>
-                                    <span><button id="btnName" onclick="changeName()">Voornaam</button></span><br />
-                                    <span><button id="btnPrefix" onclick="changePrefix()">Tussenvoegsel</button></span><br />
-                                    <span><button id="btnSurname" onclick="changeSurname()">Achternaam</button></span><br />
-                                    <span><button id="btn">Woonplaats</button></span><br />
-                                    <span><button id="btn">Land</button></span><br />
-                                    <span><button id="btn">Geboortedatum</button></span><br />
-                                    <span><button id="btn">Rijbewijs categorie</button></span><br /><span><button id="btn">+</button></span>
+                                    <div id="personaliaGroup">
+                                        <span><button id="btnName" onclick="changeElem(nameLb)">Set Voornaam</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="nameLb"></p><br />
+                                        <span><button id="btnPrefix" onclick="changeElem(prefixLb)">Set Tussenvoegsel</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="prefixLb"></p><br />
+                                        <span><button id="btnSurname" onclick="changeElem(surnameLb)">Set Achternaam</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="surnameLb"></p><br />
+                                        <span><button id="btnPlace" onclick="changeElem(placeLb)">Set Plaats</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="placeLb"></p><br />
+                                        <br />
+                                        <span><button id="btnCountry" onclick="changeElem(countryLb)">Set Land</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="countryLb"></p><br />
+                                        <br />
+                                        <span><button id="btnDob" onclick="changeElem(dobLb)">Set Geboortedatum</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="dobLb"></p><br />
+                                        <br />
+                                        <span><button id="btnLicense" onclick="changeElem(licenseLb)">Set License</button></span>
+                                        <p style="margin-left: 25px; color:black;" id="licenseLb"></p><br />
+                                        <br />
+                                        <span><button id="btnLicensePlus">+</button></span>
+                                    </div>
                                 </div>
 
                                 <!-- Profielschets -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Profielschets</h4>
-                                    <span><button id="btn">Profielschets</button></span>
+                                    <span><button id="btnProfile" onclick="changeElem(this)">Profielschets</button></span>
                                 </div>
 
                                 <!-- Opleidingen -->
@@ -198,17 +190,25 @@
 
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button id="btn">Begindatum</button></span> -
-                                            <span><button id="btn">Einddatum</button></span><br /><span><button id="btn">Studirichting</button></span>
+                                            <div class="buttongroup">
+                                                <span><button id="btnEducationBegin" onclick="changeElem(this)">Begindatum</button></span> -
+                                                <span><button id="btnEducationEnd" onclick="changeElem(this)">Einddatum</button></span><br /><span><button id="btn">Studirichting</button></span>
+                                            </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Naam opleidingsinstituut</button></span><br /><span><button id="btn">Niveau</button></span>
+                                            <div class="buttongroup">
+                                                <span><button id="btnEducationName" onclick="changeElem(this)">Naam opleidingsinstituut</button></span><br /><span><button id="btn">Niveau</button></span>
+                                            </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Plaats opleidingsinstituut</button></span>
+                                            <div class="buttongroup">
+                                                <span><button id="btnEducationPlace" onclick="changeElem(this)">Plaats opleidingsinstituut</button></span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span>Diploma <u><button id="btn">Ja</button></u>/<u><button id="btn">Nee</button></u></span><br /><span><button id="btn">+</button></span>
+                                    <span>Diploma <u><button id="btn">Ja</button></u>/<u><button id="btn">Nee</button></u></span>
+                                    <br />
+                                    <span><button id="btnEducationPlus">+</button></span>
                                 </div>
 
                                 <!-- Werkervaring -->
@@ -216,22 +216,42 @@
                                     <h4 style="color: #ff700d">Werkervaring</h4>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button id="btn">Begindatum</button></span> - <span><button id="btn">Einddatum</button></span><br />
+                                            <div class="buttongroup">
+                                                <span><button id="btnWorkBegin" onclick="changeElem(this)">Begindatum</button></span> - <span><button id="btnWorkEnd" onclick="changeElem(this)">Einddatum</button></span><br />
+                                            </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Bedrijf</button></span><br />
+                                            <div class="buttongroup">
+                                                <span><button id="btnWorkName" onclick="changeElem(this)">Bedrijf</button></span><br />
+                                            </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Plaats</button></span>
+                                            <div class="buttongroup">
+                                                <span><button id="btnWorkPlace" onclick="changeElem(this)">Plaats</button></span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span><button id="btn">Functie</button></span><br /><span><button id="btn">Taakomschrijving</button></span><br /><span><button id="btn">+</button></span>
+                                    <div class="buttongroup">
+                                        <span><button id="btnWorkJob" onclick="changeElem(this)">Functie</button></span>
+                                        <br />
+                                        <span><button id="btnWorkDescription" onclick="changeElem(this)">Taakomschrijving</button></span>
+                                    </div>
+                                    <br />
+                                    <span><button id="btnWorkPlus">+</button></span>
                                 </div>
 
                                 <!-- Cursussen en trainingen -->
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Cursussen en trainingen</h4>
-                                    <span><button id="btn">Jaartal</button></span><br /><span><button id="btn">Naam cursus/training</button></span><br /><span><button id="btn">Certificaat</button></span><br /><span><button id="btn">+</button></span>
+                                    <div class="buttongroup">
+                                        <span><button id="btnCourseYear" onclick="changeElem(this)">Jaartal</button></span>
+                                        <br />
+                                        <span><button id="btnCourseName" onclick="changeElem(this)">Naam cursus/training</button></span>
+                                    </div>
+                                    <br />
+                                    <span><button id="btn">Certificaat</button></span>
+                                    <br />
+                                    <span><button id="btnCoursePlus">+</button></span>
                                 </div>
 
                                 <!-- Vaardigheden -->
@@ -241,13 +261,13 @@
                                     <span><button id="btn">Taal</button></span>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <span><button id="btn">Luistervaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
+                                            <span><button id="btnLanguageListening">Luistervaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Spreekvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
+                                            <span><button id="btnLanguageSpeaking">Spreekvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <span><button id="btn">Schrijfvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
+                                            <span><button id="btnLanguageWriting">Schrijfvaardigheid</button></span><br /><span><button id="btn">Beoordeling</button></span>
                                         </div>
                                     </div>
                                     <span><button id="btn">+</button></span>
@@ -307,3 +327,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    function getSelectionText() {
+        var selectedText = ""
+        if (window.getSelection) { // all modern browsers and IE9+
+            selectedText = window.getSelection().toString()
+        }
+        return selectedText.replace(/\s/g, '');
+    }
+
+    function changeElem(elem) {
+        var newText = getSelectionText();
+        console.log(newText);
+        console.log(elem.id);
+        if (newText !== null) {
+            if (elem.innerHTML !== newText) {
+                elem.innerHTML = newText;
+                if (elem.id == 'nameLb') document.getElementById("topFirst").innerHTML = newText;
+                if (elem.id == 'prefixLb') document.getElementById("topPrefix").innerHTML = " " + newText;
+                if (elem.id == 'surnameLb') document.getElementById("topSur").innerHTML = " " + newText;
+            }
+        } else {
+            //no selected text so reset
+            alert('no selected text');
+            elem.innerHTML = "leeg";
+        }
+    }
+</script>
