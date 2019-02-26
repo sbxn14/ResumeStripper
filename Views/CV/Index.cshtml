@@ -5,10 +5,16 @@
 }
 
 @Styles.Render("~/Content/css")
+@Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
 @Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
+
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js")
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.worker.min.js")
+@Scripts.Render("~/Scripts/textlayer/text_layer_builder.js")
+@Styles.Render("~/Scripts/textlayer/text_layer_builder.css")
+
 @Scripts.Render("~/Scripts/js/ChooseScript.js")
+@Scripts.Render("~/Scripts/js/ChangeElementScript.js")
 @Scripts.Render("~/Scripts/PDFSCRIPT.js")
 @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js")
 @*<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>*@
@@ -95,14 +101,14 @@
                                 @{
                                     if (Model != null)
                                     {
-                                        <div id="pdfChoice">
+                                        <div id="pdfChoice" style="padding-bottom: 50px;">
                                             @if (ViewBag.JavaScriptFunction != null)
                                             {
                                                 <script type="text/javascript">
                                                 @Html.Raw(ViewBag.JavaScriptFunction)
                                                 </script>
                                             }
-                                            <canvas id="viewer"></canvas>
+                                            <div id="container"></div>
                                             @*<div id="pdfview"></div>
                                                 <script>
                                                         PDFObject.embed("@Model.serverPath", "#pdfview");
@@ -327,31 +333,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function getSelectionText() {
-        var selectedText = ""
-        if (window.getSelection) { // all modern browsers and IE9+
-            selectedText = window.getSelection().toString()
-        }
-        return selectedText.replace(/\s/g, '');
-    }
-
-    function changeElem(elem) {
-        var newText = getSelectionText();
-        console.log(newText);
-        console.log(elem.id);
-        if (newText !== null) {
-            if (elem.innerHTML !== newText) {
-                elem.innerHTML = newText;
-                if (elem.id == 'nameLb') document.getElementById("topFirst").innerHTML = newText;
-                if (elem.id == 'prefixLb') document.getElementById("topPrefix").innerHTML = " " + newText;
-                if (elem.id == 'surnameLb') document.getElementById("topSur").innerHTML = " " + newText;
-            }
-        } else {
-            //no selected text so reset
-            alert('no selected text');
-            elem.innerHTML = "leeg";
-        }
-    }
-</script>

@@ -31,7 +31,7 @@ namespace ResumeStripper.Controllers
                     filename = Path.GetFileName(filename);
                 }
 
-                model.serverPath = "http://127.0.0.1:8887/" + filename;
+                model.serverPath = "http://192.168.86.24:8084/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('"+ model.serverPath + "');";
                 return View(model);
             }
