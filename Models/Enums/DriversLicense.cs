@@ -1,4 +1,6 @@
-﻿namespace ResumeStripper.Models.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ResumeStripper.Models.Enums
 {
     public enum DriversLicense
     {
@@ -9,6 +11,7 @@
         AM,
         B,
         BE,
+        [Display(Name = "B+")]
         Bplus,
         C,
         CE,

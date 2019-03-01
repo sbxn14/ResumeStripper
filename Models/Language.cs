@@ -15,5 +15,10 @@ namespace ResumeStripper.Models
         public virtual LanguageLevel LevelOfListening { get; set; }
         public virtual LanguageLevel LevelOfSpeaking { get; set; }
         public virtual LanguageLevel LevelOfWriting { get; set; }
+
+        public Language()
+        {
+
+        }
     }
 }

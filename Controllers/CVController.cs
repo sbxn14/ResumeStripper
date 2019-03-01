@@ -33,11 +33,12 @@ namespace ResumeStripper.Controllers
 
                 model.serverPath = "http://192.168.86.24:8084/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('"+ model.serverPath + "');";
+                model.ResultCv.Educations.Add(new ResumeStripper.Models.Experiences.EducationExperience());
                 return View(model);
             }
             else
             {
-                return View();
+                return View(new MessageViewModel());
             }
         }
 
@@ -78,6 +79,15 @@ namespace ResumeStripper.Controllers
                     return RedirectToAction("Index");
                 }
             }
+            return RedirectToAction("Index");
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Export(MessageViewModel model)
+        {
+            CV cv = model.ResultCv;
+
             return RedirectToAction("Index");
         }
 

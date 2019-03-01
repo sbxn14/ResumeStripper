@@ -7,6 +7,8 @@
 @Styles.Render("~/Content/css")
 @Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
 @Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/Scripts/Luxon.js")
 
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js")
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.worker.min.js")
@@ -16,8 +18,7 @@
 @Scripts.Render("~/Scripts/js/ChooseScript.js")
 @Scripts.Render("~/Scripts/js/ChangeElementScript.js")
 @Scripts.Render("~/Scripts/PDFSCRIPT.js")
-@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js")
-@*<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.1.1/pdfobject.min.js"></script>*@
+@Scripts.Render("~/Scripts/js/AddElementsScript.js")
 
 <div class="wrapper">
     <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
@@ -25,7 +26,6 @@
             <div class="logo">
                 <img class="sidebar-logo" src="~/Content/img/logo-glow.png" alt="EHV Talent" width="100%" />
             </div>
-
             <ul class="nav">
                 <li class="active">
                     <a href="dashboard.html">
@@ -33,7 +33,6 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-
                 <li class="active-pro">
                     <a href="#">
                         <i class="pe-7s-door-lock"></i>
@@ -58,7 +57,6 @@
                     <a class="navbar-brand" href="#">Dashboard</a>
                 </div>
                 <div class="collapse navbar-collapse">
-
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="">
@@ -76,7 +74,6 @@
             </div>
         </nav>
 
-
         <div class="content all-icons">
 
             <div class="container-fluid">
@@ -93,8 +90,8 @@
                                     <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" @*onchange="newPdf()"*@ />
                                     @ViewBag.FileStatus
                                 }
-                                <button id="chooseBtn" onclick="" data-text-swap="Switch to PDF View!">Switch to Text View!</button>
-                                <p id="result">test</p>
+                                @*<button id="chooseBtn" onclick="" data-text-swap="Switch to PDF View!">Switch to Text View!</button>
+                                    <p id="result">test</p>*@
                                 <hr>
 
                                 <br />
@@ -109,22 +106,15 @@
                                                 </script>
                                             }
                                             <div id="container"></div>
-                                            @*<div id="pdfview"></div>
-                                                <script>
-                                                        PDFObject.embed("@Model.serverPath", "#pdfview");
-                                                </script>*@
                                         </div>
-                                        <div id="textChoice" style="display:none">
-                                            @*<pre>@Model.Text</pre>*@
-                                            @Html.Raw(Model.Text)
-                                        </div>
+                                        @*<div id="textChoice" style="display:none">
+                                                @Html.Raw(Model.Text)
+                                            </div>*@
                                     }
                                 }
                             </div>
                         </div>
                     </div>
-
-
 
                     <!-- Kaart rechts -->
                     <div class="col-md-6">
@@ -132,8 +122,6 @@
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume EHV</h4><img align="right"
                                                                                                      src="~/Content/img/icon-download.png" />
-                                <hr>
-
                                 <img src="~/Content/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
 
                                 <style>
@@ -146,7 +134,193 @@
                                     }
                                 </style>
 
-                                <div class="divsenn">
+                            </div>
+                            @using (Html.BeginForm("Export", "CV", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <br />
+                                <br />
+                                <br />
+                                <h3>Personal Information</h3>
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.Name, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "First Name" })
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.Prefix, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Prefix" })
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.Surname, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Last Name" })
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.Residence, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Residence" })
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.Country, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Country" })
+                                <br />
+                                @Html.TextBoxFor(m => m.ResultCv.DateOfBirth, new { @class = "form-control", onfocus = "changeText(this.id)", @Value = "", placeholder = "Date of Birth" })
+                                <br />
+                                <div id="LicenseFields">
+                                </div>
+                                <br />
+                                <input type="button" id="addLicenseBtn" onclick="addLicense()" value="Add License" />
+                                <br />
+                                <br />
+                                @Html.TextAreaFor(m => m.ResultCv.Profile, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Profile" })
+                                <br />
+                                <h3>Educations</h3>
+                                <hr />
+                                <script>
+                                    function addLicense() {
+                                        @{
+                                            Model.ResultCv.LicenseCategory.Add(new ResumeStripper.Models.License());
+                                        }
+                                        var i = document.getElementById("LicenseFields").getElementsByTagName("select").length;
+                                        var fields = $('#LicenseFields');
+                                        console.log('children: ' + i);
+                                        var template = '<select class="form-control" data-val="true" data-val-required="Het veld Type is vereist." id="ResultCv_LicenseCategory_' + i + '__Type" name="ResultCv.LicenseCategory[' + i + '].Type"><option value="">Select Type</option><option selected="selected" value="0">None</option><option value="1">A</option><option value="2">A1</option><option value="3">A2</option><option value="4">AM</option><option value="5">B</option><option value="6">BE</option><option value="7">B+</option><option value="8">C</option><option value="9">CE</option><option value="10">C1</option><option value="11">C1E</option><option value="12">D</option><option value="13">DE</option><option value="14">D1</option><option value="15">D1E</option><option value="16">T</option></select>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addEducation() {
+                                        @{
+                                            Model.ResultCv.Educations.Add(new ResumeStripper.Models.Experiences.EducationExperience());
+                                        }
+                                        var i = document.getElementById("EducationFields").getElementsByClassName("eduRow").length;
+                                        var fields = $('#EducationFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="eduRow"><input class="form-control" id="ResultCv_Educations_' + i + '__Name" name="ResultCv.Educations[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name Education" type="text" value=""> <input class="form-control" id="ResultCv_Educations_' + i + '__LevelOfEducation" name="ResultCv.Educations[' + i + '].LevelOfEducation" onfocus="changeText(this.id)" placeholder="Level of Education" type="text" value=""> <input class="form-control" id="ResultCv_Educations_' + i + '__OrganizationName" name="ResultCv.Educations[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Name Institute" type="text" value=""> <input class="form-control" id="ResultCv_Educations_' + i + '__LocationOrganization" name="ResultCv.Educations[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Location Institute" type="text" value=""><input class="form-control" data-val="true" data-val-date="The field BeginDate must be a date." data-val-required="Het veld BeginDate is vereist." id="ResultCv_Educations_' + i + '__BeginDate" name="ResultCv.Educations[' + i + '].BeginDate" onfocus="changeText(this.id)" type="text" placeholder="Begin Date"><input class="form-control" data-val="true" data-val-date="The field EndDate must be a date." data-val-required="Het veld EndDate is vereist." id="ResultCv_Educations_' + i + '__EndDate" name="ResultCv.Educations[' + i + '].EndDate" onfocus="changeText(this.id)" type="text" placeholder="End Date"> <label for="ResultCv_Educations_' + i + '__Diploma">Diploma</label> <input data-val="true" data-val-required="Het veld Diploma is vereist." id="ResultCv_Educations_' + i + '__Diploma" name="ResultCv.Educations[' + i + '].Diploma" type="checkbox" value="true"><input name="ResultCv.Educations[' + i + '].Diploma" type="hidden" value="false"></div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addWork() {
+                                        @{
+                                            Model.ResultCv.WorkExperiences.Add(new ResumeStripper.Models.Experiences.WorkExperience());
+                                        }
+                                        var i = document.getElementById("WorkFields").getElementsByClassName("workRow").length;
+                                        var fields = $('#WorkFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="workRow"> <input class="form-control" id="ResultCv_WorkExperiences_' + i + '__JobTitle" name="ResultCv.WorkExperiences[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input class="form-control" id="ResultCv_WorkExperiences_' + i + '__OrganizationName" name="ResultCv.WorkExperiences[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input class="form-control" id="ResultCv_WorkExperiences_' + i + '__LocationOrganization" name="ResultCv.WorkExperiences[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Company Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_WorkExperiences_' + i + '__TaskDescription" name="ResultCv.WorkExperiences[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Job Description" rows="2"></textarea> <input value="" class="form-control" data-val="true" data-val-date="The field BeginDate must be a date." data-val-required="Het veld BeginDate is vereist." id="ResultCv_WorkExperiences_' + i + '__BeginDate" name="ResultCv.WorkExperiences[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input value="" class="form-control" data-val="true" data-val-date="The field EndDate must be a date." data-val-required="Het veld EndDate is vereist." id="ResultCv_WorkExperiences_' + i + '__EndDate" name="ResultCv.WorkExperiences[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addCourse() {
+                                        @{
+                                            Model.ResultCv.Courses.Add(new ResumeStripper.Models.Experiences.CourseExperience());
+                                        }
+                                        var i = document.getElementById("CourseFields").getElementsByClassName("courseRow").length;
+                                        var fields = $('#CourseFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="courseRow"> <input class="form-control" id="ResultCv_Courses_' + i + '__Name" name="ResultCv.Courses[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Course Name" type="text" value=""> <input class="form-control" id="ResultCv_Courses_' + i + '__OrganizationName" name="ResultCv.Courses[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Institute Name" type="text" value=""> <input class="form-control" id="ResultCv_Courses_' + i + '__LocationOrganization" name="ResultCv.Courses[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Institute Location" type="text" value=""> <input value="" class="form-control" data-val="true" data-val-date="The field Year must be a date." data-val-required="Het veld Year is vereist." id="ResultCv_Courses_' + i + '__Year" name="ResultCv.Courses[' + i + '].Year" onfocus="changeText(this.id)" placeholder="Year" type="text"><label for="ResultCv_Courses_' + i + '__Certificate">Certificate</label> <input data-val="true" data-val-required="Het veld Certificate is vereist." id="ResultCv_Courses_' + i + '__Certificate" name="ResultCv.Courses[' + i + '].Certificate" type="checkbox" value="true"><input name="ResultCv.Courses[' + i + '].Certificate" type="hidden" value="false"> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addSideline() {
+                                        @{
+                                            Model.ResultCv.SideLines.Add(new ResumeStripper.Models.Experiences.SidelineExperience());
+                                        }
+                                        var i = document.getElementById("SidelineFields").getElementsByClassName("sidelineRow").length;
+                                        var fields = $('#SidelineFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="sidelineRow"> <input class="form-control" id="ResultCv_SideLines_' + i + '__JobTitle" name="ResultCv.SideLines[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input class="form-control" id="ResultCv_SideLines_' + i + '__OrganizationName" name="ResultCv.SideLines[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Organization Name" type="text" value=""> <input class="form-control" id="ResultCv_SideLines_' + i + '__LocationOrganization" name="ResultCv.SideLines[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Organization Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_SideLines_' + i + '__TaskDescription" name="ResultCv.SideLines[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Task Description" rows="2"></textarea> <input value="" class="form-control" data-val="true" data-val-date="The field BeginDate must be a date." data-val-required="Het veld BeginDate is vereist." id="ResultCv_SideLines_' + i + '__BeginDate" name="ResultCv.SideLines[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input value="" class="form-control" data-val="true" data-val-date="The field EndDate must be a date." data-val-required="Het veld EndDate is vereist." id="ResultCv_SideLines_' + i + '__EndDate" name="ResultCv.SideLines[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addLanguage() {
+                                        @{
+                                            Model.ResultCv.Languages.Add(new ResumeStripper.Models.Language());
+                                        }
+                                        var i = document.getElementById("LanguageFields").getElementsByClassName("languageRow").length;
+                                        var fields = $('#LanguageFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="languageRow"> <input class="form-control" id="ResultCv_Languages_' + i + '__Name" name="ResultCv.Languages[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""> <label for="ResultCv_Languages_' + i + '__Level">Level</label> <select class="form-control" data-val="true" data-val-required="Het veld Level is vereist." id="ResultCv_Languages_' + i + '__Level" name="ResultCv.Languages[' + i + '].Level"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfListening">LevelOfListening</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfListening is vereist." id="ResultCv_Languages_' + i + '__LevelOfListening" name="ResultCv.Languages[' + i + '].LevelOfListening"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfSpeaking">LevelOfSpeaking</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfSpeaking is vereist." id="ResultCv_Languages_' + i + '__LevelOfSpeaking" name="ResultCv.Languages[' + i + '].LevelOfSpeaking"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfWriting">LevelOfWriting</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfWriting is vereist." id="ResultCv_Languages_' + i + '__LevelOfWriting" name="ResultCv.Languages[' + i + '].LevelOfWriting"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addSkill() {
+                                        @{
+                                            Model.ResultCv.Skills.Add(new ResumeStripper.Models.Skill());
+                                        }
+                                        var i = document.getElementById("SkillFields").getElementsByClassName("skillRow").length;
+                                        var fields = $('#SkillFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="skillRow"> <input class="form-control" id="ResultCv_Skills_' + i + '__Name" name="ResultCv.Skills[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Skill Name" type="text" value=""> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addCompetence() {
+                                        @{
+                                            Model.ResultCv.Competences.Add(new ResumeStripper.Models.Competence());
+                                        }
+                                        var i = document.getElementById("CompetenceFields").getElementsByClassName("competenceRow").length;
+                                        var fields = $('#CompetenceFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="competenceRow"> <input class="form-control" id="ResultCv_Competences_' + i + '__Name" name="ResultCv.Competences[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Competence Name" type="text" value=""> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addHobby() {
+                                        @{
+                                            Model.ResultCv.Hobbies.Add(new ResumeStripper.Models.Hobby());
+                                        }
+                                        var i = document.getElementById("HobbyFields").getElementsByClassName("hobbyRow").length;
+                                        var fields = $('#HobbyFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="hobbyRow"> <input class="form-control" id="ResultCv_Hobbies_' + i + '__Name" name="ResultCv.Hobbies[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Hobby Name" type="text" value=""> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                    function addReference() {
+                                        @{
+                                            Model.ResultCv.References.Add(new ResumeStripper.Models.Reference());
+                                        }
+                                        var i = document.getElementById("ReferenceFields").getElementsByClassName("referenceRow").length;
+                                        var fields = $('#ReferenceFields');
+                                        console.log('children: ' + i);
+                                        var template = '<div class="referenceRow"> <input class="form-control" id="ResultCv_References_' + i + '__Name" name="ResultCv.References[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""> <input class="form-control" id="ResultCv_References_' + i + '__JobTitle" name="ResultCv.References[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input class="form-control" id="ResultCv_References_' + i + '__CompanyName" name="ResultCv.References[' + i + '].CompanyName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input class="form-control" id="ResultCv_References_' + i + '__Email" name="ResultCv.References[' + i + '].Email" onfocus="changeText(this.id)" placeholder="Emailaddress" type="email" value=""> <input class="form-control" id="ResultCv_References_' + i + '__PhoneNumber" name="ResultCv.References[' + i + '].PhoneNumber" onfocus="changeText(this.id)" placeholder="Phonenumber" type="text" value=""> </div>';
+                                        $(template).appendTo(fields);
+                                    }
+                                </script>
+                                <br />
+                                <div id="EducationFields">
+                                </div>
+                                <input type="button" id="addEducationBtn" onclick="addEducation()" value="Add Education" />
+                                <br />
+                                <h3>Work Experiences</h3>
+                                <hr />
+                                <div id="WorkFields">
+                                </div>
+                                <input type="button" id="addWorkBtn" onclick="addWork()" value="Add Work Experience" />
+                                <br />
+                                <h3>Courses</h3>
+                                <hr />
+                                <div id="CourseFields">
+                                </div>
+                                <input type="button" id="addCourseBtn" onclick="addCourse()" value="Add Course" />
+                                <br />
+                                <h3>Sidelines</h3>
+                                <hr />
+                                <div id="SidelineFields">
+                                </div>
+                                <input type="button" id="addSidelineBtn" onclick="addSideline()" value="Add Sideline" />
+                                <br />
+                                <h3>Languages</h3>
+                                <hr />
+                                <div id="LanguageFields">
+                                </div>
+                                <input type="button" id="addLanguageBtn" onclick="addLanguage()" value="Add Language" />
+                                <br />
+                                <h3>Skills</h3>
+                                <hr />
+                                <div id="SkillFields">
+                                </div>
+                                <input type="button" id="addSkillBtn" onclick="addSkill()" value="Add Skill" />
+                                <br />
+                                <h3>Competences</h3>
+                                <hr />
+                                <div id="CompetenceFields">
+                                </div>
+                                <input type="button" id="addCompetenceBtn" onclick="addCompetence()" value="Add Competence" />
+                                <br />
+                                <h3>Hobby's</h3>
+                                <hr />
+                                <div id="HobbyFields">
+                                </div>
+                                <input type="button" id="addHobbyBtn" onclick="addHobby()" value="Add Hobby" />
+                                <br />
+                                <h3>References</h3>
+                                <hr />
+                                <div id="ReferenceFields">
+                                </div>
+                                <input type="button" id="addReferenceBtn" onclick="addReference()" value="Add Reference" />
+                            }
+                            @*<div class="divsenn">
                                     <h3 id="topname" style="color: #ff700d">
                                         <strong>
                                             CV
@@ -162,24 +336,13 @@
                                 <div margin-top="40px">
                                     <h4 style="color: #ff700d">Personalia</h4>
                                     <div id="personaliaGroup">
-                                        <span><button id="btnName" onclick="changeElem(nameLb)">Set Voornaam</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="nameLb"></p><br />
-                                        <span><button id="btnPrefix" onclick="changeElem(prefixLb)">Set Tussenvoegsel</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="prefixLb"></p><br />
-                                        <span><button id="btnSurname" onclick="changeElem(surnameLb)">Set Achternaam</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="surnameLb"></p><br />
-                                        <span><button id="btnPlace" onclick="changeElem(placeLb)">Set Plaats</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="placeLb"></p><br />
-                                        <br />
-                                        <span><button id="btnCountry" onclick="changeElem(countryLb)">Set Land</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="countryLb"></p><br />
-                                        <br />
-                                        <span><button id="btnDob" onclick="changeElem(dobLb)">Set Geboortedatum</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="dobLb"></p><br />
-                                        <br />
-                                        <span><button id="btnLicense" onclick="changeElem(licenseLb)">Set License</button></span>
-                                        <p style="margin-left: 25px; color:black;" id="licenseLb"></p><br />
-                                        <br />
+                                        <span><button id="btnName" onclick="">Set Voornaam</button></span><br />
+                                        <span><button id="btnPrefix" onclick="">Set Tussenvoegsel</button></span><br />
+                                        <span><button id="btnSurname" onclick="">Set Achternaam</button></span><br />
+                                        <span><button id="btnPlace" onclick="">Set Plaats</button></span><br />
+                                        <span><button id="btnCountry" onclick="">Set Land</button></span><br />
+                                        <span><button id="btnDob" onclick=")">Set Geboortedatum</button></span><br />
+                                        <span><button id="btnLicense" onclick="">Set License</button></span><br />
                                         <span><button id="btnLicensePlus">+</button></span>
                                     </div>
                                 </div>
@@ -289,10 +452,9 @@
                                     <span><button id="btn">Referenties</button></span><br /><br />
                                     <h5 style="color: #ff700d"><strong>Skills</strong></h5>
                                     <span><button id="btn">Skills</button></span><br /><br />
-                                </div>
+                                </div>*@
 
 
-                            </div>
                         </div>
                     </div>
                 </div>

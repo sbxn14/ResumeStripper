@@ -13,6 +13,11 @@
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
+        public Reference()
+        {
+
+        }
+
         public Reference(string name, string companyName, string jobTitle, string email, string phoneNumber)
         {
             Name = name;

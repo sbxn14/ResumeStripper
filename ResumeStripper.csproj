@@ -47,6 +47,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BeginCollectionItem, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BeginCollectionItem.1.2.1.0\lib\net35\BeginCollectionItem.dll</HintPath>
+    </Reference>
     <Reference Include="Bytescout.PDFExtractor, Version=9.3.0.3366, Culture=neutral, PublicKeyToken=f7dd1bd9d40a50eb, processorArchitecture=MSIL">
       <HintPath>..\packages\Bytescout.PDFExtractor.9.3.0.3366\lib\net40\Bytescout.PDFExtractor.dll</HintPath>
     </Reference>
@@ -187,11 +190,12 @@
     </Compile>
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
-    <Compile Include="Migrations\201902141244132_InitialCreate.cs" />
-    <Compile Include="Migrations\201902141244132_InitialCreate.Designer.cs">
-      <DependentUpon>201902141244132_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201903011310042_InitialCreate.cs" />
+    <Compile Include="Migrations\201903011310042_InitialCreate.Designer.cs">
+      <DependentUpon>201903011310042_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
     <Compile Include="Models\Enums\DriversLicense.cs" />
     <Compile Include="Models\Enums\LanguageLevel.cs" />
@@ -200,6 +204,7 @@
     <Compile Include="Models\Experiences\Experience.cs" />
     <Compile Include="Models\Experiences\SidelineExperience.cs" />
     <Compile Include="Models\Experiences\WorkExperience.cs" />
+    <Compile Include="Models\Hobby.cs" />
     <Compile Include="Models\Language.cs" />
     <Compile Include="Models\License.cs" />
     <Compile Include="Models\Reference.cs" />
@@ -209,13 +214,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\animate.min.css" />
-    <Content Include="Content\bootstrap-grid.css" />
-    <Content Include="Content\bootstrap-grid.min.css" />
-    <Content Include="Content\bootstrap-reboot.css" />
-    <Content Include="Content\bootstrap-reboot.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\animate.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\demo.css" />
@@ -229,7 +227,6 @@
     <Content Include="Content\img\sidebar.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap-filestyle.min.js" />
     <Content Include="Scripts\bootstrap-notify.js" />
     <Content Include="Scripts\bootstrap-select.js" />
@@ -241,12 +238,6 @@
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-reboot.min.css.map" />
-    <Content Include="Content\bootstrap-reboot.css.map" />
-    <Content Include="Content\bootstrap-grid.min.css.map" />
-    <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -270,10 +261,16 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\AddElementsScript.js" />
     <Content Include="Scripts\js\ChangeElementScript.js" />
     <Content Include="Scripts\js\ChooseScript.js" />
     <Content Include="Scripts\light-bootstrap-dashboard.js" />
+    <Content Include="Scripts\Luxon.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\PDFSCRIPT.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -316,6 +313,7 @@
     <Content Include="tessdata\fra.traineddata" />
     <Content Include="tessdata\eng.traineddata" />
     <Content Include="tessdata\deu.traineddata" />
+    <Content Include="Views\Shared\EditorTemplates\Collection.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -335,8 +333,8 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902141244132_InitialCreate.resx">
-      <DependentUpon>201902141244132_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201903011310042_InitialCreate.resx">
+      <DependentUpon>201903011310042_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

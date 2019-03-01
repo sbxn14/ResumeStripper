@@ -11,38 +11,75 @@ namespace ResumeStripper.Models
     {
         [Key]
         public int ID { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; }
+        [StringLength(10)]
         public string Prefix { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Surname { get; set; }
+        [Required]
+        [StringLength(20)]
         public string Residence { get; set; }
+        [Required]
+        [StringLength(20)]
         public string Country { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
-        public ICollection<int> LicenseCategoryIds { get; set; }
+        [ForeignKey("License")]
+        public List<int> LicenseCategoryIds { get; set; }
         //List of license enum, since a person can have multiple licenses, can be null
-        public virtual ICollection<License> LicenseCategory { get; set; }
+        public virtual List<License> LicenseCategory { get; set; }
         public string Profile { get; set; }
-        public virtual ICollection<EducationExperience> Educations { get; set; }
-        public virtual ICollection<WorkExperience> WorkExperiences { get; set; }
-        public virtual ICollection<CourseExperience> Courses { get; set; }
+        public virtual List<EducationExperience> Educations { get; set; }
+        public virtual List<WorkExperience> WorkExperiences { get; set; }
+        public virtual List<CourseExperience> Courses { get; set; }
         [ForeignKey("Language")]
-        public ICollection<int> LanguageIds { get; set; }
-        public virtual ICollection<Language> Languages { get; set; }
-        public ICollection<string> Competences { get; set; }
-        public ICollection<string> Hobbies { get; set; }
-        public virtual ICollection<SidelineExperience> SideLines { get; set; }
-        public virtual ICollection<Reference> References { get; set; }
+        public List<int> LanguageIds { get; set; }
+        public virtual List<Language> Languages { get; set; }
+        public virtual List<Competence> Competences { get; set; }
+        [ForeignKey("Competence")]
+        public List<int> CompetenceIds { get; set; }
+        public virtual List<Hobby> Hobbies { get; set; }
+        [ForeignKey("Hobby")]
+        public List<int> HobbyIds { get; set; }
+        public virtual List<SidelineExperience> SideLines { get; set; }
+        public virtual List<Reference> References { get; set; }
         [ForeignKey("Skill")]
-        public ICollection<int> SkillIds { get; set; }
-        public virtual ICollection<Skill> Skills { get; set; }
+        public List<int> SkillIds { get; set; }
+        public virtual List<Skill> Skills { get; set; }
 
-        public CV(string name, string prefix, string surname, string residence, string country, DateTime dateOfBirth, ICollection<License> licenseCategory, string profile, ICollection<EducationExperience> educations, ICollection<WorkExperience> workExperiences, ICollection<CourseExperience> courses, ICollection<int> languageIds, ICollection<Language> languages, ICollection<string> competences, ICollection<string> hobbies, ICollection<SidelineExperience> sideLines, ICollection<Reference> references, ICollection<int> skillIds, ICollection<Skill> skills)
+        public CV()
         {
+            LicenseCategoryIds = new List<int>();
+            LicenseCategory = new List<License>();
+            Educations = new List<EducationExperience>();
+            WorkExperiences = new List<WorkExperience>();
+            Courses = new List<CourseExperience>();
+            LanguageIds = new List<int>();
+            Languages = new List<Language>();
+            Competences = new List<Competence>();
+            CompetenceIds = new List<int>();
+            Hobbies = new List<Hobby>();
+            HobbyIds = new List<int>();
+            SideLines = new List<SidelineExperience>();
+            References = new List<Reference>();
+            SkillIds = new List<int>();
+            Skills = new List<Skill>();
+        }
+
+        public CV(int iD, string name, string prefix, string surname, string residence, string country, DateTime dateOfBirth, List<int> licenseCategoryIds, List<License> licenseCategory, string profile, List<EducationExperience> educations, List<WorkExperience> workExperiences, List<CourseExperience> courses, List<int> languageIds, List<Language> languages, List<Competence> competences, List<int> competenceIds, List<Hobby> hobbies, List<int> hobbyIds, List<SidelineExperience> sideLines, List<Reference> references, List<int> skillIds, List<Skill> skills)
+        {
+            ID = iD;
             Name = name;
             Prefix = prefix;
             Surname = surname;
             Residence = residence;
             Country = country;
             DateOfBirth = dateOfBirth;
+            LicenseCategoryIds = licenseCategoryIds;
             LicenseCategory = licenseCategory;
             Profile = profile;
             Educations = educations;
@@ -51,7 +88,9 @@ namespace ResumeStripper.Models
             LanguageIds = languageIds;
             Languages = languages;
             Competences = competences;
+            CompetenceIds = competenceIds;
             Hobbies = hobbies;
+            HobbyIds = hobbyIds;
             SideLines = sideLines;
             References = references;
             SkillIds = skillIds;

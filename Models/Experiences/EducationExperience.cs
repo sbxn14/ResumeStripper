@@ -10,6 +10,11 @@ namespace ResumeStripper.Models.Experiences
         public DateTime BeginDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        public EducationExperience()
+        {
+
+        }
+
         public EducationExperience(int cvid, string name, string levelofEducation, bool diploma, string organizationName, string locationOrganization, DateTime beginDate, DateTime endDate)
         {
             //begin constructor super

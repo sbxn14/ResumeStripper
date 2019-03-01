@@ -12,5 +12,10 @@ namespace ResumeStripper.Models.Viewmodels
         public string Text { get; set; }
         public string serverPath { get; set; }
         public CV ResultCv { get; set; }
+
+        public MessageViewModel()
+        {
+            ResultCv = new CV();
+        }
     }
 }
