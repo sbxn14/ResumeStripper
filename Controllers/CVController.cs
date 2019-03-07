@@ -25,15 +25,14 @@ namespace ResumeStripper.Controllers
             {
                 string filename = (string)TempData["filename"];
 
-                if(filename.Contains(":"))
+                if (filename.Contains(":"))
                 {
                     //edge filename
                     filename = Path.GetFileName(filename);
                 }
 
-                model.serverPath = "http://192.168.86.24:8084/" + filename;
-                ViewBag.JavaScriptFunction = "newPDFArrived('"+ model.serverPath + "');";
-                model.ResultCv.Educations.Add(new ResumeStripper.Models.Experiences.EducationExperience());
+                model.serverPath = "http://192.168.86.29:8084/" + filename;
+                ViewBag.JavaScriptFunction = "newPDFArrived('" + model.serverPath + "');";
                 return View(model);
             }
             else
@@ -57,18 +56,16 @@ namespace ResumeStripper.Controllers
                     if (pdf != null && pdf.ContentLength > 0)
                     {
                         //temporarily saves file
-                        var filePath = Path.Combine(Server.MapPath("~/Content/pdf"), pdf.FileName);
+                        //var filePath = Path.Combine(Server.MapPath("~/Content/pdf"), pdf.FileName);
                         TempData["filename"] = pdf.FileName;
-                        pdf.SaveAs(filePath);
+                        //pdf.SaveAs(filePath);
 
                         PDFHelper helper = new PDFHelper();
 
                         MessageViewModel mod = new MessageViewModel
                         {
-                            //Text = helper.getTextFromPdf(filePath, pdf.FileName),
-                            Text = helper.GetHTMLText(filePath),
+                            //Text = helper.GetHTMLText(filePath),
                             Path = pdf.FileName
-                            //PDF = GetPDF(filePath)
                         };
                         TempData["Message"] = mod;
                     }
@@ -86,103 +83,19 @@ namespace ResumeStripper.Controllers
         [HttpPost]
         public ActionResult Export(MessageViewModel model)
         {
-            CV cv = model.ResultCv;
-
-            return RedirectToAction("Index");
-        }
-
-        // GET: CV/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
+            if (model.ResultCv != null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CV cV = db.CVS.Find(id);
-            if (cV == null)
-            {
-                return HttpNotFound();
-            }
-            return View(cV);
-        }
-
-        // GET: CV/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CV/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Prefix,Surname,Residence,Country,DateOfBirth,Profile")] CV cV)
-        {
-            if (ModelState.IsValid)
-            {
-                db.CVS.Add(cV);
+                CV cv = model.ResultCv;
+                db.CVS.Add(cv);
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
 
-            return View(cV);
-        }
+                //generate PDF and generate view that shows that PDF instead of redirect to index
+                string url = Server.MapPath("~/PDFs/") + "CVTest.pdf";
 
-        // GET: CV/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CV cV = db.CVS.Find(id);
-            if (cV == null)
-            {
-                return HttpNotFound();
-            }
-            return View(cV);
-        }
+                PDFHelper helper = new PDFHelper();
 
-        // POST: CV/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Prefix,Surname,Residence,Country,DateOfBirth,Profile")] CV cV)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(cV).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                helper.GetPDF(url, cv);
             }
-            return View(cV);
-        }
-
-        // GET: CV/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CV cV = db.CVS.Find(id);
-            if (cV == null)
-            {
-                return HttpNotFound();
-            }
-            return View(cV);
-        }
-
-        // POST: CV/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            CV cV = db.CVS.Find(id);
-            db.CVS.Remove(cV);
-            db.SaveChanges();
             return RedirectToAction("Index");
         }
 

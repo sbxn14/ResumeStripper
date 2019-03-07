@@ -47,9 +47,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BeginCollectionItem, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BeginCollectionItem.1.2.1.0\lib\net35\BeginCollectionItem.dll</HintPath>
-    </Reference>
     <Reference Include="Bytescout.PDFExtractor, Version=9.3.0.3366, Culture=neutral, PublicKeyToken=f7dd1bd9d40a50eb, processorArchitecture=MSIL">
       <HintPath>..\packages\Bytescout.PDFExtractor.9.3.0.3366\lib\net40\Bytescout.PDFExtractor.dll</HintPath>
     </Reference>
@@ -67,6 +64,9 @@
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.9.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.9.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
@@ -190,9 +190,9 @@
     </Compile>
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
-    <Compile Include="Migrations\201903011310042_InitialCreate.cs" />
-    <Compile Include="Migrations\201903011310042_InitialCreate.Designer.cs">
-      <DependentUpon>201903011310042_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201903071109435_InitialCreate.cs" />
+    <Compile Include="Migrations\201903071109435_InitialCreate.Designer.cs">
+      <DependentUpon>201903071109435_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Competence.cs" />
@@ -313,12 +313,13 @@
     <Content Include="tessdata\fra.traineddata" />
     <Content Include="tessdata\eng.traineddata" />
     <Content Include="tessdata\deu.traineddata" />
-    <Content Include="Views\Shared\EditorTemplates\Collection.cshtml" />
+    <Content Include="Views\Template.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\pdf\" />
     <Folder Include="Models\ReferenceTables\" />
+    <Folder Include="PDFs\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
@@ -333,8 +334,8 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201903011310042_InitialCreate.resx">
-      <DependentUpon>201903011310042_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201903071109435_InitialCreate.resx">
+      <DependentUpon>201903071109435_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

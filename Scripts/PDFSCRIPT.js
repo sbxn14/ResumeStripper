@@ -1,7 +1,12 @@
-﻿function showPDF(url) {
+﻿function newPDFArrived(url) {
+    console.log("newPDFArrived Reached");
+    showPDF(url);
+}
+
+function showPDF(url) {
     pdfjsLib.getDocument(url)
         .then(function (pdf) {
-
+            console.log("showpdf reached");
             // Get div#container and cache it for later use
             var container = document.getElementById("container");
 
@@ -71,14 +76,4 @@
                 });
             }
         });
-}
-
-function newPDFArrived(url) {
-    //var x = document.querySelectorAll("#personaliaGroup p");
-    //var i;
-    //for (i = 0; i < x.length; i++) {
-    //    x[i].innerHTML = "";
-    //    x[i].textContent = "";
-    //}
-    showPDF(url);
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResumeStripper.Models.Experiences
 {
@@ -7,26 +8,14 @@ namespace ResumeStripper.Models.Experiences
         public string Name { get; set; }
         public string LevelOfEducation { get; set; }
         public bool Diploma { get; set; }
+        [Column("BeginDate")]
         public DateTime BeginDate { get; set; }
+        [Column("EndDate")]
         public DateTime EndDate { get; set; }
 
         public EducationExperience()
         {
 
-        }
-
-        public EducationExperience(int cvid, string name, string levelofEducation, bool diploma, string organizationName, string locationOrganization, DateTime beginDate, DateTime endDate)
-        {
-            //begin constructor super
-            CVID = cvid;
-            OrganizationName = organizationName;
-            LocationOrganization = locationOrganization;
-            //end constructor super
-            Name = name;
-            LevelOfEducation = levelofEducation;
-            Diploma = diploma;
-            BeginDate = beginDate;
-            EndDate = endDate;
         }
     }
 }

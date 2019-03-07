@@ -43,39 +43,3 @@ function changeText(id) {
         $('#' + id).val(newText);
     }
 }
-
-//$(function () {
-//    $('#btnName').on('click', function () {
-//        var text = $('#Name');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnPrefix').on('click', function () {
-//        var text = $('#Prefix');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnSurname').on('click', function () {
-//        var text = $('#Surname');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnResidence').on('click', function () {
-//        var text = $('#Residence');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnCountry').on('click', function () {
-//        var text = $('#Country');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnDob').on('click', function () {
-//        var text = $('#DateOfBirth');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnLicense').on('click', function () {
-//        var text = $('#LicenseCategory');
-//        text.val(getSelectionText());
-//    });
-//    $('#btnProfile').on('click', function () {
-//        var text = $('#Profile');
-//        text.val(getSelectionText());
-//    });
-
-//});

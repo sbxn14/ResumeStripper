@@ -8,21 +8,6 @@ namespace ResumeStripper.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.CV",
-                c => new
-                    {
-                        ID = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false, maxLength: 100, storeType: "nvarchar"),
-                        Prefix = c.String(maxLength: 10, storeType: "nvarchar"),
-                        Surname = c.String(nullable: false, maxLength: 100, storeType: "nvarchar"),
-                        Residence = c.String(nullable: false, maxLength: 20, storeType: "nvarchar"),
-                        Country = c.String(nullable: false, maxLength: 20, storeType: "nvarchar"),
-                        DateOfBirth = c.DateTime(nullable: false, precision: 0),
-                        Profile = c.String(unicode: false),
-                    })
-                .PrimaryKey(t => t.ID);
-            
-            CreateTable(
                 "dbo.Competence",
                 c => new
                     {
@@ -49,6 +34,21 @@ namespace ResumeStripper.Migrations
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.CV", t => t.CVID, cascadeDelete: true)
                 .Index(t => t.CVID);
+            
+            CreateTable(
+                "dbo.CV",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false, maxLength: 100, storeType: "nvarchar"),
+                        Prefix = c.String(maxLength: 10, storeType: "nvarchar"),
+                        Surname = c.String(nullable: false, maxLength: 100, storeType: "nvarchar"),
+                        Residence = c.String(nullable: false, maxLength: 20, storeType: "nvarchar"),
+                        Country = c.String(nullable: false, maxLength: 20, storeType: "nvarchar"),
+                        DateOfBirth = c.DateTime(nullable: false, precision: 0),
+                        Profile = c.String(unicode: false),
+                    })
+                .PrimaryKey(t => t.ID);
             
             CreateTable(
                 "dbo.EducationExperience",
@@ -202,9 +202,9 @@ namespace ResumeStripper.Migrations
             DropTable("dbo.Language");
             DropTable("dbo.Hobby");
             DropTable("dbo.EducationExperience");
+            DropTable("dbo.CV");
             DropTable("dbo.CourseExperience");
             DropTable("dbo.Competence");
-            DropTable("dbo.CV");
         }
     }
 }
