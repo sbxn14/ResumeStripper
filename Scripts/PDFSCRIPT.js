@@ -1,12 +1,10 @@
 ﻿function newPDFArrived(url) {
-    console.log("newPDFArrived Reached");
     showPDF(url);
 }
 
 function showPDF(url) {
     pdfjsLib.getDocument(url)
         .then(function (pdf) {
-            console.log("showpdf reached");
             // Get div#container and cache it for later use
             var container = document.getElementById("container");
 

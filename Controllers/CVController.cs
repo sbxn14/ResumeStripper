@@ -31,7 +31,7 @@ namespace ResumeStripper.Controllers
                     filename = Path.GetFileName(filename);
                 }
 
-                model.serverPath = "http://192.168.86.29:8084/" + filename;
+                model.serverPath = "http://192.168.86.26:8081/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('" + model.serverPath + "');";
                 return View(model);
             }
@@ -81,7 +81,7 @@ namespace ResumeStripper.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Export(MessageViewModel model)
+        public ActionResult Export(MessageViewModel model, string submitter)
         {
             if (model.ResultCv != null)
             {
@@ -89,8 +89,25 @@ namespace ResumeStripper.Controllers
                 db.CVS.Add(cv);
                 db.SaveChanges();
 
+                if(submitter.Equals("Generate Anonymous CV"))
+                {
+                    //requires anonymous PDF
+                    cv.setAnonymousCV();
+                }
+
+                string resultName = "";
+
+                if(cv.IsAnonymous)
+                {
+                    //cv is anonymous
+                    resultName = "AnonymousCV_" + cv.ID + ".pdf";
+                } else
+                {
+                    resultName = "CV_" + cv.ID + ".pdf";
+                }
+
                 //generate PDF and generate view that shows that PDF instead of redirect to index
-                string url = Server.MapPath("~/PDFs/") + "CVTest.pdf";
+                string url = Server.MapPath("~/PDFs/") + resultName;
 
                 PDFHelper helper = new PDFHelper();
 

@@ -11,44 +11,38 @@ namespace ResumeStripper.Models
     {
         [Key]
         public int ID { get; set; }
+        [MaxLength(100)]
         [Required]
-        [StringLength(100)]
         public string Name { get; set; }
-        [StringLength(10)]
+        [MaxLength(10)]
         public string Prefix { get; set; }
+        [MaxLength(100)]
         [Required]
-        [StringLength(100)]
         public string Surname { get; set; }
         [Required]
-        [StringLength(20)]
+        [MaxLength(20)]
         public string Residence { get; set; }
         [Required]
-        [StringLength(20)]
+        [MaxLength(20)]
         public string Country { get; set; }
         [Column("DateOfBirth")]
         public DateTime DateOfBirth { get; set; }
-        //[ForeignKey("License")]
-        //public List<int> LicenseCategoryIds { get; set; }
         //List of license enum, since a person can have multiple licenses, can be null
         public virtual List<License> Licenses { get; set; }
+        [MaxLength(20000)]
         public string Profile { get; set; }
         public virtual List<EducationExperience> Educations { get; set; }
         public virtual List<WorkExperience> WorkExperiences { get; set; }
         public virtual List<CourseExperience> Courses { get; set; }
-        //[ForeignKey("Language")]
-        //public List<int> LanguageIds { get; set; }
         public virtual List<Language> Languages { get; set; }
         public virtual List<Competence> Competences { get; set; }
-        //[ForeignKey("Competence")]
-        //public List<int> CompetenceIds { get; set; }
         public virtual List<Hobby> Hobbies { get; set; }
-        //[ForeignKey("Hobby")]
-        //public List<int> HobbyIds { get; set; }
         public virtual List<SidelineExperience> SideLines { get; set; }
         public virtual List<Reference> References { get; set; }
-        //[ForeignKey("Skill")]
-        //public List<int> SkillIds { get; set; }
         public virtual List<Skill> Skills { get; set; }
+
+        [NotMapped]
+        public bool IsAnonymous { get; set; }
 
         public CV()
         {
@@ -64,14 +58,10 @@ namespace ResumeStripper.Models
             Skills = new List<Skill>();
         }
 
-        public CV GetAnonymousCV()
+        public void setAnonymousCV()
         {
-            //creates a CV without the name of the person and returns it
-            CV a = this;
-            a.Name = String.Empty;
-            a.Prefix = String.Empty;
-            a.Surname = String.Empty;
-            return a;
+            //sets bool to true
+            IsAnonymous = true;
         }
     }
 }

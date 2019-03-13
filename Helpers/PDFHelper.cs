@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.IO;
-using System.Security.Cryptography;
-using Codaxy.WkHtmlToPdf;
-using PdfExtract;
-using SautinSoft;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using Bytescout.PDFExtractor;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using System.Text;
+﻿using Codaxy.WkHtmlToPdf;
 using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
+using System;
+using System.Web;
 
 namespace ResumeStripper.Helpers
 {
@@ -116,7 +104,10 @@ namespace ResumeStripper.Helpers
 
         public void GetPDF(string url, CV cv)
         {
-            string template = getTemplate();
+            string headerPath = HttpContext.Current.Server.MapPath("~/Content/img/Header.png");
+            string footerPath = HttpContext.Current.Server.MapPath("~/Content/img/footer.png");
+
+            string template = getTemplate(headerPath, footerPath);
 
             foreach (EducationExperience e in cv.Educations)
             {
@@ -258,33 +249,42 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[COMPETENCENAME]", e.Name);
             }
 
-            if (cv.Name != null && cv.Name != "")
+            if (!cv.IsAnonymous)
             {
-                template = template.Replace("[FIRST]", cv.Name);
-            }
-            else
-            {
-                template = template.Replace(@"<p>First Name: [FIRST] </p>", "");
-            }
+                //not anonymous CV
+                if (cv.Name != null && cv.Name != "")
+                {
+                    template = template.Replace("[FIRST]", cv.Name);
+                }
+                else
+                {
+                    template = template.Replace(@"<p>First Name: [FIRST]</p>", "");
+                }
 
-            if (cv.Prefix != null && cv.Prefix != "")
-            {
-                template = template.Replace("[PRE]", cv.Prefix);
-            }
-            else
-            {
-                template = template.Replace("[PRE]", "");
-                template = template.Replace("Prefix: ", "");
-            }
+                if (cv.Prefix != null && cv.Prefix != "")
+                {
+                    template = template.Replace("[PRE]", cv.Prefix);
+                }
+                else
+                {
+                    template = template.Replace(@"<p>Prefix: [PRE]</p>", "");
+                }
 
-            if (cv.Surname != null && cv.Surname != "")
+                if (cv.Surname != null && cv.Surname != "")
+                {
+                    template = template.Replace("[LAST]", cv.Surname);
+                }
+                else
+                {
+                    template = template.Replace(@"<p>Last Name: [LAST]</p>", "");
+                }
+            } else
             {
-                template = template.Replace("[LAST]", cv.Surname);
-            }
-            else
-            {
-                template = template.Replace("[LAST]", "");
-                template = template.Replace("Last Name: ", "");
+                //anonymous CV, hide names
+                template = template.Replace("CV [FIRST] [PRE] [LAST]", "CV");
+                template = template.Replace(@"<p>First Name: [FIRST]</p>", "");
+                template = template.Replace(@"<p>Prefix: [PRE]</p>", "");
+                template = template.Replace(@"<p>Last Name: [LAST]</p>", "");
             }
 
             if (cv.Residence != null && cv.Residence != "")
@@ -293,7 +293,7 @@ namespace ResumeStripper.Helpers
             }
             else
             {
-                template = template.Replace(@"<p>Residence: [RESIDENCE] </p>", "");
+                template = template.Replace(@"<p>Residence: [RESIDENCE]</p>", "");
             }
 
             if (cv.Country != null && cv.Country != "")
@@ -302,16 +302,16 @@ namespace ResumeStripper.Helpers
             }
             else
             {
-                template = template.Replace(@"<p>Country: [COUNTRY] </p>", "");
+                template = template.Replace(@"<p>Country: [COUNTRY]</p>", "");
             }
 
-            if (cv.DateOfBirth != null)
+            if (cv.DateOfBirth != null && cv.DateOfBirth != DateTime.MinValue)
             {
                 template = template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
             }
-            else
+            else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
             {
-                template = template.Replace(@"<p>Date of Birth: [DOB] </p>", "");
+                template = template.Replace(@"<p>Date of Birth: [DOB]</p>", "");
             }
 
             string licenses = "";
@@ -341,54 +341,56 @@ namespace ResumeStripper.Helpers
             }
             else
             {
-                template = template.Replace("Profile: ", "");
-                template = template.Replace("[PROFILE]", "");
+                template = template.Replace(@"<br />
+                                    <p>Profile: <br />
+                                        [PROFILE]
+                                    </p>", "");
             }
 
             //removes fields based on if elements exist or not
             if (!hasEducation)
             {
-                template = template.Replace(@"<h2>Educations</h2>", "");
+                template = template.Replace(@"<h2><u>Educations</u></h2>", "");
             }
 
             if (!hasWork)
             {
-                template = template.Replace(@"<h2>Work Experiences</h2>", "");
+                template = template.Replace(@"<h2><u>Work Experiences</u></h2>", "");
             }
 
             if (!hasCourse)
             {
-                template = template.Replace(@"<h2>Courses</h2>", "");
+                template = template.Replace(@"<h2><u>Courses</u></h2>", "");
             }
 
             if (!hasSideline)
             {
-                template = template.Replace(@"<h2>Sidelines</h2>", "");
+                template = template.Replace(@"<h2><u>Sidelines</u></h2>", "");
             }
 
             if (!hasLanguage)
             {
-                template = template.Replace(@"<h2>Languages</h2>", "");
+                template = template.Replace(@"<h2><u>Languages</u></h2>", "");
             }
 
             if (!hasSkill)
             {
-                template = template.Replace(@"<h2>Skills</h2>", "");
+                template = template.Replace(@"<h2><u>Skills</u></h2>", "");
             }
 
             if (!hasHobby)
             {
-                template = template.Replace(@"<h2>Hobbies</h2>", "");
+                template = template.Replace(@"<h2><u>Hobbies</u></h2>", "");
             }
 
             if (!hasCompetence)
             {
-                template = template.Replace(@"<h2>Competences</h2>", "");
+                template = template.Replace(@"<h2><u>Competences</u></h2>", "");
             }
 
             if (!hasReference)
             {
-                template = template.Replace(@"<h2>References</h2>", "");
+                template = template.Replace(@"<h2><u>References</u></h2>", "");
             }
 
             template = template.Replace("[EROW]", "");
@@ -413,13 +415,17 @@ namespace ResumeStripper.Helpers
 
             //just cleanup of empty paragraphs if any
             template = template.Replace("<p></p>", "");
+            template = template.Replace("<p> </p>", "");
+
+            string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
+            string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
 
             PdfConvert.ConvertHtmlToPdf(new Codaxy.WkHtmlToPdf.PdfDocument
             {
                 Html = template,
-                HeaderLeft = "[title]",
-                HeaderRight = "[date] [time]",
-                FooterCenter = "Page [page] of [topage]"
+                HeaderUrl = headUrl,
+                FooterUrl = footUrl
+                //HeaderRight = "Page [page] of [topage]"
             },
             new PdfOutput
             {
@@ -427,71 +433,31 @@ namespace ResumeStripper.Helpers
             });
         }
 
-        public string getTextFromPdf(string path, string fileName)
+        public string getImgHtml(string path)
         {
-            string plainText = "";
-            //string filename = "";
-
-            //if (fileName.Contains(":"))
-            //{
-            //    //edge filename
-            //    filename = Path.GetFileName(fileName);
-            //} else
-            //{
-            //    filename = fileName;
-            //}
-
-
-
-            //using (var pdfStream = File.OpenRead(path))
-            //using (var extractor = new Extractor())
-            //{
-            //    plainText = extractor.ExtractToString(pdfStream);
-            //}
-
-
-
-            return plainText;
+            string htmlImgBegin = @"<img style=""width=100%;height:100%;object-fit:cover;"" alt=""HEADERLOGO"" src=""";
+            string htmlImgEnd = @"""/>";
+            return htmlImgBegin + path + htmlImgEnd;
         }
 
-        public string GetText(string path)
+        public string getTemplate(string headerUrl, string footerUrl)
         {
-            string plainText = "";
+            Base64Converter converter = new Base64Converter();
+            string header64 = converter.ImageToBase64(headerUrl);
+            string footer64 = converter.ImageToBase64(footerUrl);
 
-            using (var pdfStream = File.OpenRead(path))
-            using (var extractor = new Extractor())
-            {
-                plainText = extractor.ExtractToString(pdfStream);
-            }
-            return plainText;
-        }
-
-        public string GetHTMLText(string path)
-        {
-            PdfFocus f = new PdfFocus();
-            f.OpenPdf(path);
-            f.HtmlOptions.PreserveImages = true;
-            f.HtmlOptions.IncludeImageInHtml = true;
-            //f.HtmlOptions.SingleFontFamily = "Arial";
-
-            string result = f.ToHtml().ToString();
-            string fix = Regex.Replace(result, @"\s+", " ");
-
-            return fix;
-
-        }
-
-        public string getTemplate()
-        {
             string template = @"<html>
+                                <style>html {color:OrangeRed;} body{margin-top:150px;margin-bottom:50px;} h2 {font-size: 32px;} p {font-size: 21px;} h1 {font-size: 40px;} #footer{position:fixed;bottom:0;}.keep-together {page-break-inside: avoid;}.break-before {page-break-before: always;}.break-after {page-break-after: always;}</style>
                                 <head>
-                                    <h1>CV [FIRST] [PRE] [LAST]</h1>
                                 </head>
-                                <body>
+                                    <body>
+                                    <h1>CV [FIRST] [PRE] [LAST]</h1>
                                     <br />
                                     <br />
-                                    <p> First Name: [FIRST] </p>
-                                    <p> Prefix: [PRE]</p>
+                                    <div class=""keep-together"">
+                                    <h2><u>Personalia</u></h2>
+                                    <p>First Name: [FIRST]</p>
+                                    <p>Prefix: [PRE]</p>
                                     <p>Last Name: [LAST]</p>
                                     <p>Residence: [RESIDENCE]</p>
                                     <p>Country: [COUNTRY]</p>
@@ -501,53 +467,54 @@ namespace ResumeStripper.Helpers
                                     <p>Profile: <br />
                                         [PROFILE]
                                     </p>
+                                    </div>
                                     <br />
-                                    <div id=""EducationDiv"">
-                                        <h2>Educations</h2>
+                                    <div class=""keep-together"" id=""EducationDiv"">
+                                        <h2><u>Educations</u></h2>
                                         [EROW]
                                     </div >
                                     <br />
                                     <div id=""WorkDiv"">
-                                        <h2>Work Experiences</h2>
+                                        <h2><u>Work Experiences</u></h2>
                                         [WROW]
                                     </div>
                                     <br />
-                                    <div id=""CourseDiv"">
-                                        <h2>Courses</h2>
+                                    <div class=""keep-together""  id=""CourseDiv"">
+                                        <h2><u>Courses</u></h2>
                                         [CROW]
                                     </div>
                                     <br />
-                                    <div id=""SidelineDiv"">
-                                        <h2>Sidelines</h2>
+                                    <div class=""keep-together""  id=""SidelineDiv"">
+                                        <h2><u>Sidelines</u></h2>
                                         [SROW]
                                     </div>
-                                        <br />
-                                    <div id=""LanguageDiv"">
-                                        <h2>Languages</h2>
+                                    <br />
+                                    <div class=""keep-together""  id=""LanguageDiv"">
+                                        <h2><u>Languages</u></h2>
                                         [LROW]
                                     </div>
                                     <br />
-                                    <div id=""SkillDiv"">
-                                         <h2>Skills</h2>
+                                    <div class=""keep-together""  id=""SkillDiv"">
+                                         <h2><u>Skills</u></h2>
                                          [SKROW]
                                     </div>
                                     <br />
-                                    <div id=""HobbyDiv"">
-                                          <h2>Hobbies</h2>
+                                    <div class=""keep-together""  id=""HobbyDiv"">
+                                          <h2><u>Hobbies</u></h2>
                                          [HROW]
                                     </div>
                                     <br />
-                                    <div id=""CompetenceDiv"">
-                                          <h2>Competences</h2>
+                                    <div class=""keep-together""  id=""CompetenceDiv"">
+                                          <h2><u>Competences</u></h2>
                                          [COROW]
                                     </div>
                                     <br />
-                                    <div id=""ReferenceDiv"">
-                                          <h2>References</h2>
+                                    <div class=""keep-together""  id=""ReferenceDiv"">
+                                          <h2><u>References</u></h2>
                                          [RROW]
                                     </div>
                                     </body>
-                                </html>";
+                                    </html>";
             return template;
         }
     }

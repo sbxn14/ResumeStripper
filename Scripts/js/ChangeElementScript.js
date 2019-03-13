@@ -15,8 +15,6 @@
 
 function changeElem(elem) {
     var newText = getSelectionText();
-    console.log(newText);
-    console.log(elem.id);
     if (newText !== null) {
         if (elem.innerHTML !== newText) {
             elem.innerHTML = newText;
@@ -28,16 +26,11 @@ function changeElem(elem) {
         if (elem.id === 'nameLb') document.getElementById("topFirst").innerHTML = "";
         if (elem.id === 'prefixLb') document.getElementById("topPrefix").innerHTML = "";
         if (elem.id === 'surnameLb') document.getElementById("topSur").innerHTML = "";
-        //no selected text so reset
-        alert('no selected text');
-        elem.innerHTML = "leeg";
     }
 }
 
 function changeText(id) {
     var newText = getSelectionText();
-    console.log("selected text = " + "'" + newText + "'!");
-    console.log(id);
 
     if (newText !== "" && newText !== null) {
         $('#' + id).val(newText);

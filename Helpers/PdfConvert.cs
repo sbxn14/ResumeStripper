@@ -136,17 +136,17 @@ namespace Codaxy.WkHtmlToPdf
 
             StringBuilder paramsBuilder = new StringBuilder();
             paramsBuilder.Append("--page-size A4 ");
+            paramsBuilder.Append("--margin-top 15 ");
+            paramsBuilder.Append("--margin-bottom 30 ");
 
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
                 paramsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                paramsBuilder.Append("--margin-top 25 ");
                 paramsBuilder.Append("--header-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
                 paramsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
-                paramsBuilder.Append("--margin-bottom 25 ");
                 paramsBuilder.Append("--footer-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.HeaderLeft))
