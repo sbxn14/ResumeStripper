@@ -273,6 +273,10 @@
     <Compile Include="Migrations\201903131310430_ChangedRequiredOfSomeProperties.Designer.cs">
       <DependentUpon>201903131310430_ChangedRequiredOfSomeProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.cs" />
+    <Compile Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.Designer.cs">
+      <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
@@ -305,13 +309,16 @@
     <Content Include="Content\css\light-bootstrap-dashboard.css" />
     <Content Include="Content\css\pe-icon-7-stroke.css" />
     <Content Include="Content\fonts\Pe-icon-7-stroke.svg" />
+    <Content Include="Content\img\loading.gif" />
+    <Content Include="Content\img\Header.png" />
     <Content Include="Content\img\ehv-talent-logo.png" />
     <Content Include="Content\img\footer.png" />
-    <Content Include="Content\img\Header.png" />
     <Content Include="Content\img\icon-download.PNG" />
     <Content Include="Content\img\icon-upload.PNG" />
     <Content Include="Content\img\logo-glow.png" />
+    <Content Include="Content\img\lol.gif" />
     <Content Include="Content\img\sidebar.jpg" />
+    <Content Include="Content\img\Spinner-1s-200px.gif" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap-filestyle.min.js" />
@@ -333,6 +340,7 @@
     <Content Include="Content\fonts\Pe-icon-7-stroke.ttf" />
     <Content Include="Content\fonts\Pe-icon-7-stroke.woff" />
     <Content Include="libman.json" />
+    <Content Include="Scripts\js\LoadModal.js" />
     <Content Include="Views\Shared\Footer.html" />
     <Content Include="Views\Shared\Header.html" />
     <Content Include="Scripts\bootstrap.min.js.map" />
@@ -427,6 +435,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903131310430_ChangedRequiredOfSomeProperties.resx">
       <DependentUpon>201903131310430_ChangedRequiredOfSomeProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.resx">
+      <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

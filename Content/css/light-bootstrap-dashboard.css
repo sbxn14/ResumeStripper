@@ -89,11 +89,13 @@ h2, .h2 {
 h3, .h3 {
     font-size: 28px;
     margin: 20px 0 10px;
+    color: #ff700d !important;
 }
 
 h4, .h4 {
     font-size: 22px;
     line-height: 30px;
+    color: #ff700d!important;
 }
 
 h5, .h5 {
@@ -612,7 +614,6 @@ fieldset[disabled] .btn.active {
     border-color: #EE7023;
     color: #ffffff;
     background-color: #EE7023;
-
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active,
@@ -2262,7 +2263,7 @@ fieldset[disabled] .btn-neutral.active {
     padding: 15px 15px 10px 15px;
 }
 
-.card .header {
+.card {
     padding: 15px 15px 0;
 }
 

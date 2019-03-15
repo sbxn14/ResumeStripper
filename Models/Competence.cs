@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ResumeStripper.Models
 {
@@ -10,11 +6,11 @@ namespace ResumeStripper.Models
     {
         [Key]
         public int ID { get; set; }
+
         public string Name { get; set; }
 
         public Competence()
         {
-
         }
 
         public Competence(string name)

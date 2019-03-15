@@ -11,8 +11,10 @@ namespace ResumeStripper.Models.Enums
         AM,
         B,
         BE,
+
         [Display(Name = "B+")]
         Bplus,
+
         C,
         CE,
         C1,

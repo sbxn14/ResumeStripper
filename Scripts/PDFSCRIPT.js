@@ -10,10 +10,8 @@ function showPDF(url) {
 
             // Loop from 1 to total_number_of_pages in PDF document
             for (var i = 1; i <= pdf.numPages; i++) {
-
                 // Get desired page
                 pdf.getPage(i).then(function (page) {
-
                     var scale = 1.1;
                     var viewport = page.getViewport(scale);
                     var div = document.createElement("div");

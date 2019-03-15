@@ -29,7 +29,6 @@ namespace ResumeStripper.Helpers
             return data;
         }
 
-
         public string Encrypt(string word)
         {
             //size of hash, can be changed

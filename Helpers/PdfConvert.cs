@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
-using System.Web;
-using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading;
 
 namespace Codaxy.WkHtmlToPdf
 {
     public class PdfConvertException : Exception
     {
-        public PdfConvertException(String msg) : base(msg) { }
+        public PdfConvertException(String msg) : base(msg)
+        {
+        }
     }
 
     public class PdfConvertTimeoutException : PdfConvertException
     {
-        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.") { }
+        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.")
+        {
+        }
     }
 
     public class PdfOutput
@@ -57,7 +60,7 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfConvert
     {
-        static PdfConvertEnvironment _e;
+        private static PdfConvertEnvironment _e;
 
         public static PdfConvertEnvironment Environment
         {
@@ -179,7 +182,6 @@ namespace Codaxy.WkHtmlToPdf
             if (!string.IsNullOrEmpty(document.FooterFontName))
                 paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
-
             if (document.ExtraParams != null)
                 foreach (var extraParam in document.ExtraParams)
                     paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
@@ -274,7 +276,6 @@ namespace Codaxy.WkHtmlToPdf
                     }
                 }
 
-
                 if (woutput.OutputStream != null)
                 {
                     using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
@@ -292,7 +293,6 @@ namespace Codaxy.WkHtmlToPdf
                     byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
                     woutput.OutputCallback(document, pdfFileBytes);
                 }
-
             }
             finally
             {

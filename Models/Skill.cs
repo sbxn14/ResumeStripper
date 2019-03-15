@@ -7,7 +7,6 @@
 
         public Skill()
         {
-
         }
 
         public Skill(string name)

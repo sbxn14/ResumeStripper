@@ -10,7 +10,6 @@
         text = document.selection.createRange().text;
     }
     return $.trim(text);
-
 }
 
 function changeElem(elem) {

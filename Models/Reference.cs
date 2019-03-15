@@ -15,7 +15,6 @@
 
         public Reference()
         {
-
         }
 
         public Reference(string name, string companyName, string jobTitle, string email, string phoneNumber)

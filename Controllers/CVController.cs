@@ -1,15 +1,12 @@
 ﻿using ResumeStripper.DAL;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models;
+using ResumeStripper.Models.Enums;
 using ResumeStripper.Models.Viewmodels;
-using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Collections.Generic;
-using System;
 
 namespace ResumeStripper.Controllers
 {
@@ -86,10 +83,47 @@ namespace ResumeStripper.Controllers
             if (model.ResultCv != null)
             {
                 CV cv = model.ResultCv;
-                db.CVS.Add(cv);
-                db.SaveChanges();
+                //removes any accidental whitespaces at beginning and end of every value in the CV
+                cv.TrimEverything();
 
-                if(submitter.Equals("Generate Anonymous CV"))
+                foreach (Language l in cv.Languages)
+                {
+                    if (!l.LevelOfListening.Equals(LanguageLevel.Basic) && !l.LevelOfSpeaking.Equals(LanguageLevel.Basic) && !l.LevelOfWriting.Equals(LanguageLevel.Basic))
+                    {
+                        //probably using simple mode
+                        if (!l.Level.Equals(LanguageLevel.Basic))
+                        {
+                            //simple mode was used
+                            l.isSimple = true;
+                        }
+                        else
+                        {
+                            l.isSimple = false;
+                        }
+                    }
+                    else
+                    {
+                        l.isSimple = false;
+                    }
+                }
+
+                try
+                {
+                    db.CVS.Add(cv);
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            System.Console.WriteLine("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
+                }
+
+                if (submitter.Equals("Generate Anonymous CV"))
                 {
                     //requires anonymous PDF
                     cv.setAnonymousCV();
@@ -97,13 +131,15 @@ namespace ResumeStripper.Controllers
 
                 string resultName = "";
 
-                if(cv.IsAnonymous)
+                if (cv.IsAnonymous)
                 {
                     //cv is anonymous
-                    resultName = "AnonymousCV_" + cv.ID + ".pdf";
-                } else
+                    resultName = "CV_User_" + cv.ID + "_EHV.pdf";
+                }
+                else
                 {
-                    resultName = "CV_" + cv.ID + ".pdf";
+                    if (cv.Prefix == "") resultName = "CV_" + cv.Name + "_" + cv.Surname + "_EHV.pdf";
+                    else resultName = "CV_" + cv.Name + "_" + cv.Prefix + "_" + cv.Surname + "_EHV.pdf";
                 }
 
                 //generate PDF and generate view that shows that PDF instead of redirect to index
@@ -111,9 +147,17 @@ namespace ResumeStripper.Controllers
 
                 PDFHelper helper = new PDFHelper();
 
-                helper.GetPDF(url, cv);
+                byte[] newPdf = helper.GetPDF(url, cv);
+                TempData["bytes"] = newPdf;
+                return RedirectToAction("Download");
             }
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Download()
+        {
+            byte[] thePdf = (byte[]) TempData["bytes"];
+            return File(thePdf, "application/pdf");
         }
 
         protected override void Dispose(bool disposing)

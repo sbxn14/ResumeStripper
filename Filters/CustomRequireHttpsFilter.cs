@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ResumeStripper.Filters
@@ -11,8 +8,8 @@ namespace ResumeStripper.Filters
         protected override void HandleNonHttpsRequest(AuthorizationContext filterContext)
         {
             // The base only redirects GET, but we added HEAD as well. This avoids exceptions for bots crawling using HEAD.
-            // The other requests will throw an exception to ensure the correct verbs are used. 
-            // We fall back to the base method as the mvc exceptions are marked as internal. 
+            // The other requests will throw an exception to ensure the correct verbs are used.
+            // We fall back to the base method as the mvc exceptions are marked as internal.
 
             if (!String.Equals(filterContext.HttpContext.Request.HttpMethod, "GET", StringComparison.OrdinalIgnoreCase)
                 && !String.Equals(filterContext.HttpContext.Request.HttpMethod, "HEAD", StringComparison.OrdinalIgnoreCase))

@@ -2,113 +2,103 @@
 using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System;
+using System.IO;
 using System.Web;
 
 namespace ResumeStripper.Helpers
 {
     public class PDFHelper
     {
-        bool hasEducation = false;
-        bool hasWork = false;
-        bool hasCourse = false;
-        bool hasSideline = false;
-        bool hasLanguage = false;
-        bool hasSkill = false;
-        bool hasHobby = false;
-        bool hasReference = false;
-        bool hasCompetence = false;
+        private bool hasEducation = false;
+        private bool hasWork = false;
+        private bool hasCourse = false;
+        private bool hasSideline = false;
+        private bool hasLanguage = false;
+        private bool hasSkill = false;
+        private bool hasHobby = false;
+        private bool hasReference = false;
+        private bool hasCompetence = false;
 
-        const string EducationPiece =
+        private const string EducationPiece =
             @"<div class=""EduRow"">
-            <p>Name Education: [EDUCATIONNAME]</p>
-            <p>Level of Education: [EDUCATIONLEVEL]</p>
-            <p>Name Institute: [INSTITUTENAME]</p>
-            <p>Location Institute: [INSTITUTELOCATION]</p>
-            <p>Begin Date: [EDUBEGIN]</p>
-            <p>End Date: [EDUEND]</p>
-            <p>Diploma: [EDUDIPLOMA]</p>
+            <span><b>Name Education:</b> [EDUCATIONNAME]</span>
+            <span><b>Level of Education:</b> [EDUCATIONLEVEL]</span>
+            <span><b>Name Institute:</b> [INSTITUTENAME]</span>
+            <span><b>Location Institute:</b> [INSTITUTELOCATION]</span>
+            <span><b>Begin Date:</b> [EDUBEGIN]</span>
+            <span><b>End Date:</b> [EDUEND]</span>
+            <span><b>Diploma:</b> [EDUDIPLOMA]</span>
             </div>
             <br />
             [EROW]";
-        const string WorkPiece =
+
+        private const string WorkPiece =
             @"<div class=""WorkRow"">
-            <p>Job Title: [WORKJOB]</p>
-            <p>Name Company: [COMPANYNAME]</p>
-            <p>Location Company: [COMPANYLOCATION]</p>
-            <p>Task Description: <br />[WORKDESCRIPTION]</p>
-            <p>Begin Date: [WORKBEGIN]</p>
-            <p>End Date: [WORKEND]</p>
+            <span><b>Job Title:</b> [WORKJOB]</span>
+            <span><b>Name Company:</b> [COMPANYNAME]</span>
+            <span><b>Location Company:</b> [COMPANYLOCATION]</span>
+            <span><b>Task Description:</b> <br />[WORKDESCRIPTION]</span>
+            <span><b>Begin Date:</b> [WORKBEGIN]</span>
+            <span><b>End Date:</b> [WORKEND]</span>
             </div>
             <br />
             [WROW]";
-        const string CoursePiece =
+
+        private const string CoursePiece =
             @"<div class=""CourseRow"">
-            <p>Name Course: [COURSENAME]</p>
-            <p>Name Institute: [COURSEINSTITUTENAME]</p>
-            <p>Location Institute: [COURSEINSTITUTELOCATION]</p>
-            <p>Year: [COURSEYEAR]</p>
-            <p>Diploma: [COURSECERTIFICATE]</p>
+            <span><b>Name Course:</b> [COURSENAME]</span>
+            <span><b>Name Institute:</b> [COURSEINSTITUTENAME]</span>
+            <span><b>Location Institute:</b> [COURSEINSTITUTELOCATION]</span>
+            <span><b>Year:</b> [COURSEYEAR]</span>
+            <span><b>Diploma:</b> [COURSECERTIFICATE]</span>
             </div>
             <br />
             [CROW]";
-        const string SidelinePiece =
+
+        private const string SidelinePiece =
             @"<div class=""SidelineRow"">
-            <p>Job Title: [SIDELINEJOB]</p>
-            <p>Name Company: [ORGANIZATIONNAME]</p>
-            <p>Location Company: [ORGANIZATIONLOCATION]</p>
-            <p>Task Description: <br />[SIDELINEDESCRIPTION]</p>
-            <p>Begin Date: [SIDELINEBEGIN]</p>
-            <p>End Date: [SIDELINEEND]</p>
+            <span><b>Job Title:</b> [SIDELINEJOB]</span>
+            <span><b>Name Company:</b> [ORGANIZATIONNAME]</span>
+            <span><b>Location Company:</b> [ORGANIZATIONLOCATION]</span>
+            <span><b>Task Description:</b> <br />[SIDELINEDESCRIPTION]</span>
+            <span><b>Begin Date:</b> [SIDELINEBEGIN]</span>
+            <span><b>End Date:</b> [SIDELINEEND]</span>
             </div>
             <br />
             [SROW]";
-        const string LanguagePiece =
+
+        private const string LanguagePiece =
             @"<div class=""LanguageRow"">
-            <p>Name: [LANGUAGENAME]</p>
-            <p>Level: [LANGLEVEL]</p>
-            <p>Level of Speaking: [LANGSPEAK]</p>
-            <p>Level of Listening: [LANGLISTEN]</p>
-            <p>Level of Writing: [LANGWRITE]</p>
+            <span><b>Name:</b> [LANGUAGENAME]</span>
+            <span><b>Level:</b> [LANGLEVEL]</span>
+            <span><b>Level of Speaking:</b> [LANGSPEAK]</span>
+            <span><b>Level of Listening:</b> [LANGLISTEN]</span>
+            <span><b>Level of Writing:</b> [LANGWRITE]</span>
             </div>
             <br />
             [LROW]";
-        const string SkillPiece =
-            @"<div class=""SkillRow"">
-            <p>Name: [SKILLNAME]</p>
-            </div>
-            <br />
-            [SKROW]";
-        const string HobbyPiece =
-            @"<div class=""HobbyRow"">
-            <p>Name: [HOBBYNAME]</p>
-            </div>
-            <br />
-            [HROW]";
-        const string CompetencePiece =
-            @"<div class=""CompetenceRow"">
-            <p>Name: [COMPETENCENAME]</p>
-            </div>
-            <br />
-            [COROW]";
-        const string ReferencePiece =
+
+        private const string ReferencePiece =
             @"<div class=""ReferenceRow"">
-            <p>Name: [REFERENCENAME]</p>
-            <p>Company Name: [REFERENCECOMPANYNAME]</p>
-            <p>Job Title: [REFERENCEJOBTITLE]</p>
-            <p>Emailaddress: [REFERENCEEMAIL]</p>
-            <p>Phone Number: [REFERENCEPHONE]</p>
+            <span><b>Name:</b> [REFERENCENAME]</span>
+            <span><b>Company Name:</b> [REFERENCECOMPANYNAME]</span>
+            <span><b>Job Title:</b> [REFERENCEJOBTITLE]</span>
+            <span><b>Emailaddress:</b> [REFERENCEEMAIL]</span>
+            <span><b>Phone Number:</b> [REFERENCEPHONE]</span>
             </div>
             <br />
             [RROW]";
 
+        private string skills = "";
+        private string licenses = "";
+        private string hobbies = "";
+        private string competences = "";
 
-        public void GetPDF(string url, CV cv)
+        public byte[] GetPDF(string url, CV cv)
         {
-            string headerPath = HttpContext.Current.Server.MapPath("~/Content/img/Header.png");
-            string footerPath = HttpContext.Current.Server.MapPath("~/Content/img/footer.png");
+            string template = getTemplate();
 
-            string template = getTemplate(headerPath, footerPath);
-
+            //EDUCATIONS
             foreach (EducationExperience e in cv.Educations)
             {
                 hasEducation = true;
@@ -136,6 +126,7 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[EDUDIPLOMA]", result);
             }
 
+            //WORK EXPERIENCES
             foreach (WorkExperience e in cv.WorkExperiences)
             {
                 hasWork = true;
@@ -151,6 +142,7 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[WORKEND]", e.EndDate.Date.ToShortDateString());
             }
 
+            //COURSES
             foreach (CourseExperience e in cv.Courses)
             {
                 hasCourse = true;
@@ -176,6 +168,7 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[COURSECERTIFICATE]", result);
             }
 
+            //SIDELINES
             foreach (SidelineExperience e in cv.SideLines)
             {
                 hasSideline = true;
@@ -191,30 +184,86 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[SIDELINEEND]", e.EndDate.Date.ToShortDateString());
             }
 
+            //LANGUAGES
             foreach (Language e in cv.Languages)
             {
                 hasLanguage = true;
                 //add piece to template
                 template = template.Replace("[LROW]", LanguagePiece);
 
+                //capitalizes first letter
+                char[] a = e.Name.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                e.Name = new string(a);
+
                 //replace all parts with CV information
                 template = template.Replace("[LANGUAGENAME]", e.Name);
-                template = template.Replace("[LANGLEVEL]", e.Level.ToString());
-                template = template.Replace("[LANGSPEAK]", e.LevelOfSpeaking.ToString());
-                template = template.Replace("[LANGLISTEN]", e.LevelOfListening.ToString());
-                template = template.Replace("[LANGWRITE]", e.LevelOfWriting.ToString());
+
+                if (e.isSimple)
+                {
+                    string type = e.Level.ToString();
+                    //simple mode used, only display Level
+
+                    if (type.Equals("VeryGood"))
+                    {
+                        type = "Very Good";
+                    }
+
+                    template = template.Replace("[LANGLEVEL]", type);
+                    //empty others
+                    template = template.Replace(@"<p><b>Level of Speaking:</b> [LANGSPEAK]</p>", "");
+                    template = template.Replace(@"<p><b>Level of Writing:</b> [LANGWRITE]</p>", "");
+                    template = template.Replace(@"<p><b>Level of Listening:</b> [LANGLISTEN]</p>", "");
+                }
+                else
+                {
+                    //detailed mode used, only display seperate levels
+
+                    string typeSpeak = e.LevelOfSpeaking.ToString();
+                    string typeWrite = e.LevelOfWriting.ToString();
+                    string typeListen = e.LevelOfListening.ToString();
+
+                    if (typeSpeak.Equals("VeryGood"))
+                    {
+                        typeSpeak = "Very Good";
+                    }
+                    else if (typeWrite.Equals("VeryGood"))
+                    {
+                        typeWrite = "Very Good";
+                    }
+                    else if (typeListen.Equals("VeryGood"))
+                    {
+                        typeListen = "Very Good";
+                    }
+
+                    template = template.Replace("[LANGSPEAK]", typeSpeak);
+                    template = template.Replace("[LANGLISTEN]", typeListen);
+                    template = template.Replace("[LANGWRITE]", typeWrite);
+                    //empty level
+                    template = template.Replace(@"<p><b>Level:</b> [LANGLEVEL]</p>", "");
+                }
             }
 
+            //SKILLS
             foreach (Skill e in cv.Skills)
             {
                 hasSkill = true;
-                //add piece to template
-                template = template.Replace("[SKROW]", SkillPiece);
 
-                //replace all parts with CV information
-                template = template.Replace("[SKILLNAME]", e.Name);
+                //capitalizes first letter
+                char[] a = e.Name.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                e.Name = new string(a);
+
+                skills += e.Name + ", ";
             }
 
+            //removes spare ', '
+            skills = skills.TrimEnd(' ');
+            skills = skills.TrimEnd(',');
+
+            template = template.Replace("[SKILLNAME]", skills);
+
+            //REFERENCES
             foreach (Reference e in cv.References)
             {
                 hasReference = true;
@@ -229,99 +278,179 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[REFERENCEPHONE]", e.PhoneNumber);
             }
 
+            //HOBBIES
             foreach (Hobby e in cv.Hobbies)
             {
                 hasHobby = true;
-                //add piece to template
-                template = template.Replace("[HROW]", HobbyPiece);
 
-                //replace all parts with CV information
-                template = template.Replace("[HOBBYNAME]", e.Name);
+                //capitalizes first letter
+                char[] a = e.Name.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                e.Name = new string(a);
+
+                hobbies += e.Name + ", ";
             }
 
+            //removes spare ', '
+            hobbies = hobbies.TrimEnd(' ');
+            hobbies = hobbies.TrimEnd(',');
+
+            template = template.Replace("[HOBBYNAME]", hobbies);
+
+            //COMPETENCES
             foreach (Competence e in cv.Competences)
             {
                 hasCompetence = true;
-                //add piece to template
-                template = template.Replace("[COROW]", CompetencePiece);
 
-                //replace all parts with CV information
-                template = template.Replace("[COMPETENCENAME]", e.Name);
+                //capitalizes first letter
+                char[] a = e.Name.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                e.Name = new string(a);
+
+                competences += e.Name + ", ";
             }
+
+            //removes spare ', '
+            competences = competences.TrimEnd(' ');
+            competences = competences.TrimEnd(',');
+
+            template = template.Replace("[COMPETENCENAME]", competences);
 
             if (!cv.IsAnonymous)
             {
-                //not anonymous CV
+                //NOT ANONYMOUS CV SO PRINT NAMES
                 if (cv.Name != null && cv.Name != "")
                 {
+                    //capitalizes first letter
+                    char[] a = cv.Name.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    cv.Name = new string(a);
+
                     template = template.Replace("[FIRST]", cv.Name);
                 }
                 else
                 {
-                    template = template.Replace(@"<p>First Name: [FIRST]</p>", "");
+                    template = template.Replace(@"<span><b>First Name:</b></span>
+                                                    <br />", "");
+                    template = template.Replace(@"<span class=""answer"">[FIRST]</span>
+                                                    <br />", "");
                 }
 
                 if (cv.Prefix != null && cv.Prefix != "")
                 {
+                    //capitalizes first letter
+                    char[] a = cv.Prefix.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    cv.Prefix = new string(a);
+
                     template = template.Replace("[PRE]", cv.Prefix);
                 }
                 else
                 {
-                    template = template.Replace(@"<p>Prefix: [PRE]</p>", "");
+                    template = template.Replace(@"<span><b>Prefix:</b></span>
+                                                    <br />", "");
+                    template = template.Replace(@"<span class=""answer"">[PRE]</span>
+                                                    <br />", "");
                 }
 
                 if (cv.Surname != null && cv.Surname != "")
                 {
+                    //capitalizes first letter
+                    char[] a = cv.Surname.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    cv.Surname = new string(a);
+
                     template = template.Replace("[LAST]", cv.Surname);
                 }
                 else
                 {
-                    template = template.Replace(@"<p>Last Name: [LAST]</p>", "");
+                    template = template.Replace(@"<span><b>Last Name:</b></span>
+                                                    <br />", "");
+                    template = template.Replace(@"<span class=""answer"">[LAST]</span>
+                                                    <br />", "");
                 }
-            } else
+            }
+            else
             {
-                //anonymous CV, hide names
-                template = template.Replace("CV [FIRST] [PRE] [LAST]", "CV");
-                template = template.Replace(@"<p>First Name: [FIRST]</p>", "");
-                template = template.Replace(@"<p>Prefix: [PRE]</p>", "");
-                template = template.Replace(@"<p>Last Name: [LAST]</p>", "");
+                //ANONYMOUS CV SO HIDE NAMES
+                template = template.Replace(@"[FIRST] [PRE] [LAST]", "Curriculum vitae");
+                template = template.Replace(@"<h4 class=""CVTitle""><i>Curriculum vitae</i></h4>", "");
+                template = template.Replace(@"<span><b>First Name:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[FIRST]</span>
+                                                    <br />", "");
+                template = template.Replace(@"<span><b>Prefix:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[PRE]</span>
+                                                    <br />", "");
+                template = template.Replace(@"<span><b>Last Name:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[LAST]</span>
+                                                    <br />", "");
             }
 
+            //RESIDENCE
             if (cv.Residence != null && cv.Residence != "")
             {
+                //capitalizes first letter
+                char[] a = cv.Residence.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                cv.Residence = new string(a);
+
                 template = template.Replace("[RESIDENCE]", cv.Residence);
             }
             else
             {
-                template = template.Replace(@"<p>Residence: [RESIDENCE]</p>", "");
+                template = template.Replace(@"<span><b>Residence:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[RESIDENCE]</span>
+                                                    <br />", "");
             }
 
+            //COUNTRY
             if (cv.Country != null && cv.Country != "")
             {
+                //capitalizes first letter
+                char[] a = cv.Country.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                cv.Country = new string(a);
                 template = template.Replace("[COUNTRY]", cv.Country);
             }
             else
             {
-                template = template.Replace(@"<p>Country: [COUNTRY]</p>", "");
+                template = template.Replace(@"<span><b>Country:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[COUNTRY]</span>
+                                                    <br />", "");
             }
 
+            //DATE OF BIRTH
             if (cv.DateOfBirth != null && cv.DateOfBirth != DateTime.MinValue)
             {
                 template = template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
             }
             else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
             {
-                template = template.Replace(@"<p>Date of Birth: [DOB]</p>", "");
+                template = template.Replace(@"<span><b>Date of Birth:</b></span>
+                                                    <br />", "");
+                template = template.Replace(@"<span class=""answer"">[DOB]</span>
+                                                    <br />", "");
             }
 
-            string licenses = "";
-
+            //LICENSES
             if (cv.Licenses.Count != 0)
             {
                 //adds all licenses to 1 string
                 foreach (License l in cv.Licenses)
                 {
-                    licenses += l.Type.ToString() + ", ";
+                    string type = l.Type.ToString();
+
+                    if (type.Equals("Bplus"))
+                    {
+                        type = "B+";
+                    }
+
+                    licenses += type + ", ";
                 }
                 //removes extra spaces and comma's at end
                 licenses = licenses.TrimEnd(' ');
@@ -335,62 +464,67 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[LICENSE]", "None");
             }
 
+            //PROFILE
             if (cv.Profile != "" && cv.Profile != null)
             {
+                //capitalizes first letter
+                char[] a = cv.Profile.ToCharArray();
+                a[0] = char.ToUpper(a[0]);
+                cv.Profile = new string(a);
                 template = template.Replace("[PROFILE]", cv.Profile);
             }
             else
             {
                 template = template.Replace(@"<br />
-                                    <p>Profile: <br />
-                                        [PROFILE]
-                                    </p>", "");
+                                                <span><b>Profile:</b></span>
+                                                <br />
+                                                <span class=""answer"">[PROFILE]</span>", "");
             }
 
             //removes fields based on if elements exist or not
             if (!hasEducation)
             {
-                template = template.Replace(@"<h2><u>Educations</u></h2>", "");
+                template = template.Replace(@"<h2><b>Educations</b></h2>", "");
             }
 
             if (!hasWork)
             {
-                template = template.Replace(@"<h2><u>Work Experiences</u></h2>", "");
+                template = template.Replace(@"<h2><b>Work Experiences</b></h2>", "");
             }
 
             if (!hasCourse)
             {
-                template = template.Replace(@"<h2><u>Courses</u></h2>", "");
+                template = template.Replace(@"<h2><b>Courses</b></h2>", "");
             }
 
             if (!hasSideline)
             {
-                template = template.Replace(@"<h2><u>Sidelines</u></h2>", "");
+                template = template.Replace(@"<h2><b>Sidelines</b></h2>", "");
             }
 
             if (!hasLanguage)
             {
-                template = template.Replace(@"<h2><u>Languages</u></h2>", "");
+                template = template.Replace(@"<h2><b>Languages</b></h2>", "");
             }
 
             if (!hasSkill)
             {
-                template = template.Replace(@"<h2><u>Skills</u></h2>", "");
+                template = template.Replace(@"<h2><b>Skills</b></h2>", "");
             }
 
             if (!hasHobby)
             {
-                template = template.Replace(@"<h2><u>Hobbies</u></h2>", "");
+                template = template.Replace(@"<h2><b>Hobbies</b></h2>", "");
             }
 
             if (!hasCompetence)
             {
-                template = template.Replace(@"<h2><u>Competences</u></h2>", "");
+                template = template.Replace(@"<h2><b>Competences</b></h2>", "");
             }
 
             if (!hasReference)
             {
-                template = template.Replace(@"<h2><u>References</u></h2>", "");
+                template = template.Replace(@"<h2><b>References</b></h2>", "");
             }
 
             template = template.Replace("[EROW]", "");
@@ -398,24 +532,13 @@ namespace ResumeStripper.Helpers
             template = template.Replace("[CROW]", "");
             template = template.Replace("[SROW]", "");
             template = template.Replace("[LROW]", "");
-            template = template.Replace("[SKROW]", "");
-            template = template.Replace("[HROW]", "");
             template = template.Replace("[RROW]", "");
-            template = template.Replace("[COROW]", "");
-
-            if (!hasLanguage) template = template.Replace(@"<h2>Languages</h2>", "");
-
-            if (!hasSkill) template = template.Replace(@"<h2>Skills</h2>", "");
-
-            if (!hasHobby) template = template.Replace(@"<h2>Hobbies</h2>", "");
-
-            if (!hasReference) template = template.Replace(@"<h2>References</h2>", "");
-
-            if (!hasCompetence) template = template.Replace(@"<h2>Competences</h2>", "");
 
             //just cleanup of empty paragraphs if any
             template = template.Replace("<p></p>", "");
             template = template.Replace("<p> </p>", "");
+            template = template.Replace("<p><b></b></p>", "");
+            template = template.Replace("<p><b> </b></p>", "");
 
             string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
             string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
@@ -425,95 +548,119 @@ namespace ResumeStripper.Helpers
                 Html = template,
                 HeaderUrl = headUrl,
                 FooterUrl = footUrl
-                //HeaderRight = "Page [page] of [topage]"
             },
             new PdfOutput
             {
                 OutputFilePath = url
             });
+
+            return File.ReadAllBytes(url);
         }
 
-        public string getImgHtml(string path)
+        public string getTemplate()
         {
-            string htmlImgBegin = @"<img style=""width=100%;height:100%;object-fit:cover;"" alt=""HEADERLOGO"" src=""";
-            string htmlImgEnd = @"""/>";
-            return htmlImgBegin + path + htmlImgEnd;
-        }
-
-        public string getTemplate(string headerUrl, string footerUrl)
-        {
-            Base64Converter converter = new Base64Converter();
-            string header64 = converter.ImageToBase64(headerUrl);
-            string footer64 = converter.ImageToBase64(footerUrl);
-
             string template = @"<html>
-                                <style>html {color:OrangeRed;} body{margin-top:150px;margin-bottom:50px;} h2 {font-size: 32px;} p {font-size: 21px;} h1 {font-size: 40px;} #footer{position:fixed;bottom:0;}.keep-together {page-break-inside: avoid;}.break-before {page-break-before: always;}.break-after {page-break-after: always;}</style>
-                                <head>
-                                </head>
-                                    <body>
-                                    <h1>CV [FIRST] [PRE] [LAST]</h1>
-                                    <br />
-                                    <br />
-                                    <div class=""keep-together"">
-                                    <h2><u>Personalia</u></h2>
-                                    <p>First Name: [FIRST]</p>
-                                    <p>Prefix: [PRE]</p>
-                                    <p>Last Name: [LAST]</p>
-                                    <p>Residence: [RESIDENCE]</p>
-                                    <p>Country: [COUNTRY]</p>
-                                    <p>Date of Birth: [DOB]</p>
-                                    <p>License: [LICENSE]</p>
-                                    <br />
-                                    <p>Profile: <br />
-                                        [PROFILE]
-                                    </p>
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together"" id=""EducationDiv"">
-                                        <h2><u>Educations</u></h2>
-                                        [EROW]
-                                    </div >
-                                    <br />
-                                    <div id=""WorkDiv"">
-                                        <h2><u>Work Experiences</u></h2>
-                                        [WROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""CourseDiv"">
-                                        <h2><u>Courses</u></h2>
-                                        [CROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""SidelineDiv"">
-                                        <h2><u>Sidelines</u></h2>
-                                        [SROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""LanguageDiv"">
-                                        <h2><u>Languages</u></h2>
-                                        [LROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""SkillDiv"">
-                                         <h2><u>Skills</u></h2>
-                                         [SKROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""HobbyDiv"">
-                                          <h2><u>Hobbies</u></h2>
-                                         [HROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""CompetenceDiv"">
-                                          <h2><u>Competences</u></h2>
-                                         [COROW]
-                                    </div>
-                                    <br />
-                                    <div class=""keep-together""  id=""ReferenceDiv"">
-                                          <h2><u>References</u></h2>
-                                         [RROW]
-                                    </div>
-                                    </body>
+                                <link href=""https://fonts.googleapis.com/css?family=Open+Sans:400,700"" rel=""stylesheet"">
+                                <style>html {color:#ff700d; font-family: 'Open Sans', sans-serif;} body{margin-top:150px;margin-bottom:50px;width:100%} h2 {font-size: 30px;} p, span {font-size: 18px;} h1 {font-size: 35px; white-space:nowrap;} .keep-together {page-break-inside: avoid;}.break-before {page-break-before: always;}.break-after {page-break-after: always;} .CVBigTitle {margin-top: -30px; max-width: 450px; color: #ff700d;} .CVSmallTitle {margin-top: 100px; max-width: 450px; color:#a9a9a9;} .answer {color: #a9a9a9;}
+                                </style>
+                                        <head>
+                                        </head>
+                                        <body>
+                                            <br />
+                                            <h3 class=""CVSmallTitle"">Curriculum vitae</h3>
+                                            <h1 class=""CVBigTitle""><b>[FIRST] [PRE] [LAST]</b></h1>
+                                            <hr />
+                                            <br />
+                                              <div class=""keep-together"">
+                                                <h2><b>Personalia</b></h2>
+                                                <div style=""float: left; width: 30%;"">
+                                                    <span><b>First Name:</b></span>
+                                                    <br />
+                                                    <span><b>Prefix:</b></span>
+                                                    <br />
+                                                    <span><b>Last Name:</b></span>
+                                                    <br />
+                                                    <span><b>Residence:</b></span>
+                                                    <br />
+                                                    <span><b>Country:</b></span>
+                                                    <br />
+                                                    <span><b>Date of Birth:</b></span>
+                                                    <br />
+                                                    <span><b>Licenses:</b></span>
+                                                    <br />
+                                                </div>
+                                                <div style=""float: left; width: 69%"">
+                                                    <span class=""answer"">[FIRST]</span>
+                                                    <br />
+                                                    <span class=""answer"">[PRE]</span>
+                                                    <br />
+                                                    <span class=""answer"">[LAST]</span>
+                                                    <br />
+                                                    <span class=""answer"">[RESIDENCE]</span>
+                                                    <br />
+                                                    <span class=""answer"">[COUNTRY]</span>
+                                                    <br />
+                                                    <span class=""answer"">[DOB]</span>
+                                                    <br />
+                                                    <span class=""answer"">[LICENSE]</span>
+                                                </div>
+                                                <br />
+                                                <br />
+                                                <span><b>Profile:</b></span>
+                                                <br />
+                                                <span class=""answer"">[PROFILE]</span>
+                                            </div>
+                                            <div class=""keep-together"" id=""EducationDiv"">
+                                                <h2><b>Educations</b></h2>
+                                                [EROW]
+                                            </div >
+                                            <br />
+                                            <div id=""WorkDiv"">
+                                                <h2><b>Work Experiences</b></h2>
+                                                [WROW]
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""CourseDiv"">
+                                                <h2><b>Courses</b></h2>
+                                                [CROW]
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""SidelineDiv"">
+                                                <h2><b>Sidelines</b></h2>
+                                                [SROW]
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""LanguageDiv"">
+                                                <h2><b>Languages</b></h2>
+                                                [LROW]
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""SkillDiv"">
+                                                <h2><b>Skills</b></h2>
+                                                <div class=""SkillRow"">
+                                                <span>[SKILLNAME]</span>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""HobbyDiv"">
+                                                <h2><b>Hobbies</b></h2>
+                                                <div class=""HobbyRow"">
+                                                <span>[HOBBYNAME]</span>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""CompetenceDiv"">
+                                                <h2><b>Competences</b></h2>
+                                                <div class=""CompetenceRow"">
+                                                <span>[COMPETENCENAME]</span>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class=""keep-together""  id=""ReferenceDiv"">
+                                                  <h2><b>References</b></h2>
+                                                 [RROW]
+                                            </div>
+                                        </body>
                                     </html>";
             return template;
         }

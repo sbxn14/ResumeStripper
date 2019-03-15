@@ -6,8 +6,10 @@ namespace ResumeStripper.Models.Enums
     {
         Basic,
         Good,
+
         [Display(Name = "Very Good")]
         VeryGood,
+
         Native
     }
 }
