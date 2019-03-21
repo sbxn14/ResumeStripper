@@ -59,3 +59,49 @@
 .workRow .eduRow {
     margin-top: 25px;
 }
+
+.btn-resume {
+    color: #ffffff;
+    background-color: #FF700D;
+    border-color: #FF700D;
+}
+
+    .btn-resume:hover,
+    .btn-resume:focus,
+    .btn-resume:active,
+    .btn-resume.active,
+    .open .dropdown-toggle.btn-resume {
+        color: #ffffff;
+        background-color: #D95F09;
+        border-color: #FF700D;
+    }
+
+    .btn-resume:active,
+    .btn-resume.active,
+    .open .dropdown-toggle.btn-resume {
+        background-image: none;
+    }
+
+    .btn-resume.disabled,
+    .btn-resume[disabled],
+    fieldset[disabled] .btn-resume,
+    .btn-resume.disabled:hover,
+    .btn-resume[disabled]:hover,
+    fieldset[disabled] .btn-resume:hover,
+    .btn-resume.disabled:focus,
+    .btn-resume[disabled]:focus,
+    fieldset[disabled] .btn-resume:focus,
+    .btn-resume.disabled:active,
+    .btn-resume[disabled]:active,
+    fieldset[disabled] .btn-resume:active,
+    .btn-resume.disabled.active,
+    .btn-resume[disabled].active,
+    fieldset[disabled] .btn-resume.active {
+        background-color: #FF700D;
+        border-color: #FF700D;
+    }
+
+    .btn-resume .badge {
+        color: #FF700D;
+        background-color: #ffffff;
+    }

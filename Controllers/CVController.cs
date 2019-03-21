@@ -20,7 +20,7 @@ namespace ResumeStripper.Controllers
             MessageViewModel model = (MessageViewModel)TempData["Message"];
             if (model != null)
             {
-                string filename = (string)TempData["filename"];
+                string filename = (string)TempData["file"];
 
                 if (filename.Contains(":"))
                 {
@@ -28,8 +28,8 @@ namespace ResumeStripper.Controllers
                     filename = Path.GetFileName(filename);
                 }
 
-                model.serverPath = "http://192.168.86.26:8081/" + filename;
-                ViewBag.JavaScriptFunction = "newPDFArrived('" + model.serverPath + "');";
+                model.ServerPath = "http://192.168.86.26:8081/" + filename;
+                ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
                 return View(model);
             }
             else
@@ -52,18 +52,15 @@ namespace ResumeStripper.Controllers
                 {
                     if (pdf != null && pdf.ContentLength > 0)
                     {
-                        //temporarily saves file
-                        //var filePath = Path.Combine(Server.MapPath("~/Content/pdf"), pdf.FileName);
-                        TempData["filename"] = pdf.FileName;
-                        //pdf.SaveAs(filePath);
-
-                        PDFHelper helper = new PDFHelper();
+                        TempData["file"] = pdf.FileName;
 
                         MessageViewModel mod = new MessageViewModel
                         {
-                            //Text = helper.GetHTMLText(filePath),
                             Path = pdf.FileName
                         };
+
+                        //TODO CALL EXTRACTION METHOD
+
                         TempData["Message"] = mod;
                     }
                 }
@@ -88,7 +85,7 @@ namespace ResumeStripper.Controllers
 
                 foreach (Language l in cv.Languages)
                 {
-                    if (!l.LevelOfListening.Equals(LanguageLevel.Basic) && !l.LevelOfSpeaking.Equals(LanguageLevel.Basic) && !l.LevelOfWriting.Equals(LanguageLevel.Basic))
+                    if (l.LevelOfListening.Equals(LanguageLevel.Basic) && l.LevelOfSpeaking.Equals(LanguageLevel.Basic) && l.LevelOfWriting.Equals(LanguageLevel.Basic))
                     {
                         //probably using simple mode
                         if (!l.Level.Equals(LanguageLevel.Basic))
@@ -147,7 +144,7 @@ namespace ResumeStripper.Controllers
 
                 PDFHelper helper = new PDFHelper();
 
-                byte[] newPdf = helper.GetPDF(url, cv);
+                byte[] newPdf = helper.GeneratePDF(url, cv);
                 TempData["bytes"] = newPdf;
                 return RedirectToAction("Download");
             }
@@ -156,7 +153,7 @@ namespace ResumeStripper.Controllers
 
         public ActionResult Download()
         {
-            byte[] thePdf = (byte[]) TempData["bytes"];
+            byte[] thePdf = (byte[])TempData["bytes"];
             return File(thePdf, "application/pdf");
         }
 

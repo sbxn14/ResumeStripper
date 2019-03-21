@@ -1,14 +1,19 @@
 ﻿using Codaxy.WkHtmlToPdf;
+using PdfExtract;
 using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace ResumeStripper.Helpers
 {
     public class PDFHelper
     {
+        public string FirstnameOptionalPrefixLastname = @"([A-Z][a-z'-]+)\s?([a-z'-]*\s?[a-z'-]*\s?[a-z'-]*\s?)?([A-Z][A-Za-z'-]+)";
+
         private bool hasEducation = false;
         private bool hasWork = false;
         private bool hasCourse = false;
@@ -20,71 +25,119 @@ namespace ResumeStripper.Helpers
         private bool hasCompetence = false;
 
         private const string EducationPiece =
-            @"<div class=""EduRow"">
-            <span><b>Name Education:</b> [EDUCATIONNAME]</span>
-            <span><b>Level of Education:</b> [EDUCATIONLEVEL]</span>
-            <span><b>Name Institute:</b> [INSTITUTENAME]</span>
-            <span><b>Location Institute:</b> [INSTITUTELOCATION]</span>
-            <span><b>Begin Date:</b> [EDUBEGIN]</span>
-            <span><b>End Date:</b> [EDUEND]</span>
-            <span><b>Diploma:</b> [EDUDIPLOMA]</span>
+            @"<div class=""row EduRow"">
+                  <div class=""column1edu"">
+                    <span class=""answer""><b>[EDUBEGIN] - [EDUEND]</b></span>
+                    <br />
+                    <span>Diploma: </span><span class=""answer"">[EDUDIPLOMA]</span>
+                  </div>
+                  <div class=""column2edu"">
+                    <span><b>[EDUCATIONNAME]</b></span>
+                    <span class=""answer""><br />[EDUCATIONLEVEL]
+                    <br />[INSTITUTENAME], [INSTITUTELOCATION]</span>
+                  </div>
             </div>
             <br />
             [EROW]";
 
         private const string WorkPiece =
-            @"<div class=""WorkRow"">
-            <span><b>Job Title:</b> [WORKJOB]</span>
-            <span><b>Name Company:</b> [COMPANYNAME]</span>
-            <span><b>Location Company:</b> [COMPANYLOCATION]</span>
-            <span><b>Task Description:</b> <br />[WORKDESCRIPTION]</span>
-            <span><b>Begin Date:</b> [WORKBEGIN]</span>
-            <span><b>End Date:</b> [WORKEND]</span>
-            </div>
+            @"<div class=""row WorkRow"">
+                  <div class=""column1edu"" >
+                    <span class=""answer""><b>[WORKBEGIN] - [WORKEND]</b></span>
+                  </div>
+                  <div class=""column2edu"" >
+                    <span><b>[WORKJOB]</b></span>
+                    <br /><span class=""answer"">[COMPANYNAME], [COMPANYLOCATION]
+                    <br />[WORKDESCRIPTION]</span>
+                  </div>
+              </div>
             <br />
             [WROW]";
 
         private const string CoursePiece =
-            @"<div class=""CourseRow"">
-            <span><b>Name Course:</b> [COURSENAME]</span>
-            <span><b>Name Institute:</b> [COURSEINSTITUTENAME]</span>
-            <span><b>Location Institute:</b> [COURSEINSTITUTELOCATION]</span>
-            <span><b>Year:</b> [COURSEYEAR]</span>
-            <span><b>Diploma:</b> [COURSECERTIFICATE]</span>
+            @"<div class=""row CourseRow"">
+              <div class=""column1edu"" >
+                <span class=""answer""><b>[COURSEYEAR]</b><span>
+                <br />
+                <span>Certificate: </span><span class=""answer"">[COURSECERTIFICATE]</span>
+              </div>
+              <div class=""column2edu"" >
+                <span><b>[COURSENAME]</b></span>
+                <br />
+                <span class=""answer"">[COURSEINSTITUTENAME], [COURSEINSTITUTELOCATION]</span>
+              </div>
             </div>
             <br />
             [CROW]";
 
         private const string SidelinePiece =
-            @"<div class=""SidelineRow"">
-            <span><b>Job Title:</b> [SIDELINEJOB]</span>
-            <span><b>Name Company:</b> [ORGANIZATIONNAME]</span>
-            <span><b>Location Company:</b> [ORGANIZATIONLOCATION]</span>
-            <span><b>Task Description:</b> <br />[SIDELINEDESCRIPTION]</span>
-            <span><b>Begin Date:</b> [SIDELINEBEGIN]</span>
-            <span><b>End Date:</b> [SIDELINEEND]</span>
-            </div>
+            @"<div class=""row SidelineRow"">
+                  <div class=""column1edu"" >
+                    <span class=""answer""><b>[SIDELINEBEGIN] - [SIDELINEEND]</b><span>
+                  </div>
+                  <div class=""column2edu"" >
+                    <span class=""answer""><b>[SIDELINEJOB]</b></span>
+                    <br />[ORGANIZATIONNAME], [ORGANIZATIONLOCATION]
+                    <br />[SIDELINEDESCRIPTION]</span>
+                  </div>
+              </div>
             <br />
             [SROW]";
 
-        private const string LanguagePiece =
-            @"<div class=""LanguageRow"">
-            <span><b>Name:</b> [LANGUAGENAME]</span>
-            <span><b>Level:</b> [LANGLEVEL]</span>
-            <span><b>Level of Speaking:</b> [LANGSPEAK]</span>
-            <span><b>Level of Listening:</b> [LANGLISTEN]</span>
-            <span><b>Level of Writing:</b> [LANGWRITE]</span>
-            </div>
-            <br />
-            [LROW]";
+        private const string LanguagePieceSimple =
+            @"<div class=""row LanguageRow"">
+                  <div class=""column1edu"">
+                    <span><b>[LANGNAME]</b><span>
+                  </div>
+                  <div class=""column2edu"">
+                    <span><b>Level</b><br /></span><span class=""answer"">[LANGLEVEL]</span>
+                  </div>
+             </div>
+             <br />
+             [LROW]";
+
+        private const string LanguagePieceDetailed =
+            @"<div class=""row LanguageRow"">
+                  <div class=""columnlan"">
+                    <span><b>[LANGNAME]</b><span>
+                  </div>
+                  <div class=""columnlan"">
+                    <span><b>Level of Speaking</b><br /></span><span class=""answer"">[LANGSPEAK]</span>
+                  </div>
+                  <div class=""columnlan"">
+                    <span><b>Level of Listening</b><br /></span><span class=""answer"">[LANGLISTEN]</span>
+                  </div>
+                  <div class=""columnlan"">
+                    <span><b>Level of Writing</b><br /></span><span class=""answer"">[LANGWRITE]</span>
+                  </div>
+              </div>
+              <br />
+              [LROW]";
 
         private const string ReferencePiece =
             @"<div class=""ReferenceRow"">
-            <span><b>Name:</b> [REFERENCENAME]</span>
-            <span><b>Company Name:</b> [REFERENCECOMPANYNAME]</span>
-            <span><b>Job Title:</b> [REFERENCEJOBTITLE]</span>
-            <span><b>Emailaddress:</b> [REFERENCEEMAIL]</span>
-            <span><b>Phone Number:</b> [REFERENCEPHONE]</span>
+                <div style=""float: left; width: 30%;"">
+                <span><b>Name:</b></span>
+                <br />
+                <span><b>Company Name:</b></span>
+                <br />
+                <span><b>Job Title:</b></span>
+                <br />
+                <span><b>Emailaddress:</b></span>
+                <br />
+                <span><b>Phone Number:</b></span>
+                </div>
+                <div style=""float: left; width: 69%"">
+                <span class=""answer"">[REFERENCENAME]</span>
+                <br />
+                <span class=""answer"">[REFERENCECOMPANYNAME]</span>
+                <br />
+                <span class=""answer"">[REFERENCEJOBTITLE]</span>
+                <br />
+                <span class=""answer"">[REFERENCEEMAIL]</span>
+                <br />
+                <span class=""answer"">[REFERENCEPHONE]</span>
+                </div>
             </div>
             <br />
             [RROW]";
@@ -94,7 +147,44 @@ namespace ResumeStripper.Helpers
         private string hobbies = "";
         private string competences = "";
 
-        public byte[] GetPDF(string url, CV cv)
+        public CV ExtractData(string url)
+        {
+            CV result = new CV();
+            string PDFText = "";
+            //get plain text from PDF
+            using (var pdfStream = File.OpenRead(url))
+            using (var extractor = new Extractor())
+            {
+                PDFText = extractor.ExtractToString(pdfStream);
+            }
+
+            if (!PDFText.Equals(""))
+            {
+                //if extracted text is not empty
+                //TODO Find way to extract relevant data
+                string[] array = PDFText.Split(null);
+                List<string> resultWords = new List<string>();
+
+                foreach (string s in array)
+                {
+                    if (Regex.Match(s, FirstnameOptionalPrefixLastname).Success)
+                    {
+                        //if word matches the regex, add to list for further analyzing
+                        resultWords.Add(s);
+                    }
+                }
+                //TODO connection to database comparing the words.
+
+            }
+            else
+            {
+                //return that pdf is empty/has no text
+                return null;
+            }
+            return result;
+        }
+
+        public byte[] GeneratePDF(string url, CV cv)
         {
             string template = getTemplate();
 
@@ -188,21 +278,19 @@ namespace ResumeStripper.Helpers
             foreach (Language e in cv.Languages)
             {
                 hasLanguage = true;
-                //add piece to template
-                template = template.Replace("[LROW]", LanguagePiece);
 
                 //capitalizes first letter
                 char[] a = e.Name.ToCharArray();
                 a[0] = char.ToUpper(a[0]);
                 e.Name = new string(a);
 
-                //replace all parts with CV information
-                template = template.Replace("[LANGUAGENAME]", e.Name);
-
                 if (e.isSimple)
                 {
                     string type = e.Level.ToString();
                     //simple mode used, only display Level
+
+                    //add piece to template
+                    template = template.Replace("[LROW]", LanguagePieceSimple);
 
                     if (type.Equals("VeryGood"))
                     {
@@ -210,18 +298,16 @@ namespace ResumeStripper.Helpers
                     }
 
                     template = template.Replace("[LANGLEVEL]", type);
-                    //empty others
-                    template = template.Replace(@"<p><b>Level of Speaking:</b> [LANGSPEAK]</p>", "");
-                    template = template.Replace(@"<p><b>Level of Writing:</b> [LANGWRITE]</p>", "");
-                    template = template.Replace(@"<p><b>Level of Listening:</b> [LANGLISTEN]</p>", "");
                 }
                 else
                 {
                     //detailed mode used, only display seperate levels
-
                     string typeSpeak = e.LevelOfSpeaking.ToString();
                     string typeWrite = e.LevelOfWriting.ToString();
                     string typeListen = e.LevelOfListening.ToString();
+
+                    //add piece to template
+                    template = template.Replace("[LROW]", LanguagePieceDetailed);
 
                     if (typeSpeak.Equals("VeryGood"))
                     {
@@ -239,9 +325,9 @@ namespace ResumeStripper.Helpers
                     template = template.Replace("[LANGSPEAK]", typeSpeak);
                     template = template.Replace("[LANGLISTEN]", typeListen);
                     template = template.Replace("[LANGWRITE]", typeWrite);
-                    //empty level
-                    template = template.Replace(@"<p><b>Level:</b> [LANGLEVEL]</p>", "");
                 }
+                //replace language name
+                template = template.Replace("[LANGNAME]", e.Name);
             }
 
             //SKILLS
@@ -351,6 +437,7 @@ namespace ResumeStripper.Helpers
                                                     <br />", "");
                     template = template.Replace(@"<span class=""answer"">[PRE]</span>
                                                     <br />", "");
+                    template = template.Replace(@" [PRE] ", " ");
                 }
 
                 if (cv.Surname != null && cv.Surname != "")
@@ -427,6 +514,7 @@ namespace ResumeStripper.Helpers
             //DATE OF BIRTH
             if (cv.DateOfBirth != null && cv.DateOfBirth != DateTime.MinValue)
             {
+                //TODO: check if date is current date, if so, make it 'present'
                 template = template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
             }
             else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
@@ -534,11 +622,15 @@ namespace ResumeStripper.Helpers
             template = template.Replace("[LROW]", "");
             template = template.Replace("[RROW]", "");
 
-            //just cleanup of empty paragraphs if any
+            //just cleanup of empty paragraphs and spans if any
             template = template.Replace("<p></p>", "");
             template = template.Replace("<p> </p>", "");
             template = template.Replace("<p><b></b></p>", "");
             template = template.Replace("<p><b> </b></p>", "");
+            template = template.Replace("<span></span>", "");
+            template = template.Replace("<span> </span>", "");
+            template = template.Replace("<span><b></b></span>", "");
+            template = template.Replace("<span><b> </b></span>", "");
 
             string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
             string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
@@ -561,7 +653,7 @@ namespace ResumeStripper.Helpers
         {
             string template = @"<html>
                                 <link href=""https://fonts.googleapis.com/css?family=Open+Sans:400,700"" rel=""stylesheet"">
-                                <style>html {color:#ff700d; font-family: 'Open Sans', sans-serif;} body{margin-top:150px;margin-bottom:50px;width:100%} h2 {font-size: 30px;} p, span {font-size: 18px;} h1 {font-size: 35px; white-space:nowrap;} .keep-together {page-break-inside: avoid;}.break-before {page-break-before: always;}.break-after {page-break-after: always;} .CVBigTitle {margin-top: -30px; max-width: 450px; color: #ff700d;} .CVSmallTitle {margin-top: 100px; max-width: 450px; color:#a9a9a9;} .answer {color: #a9a9a9;}
+                                <style>*{box-sizing: border-box;}.column1edu {float: left;width: 25%;padding: 10px;}.column2edu {float: left;width: 75%;padding: 10px;}.columnlan {float: left;width: 25%;padding: 10px;}.row:after {content: "";display: table;clear: both;}html {color:#ff700d; font-family: 'Open Sans', sans-serif;} body{margin-top:150px;margin-bottom:50px;width:100%} h2 {font-size: 30px;} p, span {font-size: 18px;} h1 {font-size: 35px; white-space:nowrap;} .keep-together {page-break-inside: avoid;margin-top:20px;}.break-before {page-break-before: always;}.break-after {page-break-after: always;} .CVBigTitle {max-width: 450px; color: #ff700d; margin-bottom:-10px;} .CVSmallTitle {margin-top: 100px; margin-bottom:-33px; max-width: 450px; color:#a9a9a9;} .answer {color: #a9a9a9;}
                                 </style>
                                         <head>
                                         </head>
