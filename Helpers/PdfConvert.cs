@@ -145,12 +145,12 @@ namespace Codaxy.WkHtmlToPdf
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
                 paramsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                paramsBuilder.Append("--header-spacing 5 ");
+                paramsBuilder.Append("--header-spacing 10 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
                 paramsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
-                paramsBuilder.Append("--footer-spacing 5 ");
+                paramsBuilder.Append("--footer-spacing 10 ");
             }
             if (!string.IsNullOrEmpty(document.HeaderLeft))
                 paramsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);

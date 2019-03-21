@@ -29,12 +29,12 @@ namespace ResumeStripper.Helpers
                   <div class=""column1edu"">
                     <span class=""answer""><b>[EDUBEGIN] - [EDUEND]</b></span>
                     <br />
-                    <span>Diploma: </span><span class=""answer"">[EDUDIPLOMA]</span>
                   </div>
                   <div class=""column2edu"">
                     <span><b>[EDUCATIONNAME]</b></span>
                     <span class=""answer""><br />[EDUCATIONLEVEL]
                     <br />[INSTITUTENAME], [INSTITUTELOCATION]</span>
+                    <br /><span class=""answer"">[EDUDIPLOMA]</span>
                   </div>
             </div>
             <br />
@@ -59,12 +59,13 @@ namespace ResumeStripper.Helpers
               <div class=""column1edu"" >
                 <span class=""answer""><b>[COURSEYEAR]</b><span>
                 <br />
-                <span>Certificate: </span><span class=""answer"">[COURSECERTIFICATE]</span>
               </div>
               <div class=""column2edu"" >
                 <span><b>[COURSENAME]</b></span>
                 <br />
                 <span class=""answer"">[COURSEINSTITUTENAME], [COURSEINSTITUTELOCATION]</span>
+                <br />
+                <span class=""answer"">[COURSECERTIFICATE]</span>
               </div>
             </div>
             <br />
@@ -73,7 +74,7 @@ namespace ResumeStripper.Helpers
         private const string SidelinePiece =
             @"<div class=""row SidelineRow"">
                   <div class=""column1edu"" >
-                    <span class=""answer""><b>[SIDELINEBEGIN] - [SIDELINEEND]</b><span>
+                    <span class=""answer""><b>[SIDELINEBEGIN] - [SIDELINEEND]</b></span>
                   </div>
                   <div class=""column2edu"" >
                     <span class=""answer""><b>[SIDELINEJOB]</b></span>
@@ -174,7 +175,6 @@ namespace ResumeStripper.Helpers
                     }
                 }
                 //TODO connection to database comparing the words.
-
             }
             else
             {
@@ -201,17 +201,28 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[INSTITUTENAME]", e.OrganizationName);
                 template = template.Replace("[INSTITUTELOCATION]", e.LocationOrganization);
                 template = template.Replace("[EDUBEGIN]", e.BeginDate.Date.ToShortDateString());
-                template = template.Replace("[EDUEND]", e.EndDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    template = template.Replace("[EDUEND]", "present");
+                }
+                else
+                {
+                    template = template.Replace("[EDUEND]", e.EndDate.Date.ToShortDateString());
+                }
 
                 string result = "";
 
                 if (e.Diploma)
                 {
-                    result = "Yes";
+                    result = "Diploma acquired";
                 }
                 else
                 {
-                    result = "No";
+                    result = "Diploma not acquired";
                 }
                 template = template.Replace("[EDUDIPLOMA]", result);
             }
@@ -229,7 +240,18 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[COMPANYLOCATION]", e.LocationOrganization);
                 template = template.Replace("[WORKDESCRIPTION]", e.TaskDescription);
                 template = template.Replace("[WORKBEGIN]", e.BeginDate.Date.ToShortDateString());
-                template = template.Replace("[WORKEND]", e.EndDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    template = template.Replace("[WORKEND]", "present");
+                }
+                else
+                {
+                    template = template.Replace("[WORKEND]", e.EndDate.Date.ToShortDateString());
+                }
             }
 
             //COURSES
@@ -249,11 +271,11 @@ namespace ResumeStripper.Helpers
 
                 if (e.Certificate)
                 {
-                    result = "Yes";
+                    result = "Certificate acquired";
                 }
                 else
                 {
-                    result = "No";
+                    result = "Certificate not acquired";
                 }
                 template = template.Replace("[COURSECERTIFICATE]", result);
             }
@@ -271,7 +293,18 @@ namespace ResumeStripper.Helpers
                 template = template.Replace("[ORGANIZATIONLOCATION]", e.LocationOrganization);
                 template = template.Replace("[SIDELINEDESCRIPTION]", e.TaskDescription);
                 template = template.Replace("[SIDELINEBEGIN]", e.BeginDate.Date.ToShortDateString());
-                template = template.Replace("[SIDELINEEND]", e.EndDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    template = template.Replace("[SIDELINEEND]", "present");
+                }
+                else
+                {
+                    template = template.Replace("[SIDELINEEND]", e.EndDate.Date.ToShortDateString());
+                }
             }
 
             //LANGUAGES
@@ -514,7 +547,6 @@ namespace ResumeStripper.Helpers
             //DATE OF BIRTH
             if (cv.DateOfBirth != null && cv.DateOfBirth != DateTime.MinValue)
             {
-                //TODO: check if date is current date, if so, make it 'present'
                 template = template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
             }
             else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
@@ -564,7 +596,9 @@ namespace ResumeStripper.Helpers
             else
             {
                 template = template.Replace(@"<br />
-                                                <span><b>Profile:</b></span>
+                                                <br />
+                                                <br />
+                                                <h3><b>Profile</b></h3>
                                                 <br />
                                                 <span class=""answer"">[PROFILE]</span>", "");
             }
@@ -639,7 +673,7 @@ namespace ResumeStripper.Helpers
             {
                 Html = template,
                 HeaderUrl = headUrl,
-                FooterUrl = footUrl
+                FooterUrl = footUrl,
             },
             new PdfOutput
             {
@@ -662,7 +696,6 @@ namespace ResumeStripper.Helpers
                                             <h3 class=""CVSmallTitle"">Curriculum vitae</h3>
                                             <h1 class=""CVBigTitle""><b>[FIRST] [PRE] [LAST]</b></h1>
                                             <hr />
-                                            <br />
                                               <div class=""keep-together"">
                                                 <h2><b>Personalia</b></h2>
                                                 <div style=""float: left; width: 30%;"">
@@ -698,10 +731,12 @@ namespace ResumeStripper.Helpers
                                                 </div>
                                                 <br />
                                                 <br />
-                                                <span><b>Profile:</b></span>
+                                                <br />
+                                                <h3><b>Profile</b></h3>
                                                 <br />
                                                 <span class=""answer"">[PROFILE]</span>
                                             </div>
+                                            <br />
                                             <div class=""keep-together"" id=""EducationDiv"">
                                                 <h2><b>Educations</b></h2>
                                                 [EROW]
