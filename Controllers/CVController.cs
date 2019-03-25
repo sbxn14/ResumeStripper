@@ -27,7 +27,7 @@ namespace ResumeStripper.Controllers
                     //edge filename
                     filename = Path.GetFileName(filename);
                 }
-
+                //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
                 model.ServerPath = "http://192.168.86.26:8081/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
                 return View(model);
@@ -59,7 +59,7 @@ namespace ResumeStripper.Controllers
                             Path = pdf.FileName
                         };
 
-                        //TODO CALL EXTRACTION METHOD
+                        //TODO CALL EXTRACTION METHOD if we go that route
 
                         TempData["Message"] = mod;
                     }
@@ -138,7 +138,7 @@ namespace ResumeStripper.Controllers
                     if (cv.Prefix == "") resultName = "CV_" + cv.Name + "_" + cv.Surname + "_EHV.pdf";
                     else resultName = "CV_" + cv.Name + "_" + cv.Prefix + "_" + cv.Surname + "_EHV.pdf";
                 }
-
+                TempData["pdfName"] = resultName;
                 //generate PDF and generate view that shows that PDF instead of redirect to index
                 string url = Server.MapPath("~/PDFs/") + resultName;
 
@@ -146,7 +146,8 @@ namespace ResumeStripper.Controllers
 
                 byte[] newPdf = helper.GeneratePDF(url, cv);
                 TempData["bytes"] = newPdf;
-                return RedirectToAction("Download");
+                return View();
+                //return RedirectToAction("Download");
             }
             return RedirectToAction("Index");
         }
@@ -154,7 +155,8 @@ namespace ResumeStripper.Controllers
         public ActionResult Download()
         {
             byte[] thePdf = (byte[])TempData["bytes"];
-            return File(thePdf, "application/pdf");
+            string name = (string)TempData["pdfName"];
+            return File(thePdf, "application/pdf", name);
         }
 
         protected override void Dispose(bool disposing)

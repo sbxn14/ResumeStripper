@@ -29,12 +29,10 @@ namespace ResumeStripper.Helpers
             return data;
         }
 
-        public string Encrypt(string word)
+        public string Encrypt(string word, byte[] salt)
         {
             //size of hash, can be changed
             int size = 20;
-            //generate salt
-            byte[] salt = GenerateSalt();
             //has and salt with PBKDF2 for 10000 iterations (can be changed to not last as long)
             var pbkdf2 = new Rfc2898DeriveBytes(word, salt, 10000);
 

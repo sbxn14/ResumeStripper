@@ -296,6 +296,7 @@
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Helpers\PdfConvert.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Viewmodels\MessageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -410,6 +411,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\CV\Index.cshtml" />
     <Content Include="Views\Template.cshtml" />
+    <Content Include="Views\CV\Export.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

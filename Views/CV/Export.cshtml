@@ -1,0 +1,17 @@
+﻿<html>
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/bootstrap")
+<head>
+</head>
+<body>
+    <div id="processing" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+                        top: 0px; width: 100%; height: 100%;">
+        <p style="text-align:center; margin-top:300px; color: #ff700d;">
+            @Html.ActionLink("Download PDF", "Download", "CV", new { @class = "btn sample btn-sample btn-resume" })
+            <br />
+            <br />
+            @Html.ActionLink("Return to Resume Stripper", "Index", "CV", new { @class = "btn sample btn-sample btn-resume" })
+        </p>
+    </div>
+</body>
+</html>

@@ -1,4 +1,6 @@
-﻿namespace ResumeStripper.Models.Viewmodels
+﻿using System.IO;
+
+namespace ResumeStripper.Models.Viewmodels
 {
     public class MessageViewModel
     {

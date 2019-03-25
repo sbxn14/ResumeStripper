@@ -7,6 +7,7 @@
 @Styles.Render("~/Content/css")
 @Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
 @Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
+@Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js")
 @Scripts.Render("~/bundles/bootstrap")
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js")
 @Scripts.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.worker.min.js")
@@ -123,8 +124,8 @@
                             @using (Html.BeginForm("Export", "CV", FormMethod.Post, new { enctype = "multipart/form-data", id = "exportForm", autocomplete = "off" }))
                             {
                                 @Html.AntiForgeryToken()
-                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this.id);" type="submit" value="Generate CV" name="submitter" />
-                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this.id);" type="submit" value="Generate Anonymous CV" name="submitter" />
+                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this);" type="submit" value="Generate CV" name="submitter" />
+                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this);" type="submit" value="Generate Anonymous CV" name="submitter" />
                                 <br />
                                 <br />
                                 <br />
@@ -391,22 +392,23 @@
                                 $("#processing").hide();
                             });
 
-                            function BeginSubmit(id) {
+                            $(document).ready(function () {
+                                $("#processing").fadeOut();
+                            })
+
+                            function BeginSubmit(e) {
                                 if (validateForm()) {
-                                    $("#processing").show();
+                                    $("#processing").fadeIn();
                                 } else {
                                     return;
                                 }
-                                $(id).bind('ajax:complete', function () {
-                                    $("#processing").hide();
-                                })
                             }
-
                             function validateForm() {
                                 var isValid = true;
-                                $('#exportForm').each(function () {
+                                $('.form-control').filter('[required]:visible').each(function () {
                                     if ($(this).val() === '')
                                         isValid = false;
+                                    console.log(isValid);
                                 });
                                 return isValid;
                             }
