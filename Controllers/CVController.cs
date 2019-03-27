@@ -7,6 +7,7 @@ using System.Data.Entity.Validation;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
+using ResumeStripper.Filters;
 
 namespace ResumeStripper.Controllers
 {
@@ -15,18 +16,21 @@ namespace ResumeStripper.Controllers
         public readonly StripperContext Db = new StripperContext();
 
         [HttpGet]
+        [WhitespaceFilter]
+        [CompressFilter]
         public ActionResult Index()
         {
-            MessageViewModel model = (MessageViewModel)TempData["Message"];
+            MessageViewModel model = (MessageViewModel) TempData["Message"];
             if (model != null)
             {
-                string filename = (string)TempData["file"];
+                string filename = (string) TempData["file"];
 
                 if (filename.Contains(":"))
                 {
                     //edge filename
                     filename = Path.GetFileName(filename);
                 }
+
                 //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
                 model.ServerPath = "http://192.168.86.27:8081/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
@@ -68,6 +72,7 @@ namespace ResumeStripper.Controllers
                     return RedirectToAction("Index");
                 }
             }
+
             return RedirectToAction("Index");
         }
 
@@ -82,7 +87,8 @@ namespace ResumeStripper.Controllers
 
             foreach (Language l in cv.Languages)
             {
-                if (l.LevelOfListening.Equals(LanguageLevel.Basic) && l.LevelOfSpeaking.Equals(LanguageLevel.Basic) && l.LevelOfWriting.Equals(LanguageLevel.Basic))
+                if (l.LevelOfListening.Equals(LanguageLevel.Basic) && l.LevelOfSpeaking.Equals(LanguageLevel.Basic) &&
+                    l.LevelOfWriting.Equals(LanguageLevel.Basic))
                 {
                     //probably using simple mode
                     l.IsSimple = !l.Level.Equals(LanguageLevel.Basic);
@@ -97,8 +103,8 @@ namespace ResumeStripper.Controllers
             {
                 //TODO: improve saving, more specific.
                 //Save (for now) the complete CV-model in the Database
-                Db.Cvs.Add(cv);
-                Db.SaveChanges();
+                //Db.Cvs.Add(cv);
+                //Db.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -106,7 +112,8 @@ namespace ResumeStripper.Controllers
                 {
                     foreach (var validationError in validationErrors.ValidationErrors)
                     {
-                        System.Console.WriteLine(@"Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        System.Console.WriteLine(@"Property: {0} Error: {1}", validationError.PropertyName,
+                            validationError.ErrorMessage);
                     }
                 }
             }
@@ -143,8 +150,8 @@ namespace ResumeStripper.Controllers
 
         public ActionResult Download()
         {
-            byte[] thePdf = (byte[])TempData["bytes"];
-            string name = (string)TempData["pdfName"];
+            byte[] thePdf = (byte[]) TempData["bytes"];
+            string name = (string) TempData["pdfName"];
             return File(thePdf, "application/pdf", name);
         }
 
@@ -154,6 +161,7 @@ namespace ResumeStripper.Controllers
             {
                 Db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

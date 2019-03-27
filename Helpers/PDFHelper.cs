@@ -199,7 +199,7 @@ namespace ResumeStripper.Helpers
                 HasEducation = true;
                 //add piece to template
                 template = template.Replace("[EROW]", EducationPiece);
-                
+
                 //replace all parts with CV information
                 template = template.Replace("[EDUCATIONNAME]", e.Name);
                 template = template.Replace("[EDUCATIONLEVEL]", e.LevelOfEducation);
@@ -327,7 +327,7 @@ namespace ResumeStripper.Helpers
                 }
                 else
                 {
-                    //detailed mode used, only display seperate levels
+                    //detailed mode used, only display separate levels
                     string typeSpeak = e.LevelOfSpeaking.ToString();
                     string typeWrite = e.LevelOfWriting.ToString();
                     string typeListen = e.LevelOfListening.ToString();
@@ -588,8 +588,8 @@ namespace ResumeStripper.Helpers
             else
             {
                 template = template.Replace(@"<div class=""keep-together"">
-                                                    <h3 style=""margin-top:130px!important""><b>Profile</b></h3>
-                                                    <span class=""answer"" style=""margin-top: 25px;"">[PROFILE]</span>
+                                                    <h3 style=""margin-top:180px!important""><b>Profile</b></h3>
+                                                    <span class=""answer"">[PROFILE]</span>
                                                 </div>", "");
             }
 
@@ -721,8 +721,8 @@ namespace ResumeStripper.Helpers
                                                 </div>
                                                 <br />
                                                 <div class=""keep-together"">
-                                                    <h3 style=""margin-top:130px!important""><b>Profile</b></h3>
-                                                    <span class=""answer"" style=""margin-top: 25px;"">[PROFILE]</span>
+                                                    <h3 style=""margin-top:180px!important""><b>Profile</b></h3>
+                                                    <span class=""answer"">[PROFILE]</span>
                                                 </div>
                                             <br />
                                             <div class=""keep-together"" id=""EducationDiv"" style=""margin-top:50px!important;"">
