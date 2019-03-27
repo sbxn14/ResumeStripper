@@ -16,11 +16,11 @@ namespace ResumeStripper.Models
         public virtual LanguageLevel LevelOfListening { get; set; }
         public virtual LanguageLevel LevelOfSpeaking { get; set; }
         public virtual LanguageLevel LevelOfWriting { get; set; }
-        public bool isSimple { get; set; }
+        public bool IsSimple { get; set; }
 
         public Language()
         {
-            isSimple = true;
+            IsSimple = true;
         }
     }
 }

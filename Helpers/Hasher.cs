@@ -6,11 +6,11 @@ namespace ResumeStripper.Helpers
 {
     public class Hasher
     {
-        private StripperContext context;
+        private StripperContext _context;
 
         public Hasher(StripperContext cont)
         {
-            context = cont;
+            _context = cont;
         }
 
         public byte[] GenerateSalt()

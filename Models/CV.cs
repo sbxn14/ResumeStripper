@@ -66,21 +66,22 @@ namespace ResumeStripper.Models
             Skills = new List<Skill>();
         }
 
-        public void setAnonymousCV()
+        public void SetAnonymousCv()
         {
             //sets bool to true
             IsAnonymous = true;
+            //TODO: eventueel veranderen van persoonlijke waardes naar "***" of iets dergelijks
         }
 
         public void TrimEverything()
         {
             //removes any accidental whitespaces at beginning and end of each string
-            if (!String.IsNullOrEmpty(Name)) Name = Name.Trim();
-            if (!String.IsNullOrEmpty(Prefix)) Prefix = Prefix.Trim();
-            if (!String.IsNullOrEmpty(Surname)) Surname = Surname.Trim();
-            if (!String.IsNullOrEmpty(Residence)) Residence = Residence.Trim();
-            if (!String.IsNullOrEmpty(Country)) Country = Country.Trim();
-            if (!String.IsNullOrEmpty(Profile)) Profile = Profile.Trim();
+            if (!string.IsNullOrEmpty(Name)) Name = Name.Trim();
+            if (!string.IsNullOrEmpty(Prefix)) Prefix = Prefix.Trim();
+            if (!string.IsNullOrEmpty(Surname)) Surname = Surname.Trim();
+            if (!string.IsNullOrEmpty(Residence)) Residence = Residence.Trim();
+            if (!string.IsNullOrEmpty(Country)) Country = Country.Trim();
+            if (!string.IsNullOrEmpty(Profile)) Profile = Profile.Trim();
 
             if (Educations.Count > 0)
             {
@@ -156,6 +157,93 @@ namespace ResumeStripper.Models
                 foreach (Competence e in Competences)
                 {
                     e.Name = e.Name.Trim();
+                }
+            }
+        }
+
+        public void CapitalizeLists()
+        {
+            if (Educations.Count > 0)
+            {
+                foreach (EducationExperience e in Educations)
+                {
+                    char[] a = e.Name.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.Name = new string(a);
+
+                    a = e.LevelOfEducation.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.LevelOfEducation = new string(a);
+
+                    a = e.OrganizationName.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.OrganizationName = new string(a);
+
+                    a = e.LocationOrganization.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.LocationOrganization = new string(a);
+                }
+            }
+
+            if (WorkExperiences.Count > 0)
+            {
+                foreach (WorkExperience e in WorkExperiences)
+                {
+                    char[] a = e.JobTitle.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.JobTitle = new string(a);
+
+                    a = e.TaskDescription.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.TaskDescription = new string(a);
+
+                    a = e.OrganizationName.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.OrganizationName = new string(a);
+
+                    a = e.LocationOrganization.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.LocationOrganization = new string(a);
+                }
+            }
+
+            if (Courses.Count > 0)
+            {
+                foreach (CourseExperience e in Courses)
+                {
+                    char[] a = e.Name.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.Name = new string(a);
+
+                    a = e.OrganizationName.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.OrganizationName = new string(a);
+
+                    a = e.LocationOrganization.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.LocationOrganization = new string(a);
+                }
+            }
+
+            if (SideLines.Count > 0)
+            {
+                foreach (SidelineExperience e in SideLines)
+                {
+                    char[] a = e.JobTitle.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.JobTitle = new string(a);
+
+                    a = e.TaskDescription.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.TaskDescription = new string(a);
+
+                    a = e.OrganizationName.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.OrganizationName = new string(a);
+
+                    a = e.LocationOrganization.ToCharArray();
+                    a[0] = char.ToUpper(a[0]);
+                    e.LocationOrganization = new string(a);
                 }
             }
         }

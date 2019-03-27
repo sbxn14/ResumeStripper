@@ -19,6 +19,7 @@ namespace ResumeStripper.Filters
 
             // Redirect to HTTPS version of page
             // We updated this to redirect using 301 (permanent) instead of 302 (temporary).
+            if (filterContext.HttpContext.Request.Url == null) return;
             string url = "https://" + filterContext.HttpContext.Request.Url.Host + filterContext.HttpContext.Request.RawUrl;
 
             if (string.Equals(filterContext.HttpContext.Request.Url.Host, "localhost", StringComparison.OrdinalIgnoreCase))

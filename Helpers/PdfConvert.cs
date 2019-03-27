@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace Codaxy.WkHtmlToPdf
+namespace ResumeStripper.Helpers
 {
     public class PdfConvertException : Exception
     {
@@ -145,7 +145,7 @@ namespace Codaxy.WkHtmlToPdf
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
                 paramsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                paramsBuilder.Append("--header-spacing 10 ");
+                paramsBuilder.Append("--header-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
@@ -306,40 +306,4 @@ namespace Codaxy.WkHtmlToPdf
             ConvertHtmlToPdf(new PdfDocument { Url = url }, new PdfOutput { OutputFilePath = outputFilePath });
         }
     }
-
-    //class OSUtil
-    //{
-    //    public static string GetProgramFilesx86Path()
-    //    {
-    //        if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
-    //        {
-    //            return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
-    //        }
-    //        return Environment.GetEnvironmentVariable("ProgramFiles");
-    //    }
-    //}
-
-    //public static class HttpResponseExtensions
-    //{
-    //    public static void SendFileForDownload(this HttpResponse response, String filename, byte[] content)
-    //    {
-    //        SetFileDownloadHeaders(response, filename);
-    //        response.OutputStream.Write(content, 0, content.Length);
-    //        response.Flush();
-    //    }
-
-    //    public static void SendFileForDownload(this HttpResponse response, String filename)
-    //    {
-    //        SetFileDownloadHeaders(response, filename);
-    //        response.TransmitFile(filename);
-    //        response.Flush();
-    //    }
-
-    //    public static void SetFileDownloadHeaders(this HttpResponse response, String filename)
-    //    {
-    //        FileInfo fi = new FileInfo(filename);
-    //        response.ContentType = "application/force-download";
-    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + "\"");
-    //    }
-    //}
 }

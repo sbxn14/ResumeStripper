@@ -9,13 +9,13 @@ namespace ResumeStripper.DAL
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public class StripperContext : DbContext
     {
-        //passes the connectionstring saved in the web.config to the DbContext
+        //passes the connection string saved in the web.config to the DbContext
         public StripperContext() : base("MySqlCon")
         {
             Database.SetInitializer<StripperContext>(new DropCreateDatabaseIfModelChanges<StripperContext>());
         }
 
-        public DbSet<CV> CVS { get; set; }
+        public DbSet<CV> Cvs { get; set; }
         public DbSet<WorkExperience> WorkExperiences { get; set; }
         public DbSet<EducationExperience> EducationExperiences { get; set; }
         public DbSet<SidelineExperience> SidelineExperiences { get; set; }

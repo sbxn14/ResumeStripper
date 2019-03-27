@@ -142,7 +142,7 @@
                                 @Html.TextBoxFor(m => m.ResultCv.Country, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Country", required = "required" })
                                 <br />
                                 @Html.LabelFor(m => m.ResultCv.DateOfBirth)
-                                @Html.TextBoxFor(m => m.ResultCv.DateOfBirth, new { @class = "form-control", onfocus = "changeText(this.id)", @Value = "", type = "Date", min = "1900-01-01", max = "2025-12-31" })
+                                @Html.TextBoxFor(m => m.ResultCv.DateOfBirth, new { @class = "form-control", onfocus = "changeText(this.id)", @Value = "", type = "Date", min = "1900-01-01", max = "2025-12-31", id = "dobpicker" })
                                 <br />
                                 <div id="LicenseFields">
                                 </div>
@@ -408,7 +408,31 @@
                                 $('.form-control').filter('[required]:visible').each(function () {
                                     if ($(this).val() === '')
                                         isValid = false;
-                                    console.log(isValid);
+                                });
+
+                                var dob = $('#dobpicker').val();
+
+                                var current = new Date(dob);
+                                var min = new Date('1900-01-01');
+                                var max = new Date('2025-12-31');
+
+
+                                if (current.valueOf() < min.valueOf()) {
+                                    isValid = false;
+                                }
+
+                                if (current.valueOf() > max.valueOf()) {
+                                    isValid = false;
+                                }
+
+                                $('.form-control').filter('[min]:visible').each(function () {
+                                    var dt = new Date($(this).val());
+                                    if (dt.valueOf() < min.valueOf()) {
+                                        isValid = false;
+                                    }
+                                    if (dt.valueOf() > max.valueOf()) {
+                                        isValid = false;
+                                    }
                                 });
                                 return isValid;
                             }

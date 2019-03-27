@@ -5,41 +5,41 @@ using System.Linq;
 
 namespace ResumeStripper.DAL
 {
-    public class CVRepository
+    public class CvRepository
     {
-        private StripperContext context;
+        private readonly StripperContext _context;
 
-        public CVRepository(StripperContext _context)
+        public CvRepository(StripperContext context)
         {
-            context = _context;
+            this._context = context;
         }
 
         public ICollection<CV> GetAll()
         {
-            return context.CVS.ToList();
+            return _context.Cvs.ToList();
         }
 
         public CV Get(int id)
         {
-            return context.CVS.Find(id);
+            return _context.Cvs.Find(id);
         }
 
         public void Update(CV cv)
         {
-            context.Entry(cv).State = EntityState.Modified;
-            context.SaveChanges();
+            _context.Entry(cv).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
         public void Insert(CV cv)
         {
-            context.CVS.Add(cv);
-            context.SaveChanges();
+            _context.Cvs.Add(cv);
+            _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            context.CVS.Remove(Get(id));
-            context.SaveChanges();
+            _context.Cvs.Remove(Get(id));
+            _context.SaveChanges();
         }
     }
 }
