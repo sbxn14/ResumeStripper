@@ -167,21 +167,10 @@ namespace ResumeStripper.Models
             {
                 foreach (EducationExperience e in Educations)
                 {
-                    char[] a = e.Name.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.Name = new string(a);
-
-                    a = e.LevelOfEducation.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.LevelOfEducation = new string(a);
-
-                    a = e.OrganizationName.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.OrganizationName = new string(a);
-
-                    a = e.LocationOrganization.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.LocationOrganization = new string(a);
+                    e.Name = CapitalizeFirstLetter(e.Name);
+                    e.LevelOfEducation = CapitalizeFirstLetter(e.LevelOfEducation);
+                    e.OrganizationName = CapitalizeFirstLetter(e.OrganizationName);
+                    e.LocationOrganization = CapitalizeFirstLetter(e.LocationOrganization);
                 }
             }
 
@@ -189,21 +178,10 @@ namespace ResumeStripper.Models
             {
                 foreach (WorkExperience e in WorkExperiences)
                 {
-                    char[] a = e.JobTitle.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.JobTitle = new string(a);
-
-                    a = e.TaskDescription.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.TaskDescription = new string(a);
-
-                    a = e.OrganizationName.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.OrganizationName = new string(a);
-
-                    a = e.LocationOrganization.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.LocationOrganization = new string(a);
+                    e.JobTitle = CapitalizeFirstLetter(e.JobTitle);
+                    e.TaskDescription = CapitalizeFirstLetter(e.TaskDescription);
+                    e.OrganizationName = CapitalizeFirstLetter(e.OrganizationName);
+                    e.LocationOrganization = CapitalizeFirstLetter(e.LocationOrganization);
                 }
             }
 
@@ -211,17 +189,9 @@ namespace ResumeStripper.Models
             {
                 foreach (CourseExperience e in Courses)
                 {
-                    char[] a = e.Name.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.Name = new string(a);
-
-                    a = e.OrganizationName.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.OrganizationName = new string(a);
-
-                    a = e.LocationOrganization.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.LocationOrganization = new string(a);
+                    e.Name = CapitalizeFirstLetter(e.Name);
+                    e.OrganizationName = CapitalizeFirstLetter(e.OrganizationName);
+                    e.LocationOrganization = CapitalizeFirstLetter(e.LocationOrganization);
                 }
             }
 
@@ -229,23 +199,30 @@ namespace ResumeStripper.Models
             {
                 foreach (SidelineExperience e in SideLines)
                 {
-                    char[] a = e.JobTitle.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.JobTitle = new string(a);
-
-                    a = e.TaskDescription.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.TaskDescription = new string(a);
-
-                    a = e.OrganizationName.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.OrganizationName = new string(a);
-
-                    a = e.LocationOrganization.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    e.LocationOrganization = new string(a);
+                    e.JobTitle = CapitalizeFirstLetter(e.JobTitle);
+                    e.TaskDescription = CapitalizeFirstLetter(e.TaskDescription);
+                    e.OrganizationName = CapitalizeFirstLetter(e.OrganizationName);
+                    e.LocationOrganization = CapitalizeFirstLetter(e.LocationOrganization);
                 }
             }
+
+            if (References.Count > 0)
+            {
+                foreach (Reference e in References)
+                {
+                    e.Name = CapitalizeFirstLetter(e.Name);
+                    e.CompanyName = CapitalizeFirstLetter(e.CompanyName);
+                    e.JobTitle = CapitalizeFirstLetter(e.JobTitle);
+                }
+            }
+        }
+
+        public string CapitalizeFirstLetter(string s)
+        {
+            //capitalizes first letter
+            char[] a = s.ToCharArray();
+            a[0] = char.ToUpper(a[0]);
+            return new string(a);
         }
     }
 }

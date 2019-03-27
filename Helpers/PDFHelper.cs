@@ -24,6 +24,13 @@ namespace ResumeStripper.Helpers
         public bool HasReference = false;
         public bool HasCompetence = false;
 
+        public string Skills = "";
+        public string Licenses = "";
+        public string Hobbies = "";
+        public string Competences = "";
+
+        public string Template = "";
+
         private const string EducationPiece =
             @"<div class=""row EduRow keep-together"" style=""page-break-inside: avoid!important;"">
                   <div class=""column1edu"">
@@ -143,10 +150,7 @@ namespace ResumeStripper.Helpers
             <br />
             [RROW]";
 
-        public string Skills = "";
-        public string Licenses = "";
-        public string Hobbies = "";
-        public string Competences = "";
+        
 
         public CV ExtractData(string url)
         {
@@ -188,480 +192,38 @@ namespace ResumeStripper.Helpers
 
         public byte[] GeneratePdf(string url, CV cv)
         {
-            string template = GetTemplate();
+            //retrieves basic template
+            GetTemplate();
 
             //capitalizes all relevant values in the different lists
             cv.CapitalizeLists();
 
-            //EDUCATIONS
-            foreach (EducationExperience e in cv.Educations)
-            {
-                HasEducation = true;
-                //add piece to template
-                template = template.Replace("[EROW]", EducationPiece);
-
-                //replace all parts with CV information
-                template = template.Replace("[EDUCATIONNAME]", e.Name);
-                template = template.Replace("[EDUCATIONLEVEL]", e.LevelOfEducation);
-                template = template.Replace("[INSTITUTENAME]", e.OrganizationName);
-                template = template.Replace("[INSTITUTELOCATION]", e.LocationOrganization);
-                template = template.Replace("[EDUBEGIN]", e.BeginDate.Date.ToShortDateString());
-
-                DateTime current = DateTime.Today;
-                //changes date to 'present' if current day is given
-                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
-                {
-                    //given date is today
-                    template = template.Replace("[EDUEND]", "present");
-                }
-                else
-                {
-                    template = template.Replace("[EDUEND]", e.EndDate.Date.ToShortDateString());
-                }
-
-                string result = "";
-
-                result = e.Diploma ? "Diploma acquired" : "Diploma not acquired";
-
-                template = template.Replace("[EDUDIPLOMA]", result);
-            }
-
-            //WORK EXPERIENCES
-            foreach (WorkExperience e in cv.WorkExperiences)
-            {
-                HasWork = true;
-                //add piece to template
-                template = template.Replace("[WROW]", WorkPiece);
-
-                //replace all parts with CV information
-                template = template.Replace("[WORKJOB]", e.JobTitle);
-                template = template.Replace("[COMPANYNAME]", e.OrganizationName);
-                template = template.Replace("[COMPANYLOCATION]", e.LocationOrganization);
-                template = template.Replace("[WORKDESCRIPTION]", e.TaskDescription);
-                template = template.Replace("[WORKBEGIN]", e.BeginDate.Date.ToShortDateString());
-
-                DateTime current = DateTime.Today;
-                //changes date to 'present' if current day is given
-                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
-                {
-                    //given date is today
-                    template = template.Replace("[WORKEND]", "present");
-                }
-                else
-                {
-                    template = template.Replace("[WORKEND]", e.EndDate.Date.ToShortDateString());
-                }
-            }
-
-            //COURSES
-            foreach (CourseExperience e in cv.Courses)
-            {
-                HasCourse = true;
-                //add piece to template
-                template = template.Replace("[CROW]", CoursePiece);
-
-                //replace all parts with CV information
-                template = template.Replace("[COURSENAME]", e.Name);
-                template = template.Replace("[COURSEINSTITUTENAME]", e.OrganizationName);
-                template = template.Replace("[COURSEINSTITUTELOCATION]", e.LocationOrganization);
-                template = template.Replace("[COURSEYEAR]", e.Year.Date.Year.ToString());
-
-                string result = "";
-
-                result = e.Certificate ? "Certificate acquired" : "Certificate not acquired";
-
-                template = template.Replace("[COURSECERTIFICATE]", result);
-            }
-
-            //SIDELINES
-            foreach (SidelineExperience e in cv.SideLines)
-            {
-                HasSideline = true;
-                //add piece to template
-                template = template.Replace("[SROW]", SidelinePiece);
-
-                //replace all parts with CV information
-                template = template.Replace("[SIDELINEJOB]", e.JobTitle);
-                template = template.Replace("[ORGANIZATIONNAME]", e.OrganizationName);
-                template = template.Replace("[ORGANIZATIONLOCATION]", e.LocationOrganization);
-                template = template.Replace("[SIDELINEDESCRIPTION]", e.TaskDescription);
-                template = template.Replace("[SIDELINEBEGIN]", e.BeginDate.Date.ToShortDateString());
-
-                DateTime current = DateTime.Today;
-                //changes date to 'present' if current day is given
-                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
-                {
-                    //given date is today
-                    template = template.Replace("[SIDELINEEND]", "present");
-                }
-                else
-                {
-                    template = template.Replace("[SIDELINEEND]", e.EndDate.Date.ToShortDateString());
-                }
-            }
-
-            //LANGUAGES
-            foreach (Language e in cv.Languages)
-            {
-                HasLanguage = true;
-
-                //capitalizes first letter
-                char[] a = e.Name.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                e.Name = new string(a);
-
-                if (e.IsSimple)
-                {
-                    string type = e.Level.ToString();
-                    //simple mode used, only display Level
-
-                    //add piece to template
-                    template = template.Replace("[LROW]", LanguagePieceSimple);
-
-                    if (type.Equals("VeryGood"))
-                    {
-                        type = "Very Good";
-                    }
-
-                    template = template.Replace("[LANGLEVEL]", type);
-                }
-                else
-                {
-                    //detailed mode used, only display separate levels
-                    string typeSpeak = e.LevelOfSpeaking.ToString();
-                    string typeWrite = e.LevelOfWriting.ToString();
-                    string typeListen = e.LevelOfListening.ToString();
-
-                    //add piece to template
-                    template = template.Replace("[LROW]", LanguagePieceDetailed);
-
-                    if (typeSpeak.Equals("VeryGood"))
-                    {
-                        typeSpeak = "Very Good";
-                    }
-                    else if (typeWrite.Equals("VeryGood"))
-                    {
-                        typeWrite = "Very Good";
-                    }
-                    else if (typeListen.Equals("VeryGood"))
-                    {
-                        typeListen = "Very Good";
-                    }
-
-                    template = template.Replace("[LANGSPEAK]", typeSpeak);
-                    template = template.Replace("[LANGLISTEN]", typeListen);
-                    template = template.Replace("[LANGWRITE]", typeWrite);
-                }
-
-                //replace language name
-                template = template.Replace("[LANGNAME]", e.Name);
-            }
-
-            //SKILLS
-            foreach (Skill e in cv.Skills)
-            {
-                HasSkill = true;
-
-                //capitalizes first letter
-                char[] a = e.Name.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                e.Name = new string(a);
-
-                Skills += e.Name + ", ";
-            }
-
-            //removes spare ', '
-            Skills = Skills.TrimEnd(' ');
-            Skills = Skills.TrimEnd(',');
-
-            template = template.Replace("[SKILLNAME]", Skills);
-
-            //REFERENCES
-            foreach (Reference e in cv.References)
-            {
-                HasReference = true;
-                //add piece to template
-                template = template.Replace("[RROW]", ReferencePiece);
-
-                //replace all parts with CV information
-                template = template.Replace("[REFERENCENAME]", e.Name);
-                template = template.Replace("[REFERENCECOMPANYNAME]", e.CompanyName);
-                template = template.Replace("[REFERENCEJOBTITLE]", e.JobTitle);
-                template = template.Replace("[REFERENCEEMAIL]", e.Email);
-                template = template.Replace("[REFERENCEPHONE]", e.PhoneNumber);
-            }
-
-            //HOBBIES
-            foreach (Hobby e in cv.Hobbies)
-            {
-                HasHobby = true;
-
-                //capitalizes first letter
-                char[] a = e.Name.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                e.Name = new string(a);
-
-                Hobbies += e.Name + ", ";
-            }
-
-            //removes spare ', '
-            Hobbies = Hobbies.TrimEnd(' ');
-            Hobbies = Hobbies.TrimEnd(',');
-
-            template = template.Replace("[HOBBYNAME]", Hobbies);
-
-            //COMPETENCES
-            foreach (Competence e in cv.Competences)
-            {
-                HasCompetence = true;
-
-                //capitalizes first letter
-                char[] a = e.Name.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                e.Name = new string(a);
-
-                Competences += e.Name + ", ";
-            }
-
-            //removes spare ', '
-            Competences = Competences.TrimEnd(' ');
-            Competences = Competences.TrimEnd(',');
-
-            template = template.Replace("[COMPETENCENAME]", Competences);
-
-            if (!cv.IsAnonymous)
-            {
-                //NOT ANONYMOUS CV SO PRINT NAMES
-                if (!string.IsNullOrEmpty(cv.Name))
-                {
-                    //capitalizes first letter
-                    char[] a = cv.Name.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    cv.Name = new string(a);
-
-                    template = template.Replace("[FIRST]", cv.Name);
-                }
-                else
-                {
-                    template = template.Replace(@"<span><b>First Name:</b></span>
-                                                    <br />", "");
-                    template = template.Replace(@"<span class=""answer"">[FIRST]</span>
-                                                    <br />", "");
-                }
-
-                if (!string.IsNullOrEmpty(cv.Prefix))
-                {
-                    template = template.Replace("[PRE]", cv.Prefix);
-                }
-                else
-                {
-                    template = template.Replace(@"
-                                                        <span><b>Prefix:</b></span>
-                                                        <br />", "");
-                    template = template.Replace(@"
-                                                        <span class=""answer"">[PRE]</span>
-                                                        <br />", "");
-                    template = template.Replace(@" [PRE] ", " ");
-                }
-
-                if (!string.IsNullOrEmpty(cv.Surname))
-                {
-                    //capitalizes first letter
-                    char[] a = cv.Surname.ToCharArray();
-                    a[0] = char.ToUpper(a[0]);
-                    cv.Surname = new string(a);
-
-                    template = template.Replace("[LAST]", cv.Surname);
-                }
-                else
-                {
-                    template = template.Replace(@"<span><b>Last Name:</b></span>
-                                                    <br />", "");
-                    template = template.Replace(@"<span class=""answer"">[LAST]</span>
-                                                    <br />", "");
-                }
-            }
-            else
-            {
-                //ANONYMOUS CV SO HIDE NAMES
-                template = template.Replace(@"[FIRST] [PRE] [LAST]", "Curriculum vitae");
-                template = template.Replace(@"<h4 class=""CVTitle""><i>Curriculum vitae</i></h4>", "");
-                template = template.Replace(@"<span><b>First Name:</b></span>
-                                                    <br />", "");
-                template = template.Replace(@"<span class=""answer"">[FIRST]</span>
-                                                    <br />", "");
-                template = template.Replace(@"<span><b>Prefix:</b></span>
-                                                    <br />", "");
-                template = template.Replace(@"<span class=""answer"">[PRE]</span>
-                                                    <br />", "");
-                template = template.Replace(@"<span><b>Last Name:</b></span>
-                                                    <br />", "");
-                template = template.Replace(@"<span class=""answer"">[LAST]</span>
-                                                    <br />", "");
-            }
-
-            //RESIDENCE
-            if (!string.IsNullOrEmpty(cv.Residence))
-            {
-                //capitalizes first letter
-                char[] a = cv.Residence.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                cv.Residence = new string(a);
-
-                template = template.Replace("[RESIDENCE]", cv.Residence);
-            }
-            else
-            {
-                template = template.Replace(@"<span><b>Residence:</b></span>
-                                                    <br />", "");
-                template = template.Replace(@"<span class=""answer"">[RESIDENCE]</span>
-                                                    <br />", "");
-            }
-
-            //COUNTRY
-            if (!string.IsNullOrEmpty(cv.Country))
-            {
-                //capitalizes first letter
-                char[] a = cv.Country.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                cv.Country = new string(a);
-                template = template.Replace("[COUNTRY]", cv.Country);
-            }
-            else
-            {
-                template = template.Replace(@"<span><b>Country:</b></span>
-                                                    <br />", "");
-                template = template.Replace(@"<span class=""answer"">[COUNTRY]</span>
-                                                    <br />", "");
-            }
-
-            //DATE OF BIRTH
-            if (cv.DateOfBirth != null && cv.DateOfBirth != DateTime.MinValue)
-            {
-                template = template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
-            }
-            else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
-            {
-                template = template.Replace(@"<span><b>Date of Birth:</b></span>
-                                                        <br />", "");
-                template = template.Replace(@"<span class=""answer"">[DOB]</span>
-                                                        <br />", "");
-            }
-
-            //LICENSES
-            if (cv.Licenses.Count != 0)
-            {
-                //adds all licenses to 1 string
-                foreach (License l in cv.Licenses)
-                {
-                    string type = l.Type.ToString();
-
-                    if (type.Equals("Bplus"))
-                    {
-                        type = "B+";
-                    }
-
-                    Licenses += type + ", ";
-                }
-
-                //removes extra spaces and comma's at end
-                Licenses = Licenses.TrimEnd(' ');
-                Licenses = Licenses.TrimEnd(',');
-
-                template = template.Replace("[LICENSE]", Licenses);
-            }
-            else
-            {
-                //there are no licenses
-                template = template.Replace("[LICENSE]", "None");
-            }
-
-            //PROFILE
-            if (!string.IsNullOrEmpty(cv.Profile))
-            {
-                //capitalizes first letter
-                char[] a = cv.Profile.ToCharArray();
-                a[0] = char.ToUpper(a[0]);
-                cv.Profile = new string(a);
-                template = template.Replace("[PROFILE]", cv.Profile);
-            }
-            else
-            {
-                template = template.Replace(@"<div class=""keep-together"">
-                                                    <h3 style=""margin-top:180px!important""><b>Profile</b></h3>
-                                                    <span class=""answer"">[PROFILE]</span>
-                                                </div>", "");
-            }
-
-            //removes fields based on if elements exist or not
-            if (!HasEducation)
-            {
-                template = template.Replace(@"<h2><b>Educations</b></h2>", "");
-            }
-
-            if (!HasWork)
-            {
-                template = template.Replace(@"<h2><b>Work Experiences</b></h2>", "");
-            }
-
-            if (!HasCourse)
-            {
-                template = template.Replace(@"<h2><b>Courses</b></h2>", "");
-            }
-
-            if (!HasSideline)
-            {
-                template = template.Replace(@"<h2><b>Sidelines</b></h2>", "");
-            }
-
-            if (!HasLanguage)
-            {
-                template = template.Replace(@"<h2><b>Languages</b></h2>", "");
-            }
-
-            if (!HasSkill)
-            {
-                template = template.Replace(@"<h2><b>Skills</b></h2>", "");
-            }
-
-            if (!HasHobby)
-            {
-                template = template.Replace(@"<h2><b>Hobbies</b></h2>", "");
-            }
-
-            if (!HasCompetence)
-            {
-                template = template.Replace(@"<h2><b>Competences</b></h2>", "");
-            }
-
-            if (!HasReference)
-            {
-                template = template.Replace(@"<h2><b>References</b></h2>", "");
-            }
-
-            template = template.Replace("[EROW]", "");
-            template = template.Replace("[WROW]", "");
-            template = template.Replace("[CROW]", "");
-            template = template.Replace("[SROW]", "");
-            template = template.Replace("[LROW]", "");
-            template = template.Replace("[RROW]", "");
-
-            //just cleanup of empty paragraphs and spans if any
-            template = template.Replace("<p></p>", "");
-            template = template.Replace("<p> </p>", "");
-            template = template.Replace("<p><b></b></p>", "");
-            template = template.Replace("<p><b> </b></p>", "");
-            template = template.Replace("<span></span>", "");
-            template = template.Replace("<span> </span>", "");
-            template = template.Replace("<span><b></b></span>", "");
-            template = template.Replace("<span><b> </b></span>", "");
+            //fill the template with any lists in the cv
+            SetUpEducation(cv);
+            SetUpCourses(cv);
+            SetUpWork(cv);
+            SetUpSidelines(cv);
+            SetUpLanguages(cv);
+            SetUpSkills(cv);
+            SetUpCompetences(cv);
+            SetUpHobbies(cv);
+            SetUpReferences(cv);
+
+            //sets up the personalia section, be it anonymous or not
+            SetUpPersonalia(cv);
+
+            //sets up Profile
+            SetUpProfile(cv);
+
+            //cleans any unneeded or missing segments from the template
+            CleanUpTemplate();
 
             string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
             string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
 
             PdfConvert.ConvertHtmlToPdf(new PdfDocument
             {
-                Html = template,
+                Html = Template,
                 HeaderUrl = headUrl,
                 FooterUrl = footUrl,
             },
@@ -673,9 +235,9 @@ namespace ResumeStripper.Helpers
             return File.ReadAllBytes(url);
         }
 
-        private string GetTemplate()
+        private void GetTemplate()
         {
-            string template = @"<html>
+            Template = @"<html>
                                 <link href=""https://fonts.googleapis.com/css?family=Open+Sans:400,700"" rel=""stylesheet"">
                                 <style>*{box-sizing: border-box;}.column1edu {float: left;width: 25%;padding: 10px;}.column2edu {float: left;width: 75%;padding: 10px;}.columnlan {float: left;width: 25%;padding: 10px;}.row:after {content: "";display: table;clear: both;}html {color:#ff700d; font-family: 'Open Sans', sans-serif;} body{margin-top:150px;margin-bottom:50px;width:100%} h2 {font-size: 30px;} p, span {font-size: 18px;} h1 {font-size: 35px; white-space:nowrap;} .keep-together {page-break-inside: avoid!important;}.break-before {page-break-before: always;}.break-after {page-break-after: always;} .CVBigTitle {max-width: 450px; color: #ff700d; margin-bottom:-10px;} .CVSmallTitle {margin-top: 100px; margin-bottom:-33px; max-width: 450px; color:#a9a9a9;} .answer {color: #a9a9a9;}
                                 </style>
@@ -777,7 +339,518 @@ namespace ResumeStripper.Helpers
                                             </div>
                                         </body>
                                     </html>";
-            return template;
+        }
+
+
+
+        private void SetUpEducation(CV cv)
+        {
+            //EDUCATIONS
+            foreach (EducationExperience e in cv.Educations)
+            {
+                HasEducation = true;
+                //add piece to template
+                Template = Template.Replace("[EROW]", EducationPiece);
+
+                //replace all parts with CV information
+                Template = Template.Replace("[EDUCATIONNAME]", e.Name);
+                Template = Template.Replace("[EDUCATIONLEVEL]", e.LevelOfEducation);
+                Template = Template.Replace("[INSTITUTENAME]", e.OrganizationName);
+                Template = Template.Replace("[INSTITUTELOCATION]", e.LocationOrganization);
+                Template = Template.Replace("[EDUBEGIN]", e.BeginDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    Template = Template.Replace("[EDUEND]", "present");
+                }
+                else
+                {
+                    Template = Template.Replace("[EDUEND]", e.EndDate.Date.ToShortDateString());
+                }
+
+                string result = "";
+
+                result = e.Diploma ? "Diploma acquired" : "Diploma not acquired";
+
+                Template = Template.Replace("[EDUDIPLOMA]", result);
+            }
+        }
+
+        private void SetUpCourses(CV cv)
+        {
+            //COURSES
+            foreach (CourseExperience e in cv.Courses)
+            {
+                HasCourse = true;
+                //add piece to template
+                Template = Template.Replace("[CROW]", CoursePiece);
+
+                //replace all parts with CV information
+                Template = Template.Replace("[COURSENAME]", e.Name);
+                Template = Template.Replace("[COURSEINSTITUTENAME]", e.OrganizationName);
+                Template = Template.Replace("[COURSEINSTITUTELOCATION]", e.LocationOrganization);
+                Template = Template.Replace("[COURSEYEAR]", e.Year.Date.Year.ToString());
+
+                string result = "";
+
+                result = e.Certificate ? "Certificate acquired" : "Certificate not acquired";
+
+                Template = Template.Replace("[COURSECERTIFICATE]", result);
+            }
+        }
+
+        private void SetUpWork(CV cv)
+        {
+            //WORK EXPERIENCES
+            foreach (WorkExperience e in cv.WorkExperiences)
+            {
+                HasWork = true;
+                //add piece to template
+                Template = Template.Replace("[WROW]", WorkPiece);
+
+                //replace all parts with CV information
+                Template = Template.Replace("[WORKJOB]", e.JobTitle);
+                Template = Template.Replace("[COMPANYNAME]", e.OrganizationName);
+                Template = Template.Replace("[COMPANYLOCATION]", e.LocationOrganization);
+                Template = Template.Replace("[WORKDESCRIPTION]", e.TaskDescription);
+                Template = Template.Replace("[WORKBEGIN]", e.BeginDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    Template = Template.Replace("[WORKEND]", "present");
+                }
+                else
+                {
+                    Template = Template.Replace("[WORKEND]", e.EndDate.Date.ToShortDateString());
+                }
+            }
+        }
+
+        private void SetUpSidelines(CV cv)
+        {
+            //SIDELINES
+            foreach (SidelineExperience e in cv.SideLines)
+            {
+                HasSideline = true;
+                //add piece to template
+                Template = Template.Replace("[SROW]", SidelinePiece);
+
+                //replace all parts with CV information
+                Template = Template.Replace("[SIDELINEJOB]", e.JobTitle);
+                Template = Template.Replace("[ORGANIZATIONNAME]", e.OrganizationName);
+                Template = Template.Replace("[ORGANIZATIONLOCATION]", e.LocationOrganization);
+                Template = Template.Replace("[SIDELINEDESCRIPTION]", e.TaskDescription);
+                Template = Template.Replace("[SIDELINEBEGIN]", e.BeginDate.Date.ToShortDateString());
+
+                DateTime current = DateTime.Today;
+                //changes date to 'present' if current day is given
+                if (current.ToString("M/d/yyyy").Equals(e.EndDate.Date.ToString("M/d/yyyy")))
+                {
+                    //given date is today
+                    Template = Template.Replace("[SIDELINEEND]", "present");
+                }
+                else
+                {
+                    Template = Template.Replace("[SIDELINEEND]", e.EndDate.Date.ToShortDateString());
+                }
+            }
+        }
+
+        private void SetUpLanguages(CV cv)
+        {
+            //LANGUAGES
+            foreach (Language e in cv.Languages)
+            {
+                HasLanguage = true;
+
+                //capitalizes first letter
+                e.Name = cv.CapitalizeFirstLetter(e.Name);
+
+                if (e.IsSimple)
+                {
+                    string type = e.Level.ToString();
+                    //simple mode used, only display Level
+
+                    //add piece to template
+                    Template = Template.Replace("[LROW]", LanguagePieceSimple);
+
+                    if (type.Equals("VeryGood"))
+                    {
+                        type = "Very Good";
+                    }
+
+                    Template = Template.Replace("[LANGLEVEL]", type);
+                }
+                else
+                {
+                    //detailed mode used, only display separate levels
+                    string typeSpeak = e.LevelOfSpeaking.ToString();
+                    string typeWrite = e.LevelOfWriting.ToString();
+                    string typeListen = e.LevelOfListening.ToString();
+
+                    //add piece to template
+                    Template = Template.Replace("[LROW]", LanguagePieceDetailed);
+
+                    if (typeSpeak.Equals("VeryGood"))
+                    {
+                        typeSpeak = "Very Good";
+                    }
+                    else if (typeWrite.Equals("VeryGood"))
+                    {
+                        typeWrite = "Very Good";
+                    }
+                    else if (typeListen.Equals("VeryGood"))
+                    {
+                        typeListen = "Very Good";
+                    }
+
+                    Template = Template.Replace("[LANGSPEAK]", typeSpeak);
+                    Template = Template.Replace("[LANGLISTEN]", typeListen);
+                    Template = Template.Replace("[LANGWRITE]", typeWrite);
+                }
+
+                //replace language name
+                Template = Template.Replace("[LANGNAME]", e.Name);
+            }
+        }
+
+        private void SetUpSkills(CV cv)
+        {
+            //SKILLS
+            foreach (Skill e in cv.Skills)
+            {
+                HasSkill = true;
+
+                //capitalizes first letter
+                e.Name = cv.CapitalizeFirstLetter(e.Name);
+
+                Skills += e.Name + ", ";
+            }
+
+            //removes spare ', '
+            Skills = Skills.TrimEnd(' ');
+            Skills = Skills.TrimEnd(',');
+
+            Template = Template.Replace("[SKILLNAME]", Skills);
+        }
+
+        private void SetUpHobbies(CV cv)
+        {
+            //HOBBIES
+            foreach (Hobby e in cv.Hobbies)
+            {
+                HasHobby = true;
+
+                //capitalizes first letter
+                e.Name = cv.CapitalizeFirstLetter(e.Name);
+
+                Hobbies += e.Name + ", ";
+            }
+
+            //removes spare ', '
+            Hobbies = Hobbies.TrimEnd(' ');
+            Hobbies = Hobbies.TrimEnd(',');
+
+            Template = Template.Replace("[HOBBYNAME]", Hobbies);
+
+
+        }
+
+        private void SetUpCompetences(CV cv)
+        {
+            //COMPETENCES
+            foreach (Competence e in cv.Competences)
+            {
+                HasCompetence = true;
+
+                //capitalizes first letter
+                e.Name = cv.CapitalizeFirstLetter(e.Name);
+
+                Competences += e.Name + ", ";
+            }
+
+            //removes spare ', '
+            Competences = Competences.TrimEnd(' ');
+            Competences = Competences.TrimEnd(',');
+
+            Template = Template.Replace("[COMPETENCENAME]", Competences);
+        }
+
+        private void SetUpReferences(CV cv)
+        {
+            //REFERENCES
+            foreach (Reference e in cv.References)
+            {
+                HasReference = true;
+                //add piece to template
+                Template = Template.Replace("[RROW]", ReferencePiece);
+
+                //replace all parts with CV information
+                Template = Template.Replace("[REFERENCENAME]", e.Name);
+                Template = Template.Replace("[REFERENCECOMPANYNAME]", e.CompanyName);
+                Template = Template.Replace("[REFERENCEJOBTITLE]", e.JobTitle);
+                Template = Template.Replace("[REFERENCEEMAIL]", e.Email);
+                Template = Template.Replace("[REFERENCEPHONE]", e.PhoneNumber);
+            }
+        }
+
+        private void SetUpPersonalia(CV cv)
+        {
+            if (cv.IsAnonymous)
+            {
+                //CV must be anonymous
+                SetUpAnonymousName(cv);
+            }
+            else
+            {
+                //CV must NOT be anonymous
+                SetUpName(cv);
+            }
+            //TODO: these can be moved if anonymous variants are created maybe
+            SetUpResidence(cv);
+            SetUpCountry(cv);
+            SetUpDateOfBirth(cv);
+            SetUpLicenses(cv);
+        }
+        private void SetUpName(CV cv)
+        {
+            if (!string.IsNullOrEmpty(cv.Name))
+            {
+                //capitalizes first letter
+                cv.Name = cv.CapitalizeFirstLetter(cv.Name);
+
+                Template = Template.Replace("[FIRST]", cv.Name);
+            }
+            else
+            {
+                Template = Template.Replace(@"<span><b>First Name:</b></span>
+                                                    <br />", "");
+                Template = Template.Replace(@"<span class=""answer"">[FIRST]</span>
+                                                    <br />", "");
+            }
+
+            if (!string.IsNullOrEmpty(cv.Prefix))
+            {
+                Template = Template.Replace("[PRE]", cv.Prefix);
+            }
+            else
+            {
+                Template = Template.Replace(@"
+                                                        <span><b>Prefix:</b></span>
+                                                        <br />", "");
+                Template = Template.Replace(@"
+                                                        <span class=""answer"">[PRE]</span>
+                                                        <br />", "");
+                Template = Template.Replace(@" [PRE] ", " ");
+            }
+
+            if (!string.IsNullOrEmpty(cv.Surname))
+            {
+                //capitalizes first letter
+                cv.Surname = cv.CapitalizeFirstLetter(cv.Surname);
+
+                Template = Template.Replace("[LAST]", cv.Surname);
+            }
+            else
+            {
+                Template = Template.Replace(@"<span><b>Last Name:</b></span>
+                                                    <br />", "");
+                Template = Template.Replace(@"<span class=""answer"">[LAST]</span>
+                                                    <br />", "");
+            }
+        }
+
+        private void SetUpAnonymousName(CV cv)
+        {
+            Template = Template.Replace(@"[FIRST] [PRE] [LAST]", "Curriculum vitae");
+            Template = Template.Replace(@"<h4 class=""CVTitle""><i>Curriculum vitae</i></h4>", "");
+            Template = Template.Replace(@"<span><b>First Name:</b></span>
+                                                    <br />", "");
+            Template = Template.Replace(@"<span class=""answer"">[FIRST]</span>
+                                                    <br />", "");
+            Template = Template.Replace(@"<span><b>Prefix:</b></span>
+                                                    <br />", "");
+            Template = Template.Replace(@"<span class=""answer"">[PRE]</span>
+                                                    <br />", "");
+            Template = Template.Replace(@"<span><b>Last Name:</b></span>
+                                                    <br />", "");
+            Template = Template.Replace(@"<span class=""answer"">[LAST]</span>
+                                                    <br />", "");
+        }
+
+        private void SetUpResidence(CV cv)
+        {
+            //RESIDENCE
+            if (!string.IsNullOrEmpty(cv.Residence))
+            {
+                //capitalizes first letter
+                cv.Residence = cv.CapitalizeFirstLetter(cv.Residence);
+
+                Template = Template.Replace("[RESIDENCE]", cv.Residence);
+            }
+            else
+            {
+                Template = Template.Replace(@"<span><b>Residence:</b></span>
+                                                    <br />", "");
+                Template = Template.Replace(@"<span class=""answer"">[RESIDENCE]</span>
+                                                    <br />", "");
+            }
+        }
+
+        private void SetUpCountry(CV cv)
+        {
+            //COUNTRY
+            if (!string.IsNullOrEmpty(cv.Country))
+            {
+                //capitalizes first letter
+                cv.Country = cv.CapitalizeFirstLetter(cv.Country);
+
+                Template = Template.Replace("[COUNTRY]", cv.Country);
+            }
+            else
+            {
+                Template = Template.Replace(@"<span><b>Country:</b></span>
+                                                    <br />", "");
+                Template = Template.Replace(@"<span class=""answer"">[COUNTRY]</span>
+                                                    <br />", "");
+            }
+        }
+
+        private void SetUpDateOfBirth(CV cv)
+        {
+            //DATE OF BIRTH
+            if (cv.DateOfBirth != DateTime.MinValue)
+            {
+                Template = Template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
+            }
+            else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
+            {
+                Template = Template.Replace(@"<span><b>Date of Birth:</b></span>
+                                                        <br />", "");
+                Template = Template.Replace(@"<span class=""answer"">[DOB]</span>
+                                                        <br />", "");
+            }
+        }
+
+        private void SetUpLicenses(CV cv)
+        {
+            //LICENSES
+            if (cv.Licenses.Count != 0)
+            {
+                //adds all licenses to 1 string
+                foreach (License l in cv.Licenses)
+                {
+                    string type = l.Type.ToString();
+
+                    if (type.Equals("Bplus"))
+                    {
+                        type = "B+";
+                    }
+
+                    Licenses += type + ", ";
+                }
+
+                //removes extra spaces and comma's at end
+                Licenses = Licenses.TrimEnd(' ');
+                Licenses = Licenses.TrimEnd(',');
+
+                Template = Template.Replace("[LICENSE]", Licenses);
+            }
+            else
+            {
+                //there are no licenses
+                Template = Template.Replace("[LICENSE]", "None");
+            }
+        }
+
+        private void SetUpProfile(CV cv)
+        {
+            //PROFILE
+            if (!string.IsNullOrEmpty(cv.Profile))
+            {
+                //capitalizes first letter
+                cv.Profile = cv.CapitalizeFirstLetter(cv.Profile);
+                Template = Template.Replace("[PROFILE]", cv.Profile);
+            }
+            else
+            {
+                Template = Template.Replace(@"<div class=""keep-together"">
+                                                    <h3 style=""margin-top:180px!important""><b>Profile</b></h3>
+                                                    <span class=""answer"">[PROFILE]</span>
+                                                </div>", "");
+            }
+        }
+
+        private void CleanUpTemplate()
+        {
+            //removes fields based on if elements exist or not
+            if (!HasEducation)
+            {
+                Template = Template.Replace(@"<h2><b>Educations</b></h2>", "");
+            }
+
+            if (!HasWork)
+            {
+                Template = Template.Replace(@"<h2><b>Work Experiences</b></h2>", "");
+            }
+
+            if (!HasCourse)
+            {
+                Template = Template.Replace(@"<h2><b>Courses</b></h2>", "");
+            }
+
+            if (!HasSideline)
+            {
+                Template = Template.Replace(@"<h2><b>Sidelines</b></h2>", "");
+            }
+
+            if (!HasLanguage)
+            {
+                Template = Template.Replace(@"<h2><b>Languages</b></h2>", "");
+            }
+
+            if (!HasSkill)
+            {
+                Template = Template.Replace(@"<h2><b>Skills</b></h2>", "");
+            }
+
+            if (!HasHobby)
+            {
+                Template = Template.Replace(@"<h2><b>Hobbies</b></h2>", "");
+            }
+
+            if (!HasCompetence)
+            {
+                Template = Template.Replace(@"<h2><b>Competences</b></h2>", "");
+            }
+
+            if (!HasReference)
+            {
+                Template = Template.Replace(@"<h2><b>References</b></h2>", "");
+            }
+
+            Template = Template.Replace("[EROW]", "");
+            Template = Template.Replace("[WROW]", "");
+            Template = Template.Replace("[CROW]", "");
+            Template = Template.Replace("[SROW]", "");
+            Template = Template.Replace("[LROW]", "");
+            Template = Template.Replace("[RROW]", "");
+
+            //just cleanup of empty paragraphs and spans if any
+            Template = Template.Replace("<p></p>", "");
+            Template = Template.Replace("<p> </p>", "");
+            Template = Template.Replace("<p><b></b></p>", "");
+            Template = Template.Replace("<p><b> </b></p>", "");
+            Template = Template.Replace("<span></span>", "");
+            Template = Template.Replace("<span> </span>", "");
+            Template = Template.Replace("<span><b></b></span>", "");
+            Template = Template.Replace("<span><b> </b></span>", "");
         }
     }
 }

@@ -258,7 +258,6 @@
     <Compile Include="DAL\DatabaseInitializer.cs" />
     <Compile Include="DAL\StripperContext.cs" />
     <Compile Include="Filters\CompressFilter.cs" />
-    <Compile Include="Filters\CustomRequireHttpsFilter.cs" />
     <Compile Include="Filters\WhitespaceFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
