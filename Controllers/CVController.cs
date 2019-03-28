@@ -20,10 +20,10 @@ namespace ResumeStripper.Controllers
         [CompressFilter]
         public ActionResult Index()
         {
-            MessageViewModel model = (MessageViewModel) TempData["Message"];
+            MessageViewModel model = (MessageViewModel)TempData["Message"];
             if (model != null)
             {
-                string filename = (string) TempData["file"];
+                string filename = (string)TempData["file"];
 
                 if (filename.Contains(":"))
                 {
@@ -54,7 +54,9 @@ namespace ResumeStripper.Controllers
                 //checks if file is pdf, if not will give error
                 if (extension != null && extension.Equals(".PDF"))
                 {
+                    //empty PDF, return to index
                     if (pdf.ContentLength <= 0) return RedirectToAction("Index");
+
                     TempData["file"] = pdf.FileName;
 
                     MessageViewModel mod = new MessageViewModel
@@ -80,7 +82,21 @@ namespace ResumeStripper.Controllers
         [HttpPost]
         public ActionResult Export(MessageViewModel model, string submitter)
         {
-            if (model.ResultCv == null) return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(model.ServerPath))
+            {
+                //if file just got saved
+                string[] files = Directory.GetFiles(model.ServerPath);
+                foreach (string file in files)
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+
+            if (model.ResultCv == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             CV cv = model.ResultCv;
             //removes any accidental whitespaces at beginning and end of every value in the CV
             cv.TrimEverything();
@@ -128,13 +144,19 @@ namespace ResumeStripper.Controllers
 
             if (cv.IsAnonymous)
             {
-                //cv is anonymous
-                resultName = "CV_User_" + cv.ID + "_EHV.pdf";
+                //cv is anonymous so file should be too
+                resultName = $"CV_User_{cv.ID}_EHV.pdf";
             }
             else
             {
-                if (cv.Prefix == "") resultName = "CV_" + cv.Name + "_" + cv.Surname + "_EHV.pdf";
-                else resultName = "CV_" + cv.Name + "_" + cv.Prefix + "_" + cv.Surname + "_EHV.pdf";
+                if (cv.Prefix == "")
+                {
+                    resultName = $"CV_{cv.Name}_{cv.Surname}_EHV.pdf";
+                }
+                else
+                {
+                    resultName = $"CV_{cv.Name}_{cv.Prefix}_{cv.Surname}_EHV.pdf";
+                }
             }
 
             TempData["pdfName"] = resultName;
@@ -142,7 +164,7 @@ namespace ResumeStripper.Controllers
             string url = Server.MapPath("~/PDFs/") + resultName;
 
             PdfHelper helper = new PdfHelper();
-            byte[] newPdf = helper.GeneratePdf(url, cv);
+            byte[] newPdf = helper.GeneratePdf(cv);
             TempData["bytes"] = newPdf;
             return View();
             //return RedirectToAction("Download");
@@ -150,8 +172,8 @@ namespace ResumeStripper.Controllers
 
         public ActionResult Download()
         {
-            byte[] thePdf = (byte[]) TempData["bytes"];
-            string name = (string) TempData["pdfName"];
+            byte[] thePdf = (byte[])TempData["bytes"];
+            string name = (string)TempData["pdfName"];
             return File(thePdf, "application/pdf", name);
         }
 

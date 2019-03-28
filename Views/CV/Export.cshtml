@@ -1,5 +1,5 @@
 ﻿<html>
-@Styles.Render("~/Content/css")
+@Styles.Render("~/Content/customcss")
 @Scripts.Render("~/bundles/bootstrap")
 <head>
 </head>
@@ -10,7 +10,7 @@
             @Html.ActionLink("Download PDF", "Download", "CV", new { @class = "btn sample btn-sample btn-resume" })
             <br />
             <br />
-            @Html.ActionLink("Return to Resume Stripper", "Index", "CV", new { @class = "btn sample btn-sample btn-resume" })
+            @Html.ActionLink("Return to Resume Stripper", "Index", "CV", null, new { @class = "btn sample btn-sample btn-resume" })
         </p>
     </div>
 </body>

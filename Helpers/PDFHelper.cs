@@ -150,8 +150,6 @@ namespace ResumeStripper.Helpers
             <br />
             [RROW]";
 
-        
-
         public CV ExtractData(string url)
         {
             CV result = new CV();
@@ -190,7 +188,7 @@ namespace ResumeStripper.Helpers
             return result;
         }
 
-        public byte[] GeneratePdf(string url, CV cv)
+        public byte[] GeneratePdf(CV cv)
         {
             //retrieves basic template
             GetTemplate();
@@ -221,6 +219,8 @@ namespace ResumeStripper.Helpers
             string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
             string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
 
+            MemoryStream resultStream = new MemoryStream();
+
             PdfConvert.ConvertHtmlToPdf(new PdfDocument
             {
                 Html = Template,
@@ -229,10 +229,24 @@ namespace ResumeStripper.Helpers
             },
                 new PdfOutput
                 {
-                    OutputFilePath = url
+                    OutputStream = resultStream
                 });
+            
+            return resultStream.ToArray();
+        }
 
-            return File.ReadAllBytes(url);
+        public byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
 
         private void GetTemplate()
@@ -340,8 +354,6 @@ namespace ResumeStripper.Helpers
                                         </body>
                                     </html>";
         }
-
-
 
         private void SetUpEducation(CV cv)
         {
@@ -558,8 +570,6 @@ namespace ResumeStripper.Helpers
             Hobbies = Hobbies.TrimEnd(',');
 
             Template = Template.Replace("[HOBBYNAME]", Hobbies);
-
-
         }
 
         private void SetUpCompetences(CV cv)
@@ -618,6 +628,7 @@ namespace ResumeStripper.Helpers
             SetUpDateOfBirth(cv);
             SetUpLicenses(cv);
         }
+
         private void SetUpName(CV cv)
         {
             if (!string.IsNullOrEmpty(cv.Name))
@@ -668,6 +679,8 @@ namespace ResumeStripper.Helpers
 
         private void SetUpAnonymousName(CV cv)
         {
+            //TODO: Keep First Name
+            //deletes anything to do with name
             Template = Template.Replace(@"[FIRST] [PRE] [LAST]", "Curriculum vitae");
             Template = Template.Replace(@"<h4 class=""CVTitle""><i>Curriculum vitae</i></h4>", "");
             Template = Template.Replace(@"<span><b>First Name:</b></span>

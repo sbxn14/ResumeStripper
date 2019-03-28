@@ -21,7 +21,7 @@ namespace ResumeStripper
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.min.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new StyleBundle("~/Content/customcss").Include(
                       "~/Content/css/animate.min.css",
                       "~/Content/css/bootstrap.min.css",
                       "~/Content/css/light-bootstrap-dashboard.css",
