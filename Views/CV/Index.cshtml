@@ -73,7 +73,7 @@
         <div class="content all-icons">
             <div class="container-fluid">
                 <div class="row">
-                    <!-- Kaart links -->
+                    <!-- Left half -->
                     <div class="col-md-6">
                         <div class="card" height="1000px">
                             <div class="header">
@@ -104,12 +104,13 @@
                         </div>
                     </div>
 
-                    <!-- Kaart rechts -->
+                    <!-- Right half -->
                     <div class="col-md-6">
                         <div class="card" style="padding-left: 20px!important; padding-right: 20px!important; padding-bottom: 20px!important;">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume EHV</h4>
                                 <img src="~/Content/img/ehv-talent-logo.png" alt="EHV Talent" align="right">
+                                <p style="font-size:9px">(Temporary/Tijdelijk) When picking a date, pick the current date to set 'present' (heden)</p>
                                 <style>
                                     .divsenn {
                                         margin-top: 150px;
@@ -136,6 +137,9 @@
                                 @Html.TextBoxFor(m => m.ResultCv.Prefix, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Prefix" })
                                 <br />
                                 @Html.TextBoxFor(m => m.ResultCv.Surname, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Last Name", required = "required" })
+                                <br />
+                                @Html.LabelFor(m => m.ResultCv.Gender)
+                                @Html.EnumDropDownListFor(m => m.ResultCv.Gender, new { @class = "form-control", required = "required" })
                                 <br />
                                 @Html.TextBoxFor(m => m.ResultCv.Residence, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Residence", required = "required" })
                                 <br />

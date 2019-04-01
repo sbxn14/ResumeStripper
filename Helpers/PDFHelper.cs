@@ -231,22 +231,8 @@ namespace ResumeStripper.Helpers
                 {
                     OutputStream = resultStream
                 });
-            
-            return resultStream.ToArray();
-        }
 
-        public byte[] ReadFully(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
+            return resultStream.ToArray();
         }
 
         private void GetTemplate()
@@ -271,6 +257,8 @@ namespace ResumeStripper.Helpers
                                                         <br />
                                                         <span><b>Last Name:</b></span>
                                                         <br />
+                                                        <span><b>Gender:</b></span>
+                                                        <br />
                                                         <span><b>Residence:</b></span>
                                                         <br />
                                                         <span><b>Country:</b></span>
@@ -285,6 +273,8 @@ namespace ResumeStripper.Helpers
                                                         <span class=""answer"">[PRE]</span>
                                                         <br />
                                                         <span class=""answer"">[LAST]</span>
+                                                        <br />
+                                                        <span class=""answer"">[GENDER]</span>
                                                         <br />
                                                         <span class=""answer"">[RESIDENCE]</span>
                                                         <br />
@@ -622,6 +612,10 @@ namespace ResumeStripper.Helpers
                 //CV must NOT be anonymous
                 SetUpName(cv);
             }
+
+            //Gender can't be null or empty anyway
+            Template = Template.Replace(@"[GENDER]", cv.Gender.ToString());
+
             //TODO: these can be moved if anonymous variants are created maybe
             SetUpResidence(cv);
             SetUpCountry(cv);

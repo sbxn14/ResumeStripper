@@ -1,4 +1,5 @@
 ﻿using ResumeStripper.DAL;
+using ResumeStripper.Filters;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models;
 using ResumeStripper.Models.Enums;
@@ -7,7 +8,6 @@ using System.Data.Entity.Validation;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
-using ResumeStripper.Filters;
 
 namespace ResumeStripper.Controllers
 {
@@ -33,13 +33,11 @@ namespace ResumeStripper.Controllers
 
                 //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
                 model.ServerPath = "http://192.168.86.27:8081/" + filename;
+                //model.ServerPath = "ftp://192.168.86.27/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
                 return View(model);
             }
-            else
-            {
-                return View(new MessageViewModel());
-            }
+            return View(new MessageViewModel());
         }
 
         [ValidateAntiForgeryToken]
@@ -55,7 +53,10 @@ namespace ResumeStripper.Controllers
                 if (extension != null && extension.Equals(".PDF"))
                 {
                     //empty PDF, return to index
-                    if (pdf.ContentLength <= 0) return RedirectToAction("Index");
+                    if (pdf.ContentLength <= 0)
+                    {
+                        return RedirectToAction("Index");
+                    }
 
                     TempData["file"] = pdf.FileName;
 
@@ -74,7 +75,6 @@ namespace ResumeStripper.Controllers
                     return RedirectToAction("Index");
                 }
             }
-
             return RedirectToAction("Index");
         }
 
@@ -82,16 +82,6 @@ namespace ResumeStripper.Controllers
         [HttpPost]
         public ActionResult Export(MessageViewModel model, string submitter)
         {
-            if (string.IsNullOrEmpty(model.ServerPath))
-            {
-                //if file just got saved
-                string[] files = Directory.GetFiles(model.ServerPath);
-                foreach (string file in files)
-                {
-                    System.IO.File.Delete(file);
-                }
-            }
-
             if (model.ResultCv == null)
             {
                 return RedirectToAction("Index");
@@ -117,10 +107,10 @@ namespace ResumeStripper.Controllers
 
             try
             {
-                //TODO: improve saving, more specific.
+                //TODO: improve saving, more specific instead of just saving the entire thing in the database as is. 
                 //Save (for now) the complete CV-model in the Database
-                //Db.Cvs.Add(cv);
-                //Db.SaveChanges();
+                Db.Cvs.Add(cv);
+                Db.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -142,6 +132,7 @@ namespace ResumeStripper.Controllers
 
             string resultName = "";
 
+            //set name of generated pdf based on if anonymous and if name contains prefix
             if (cv.IsAnonymous)
             {
                 //cv is anonymous so file should be too
@@ -183,7 +174,6 @@ namespace ResumeStripper.Controllers
             {
                 Db.Dispose();
             }
-
             base.Dispose(disposing);
         }
     }

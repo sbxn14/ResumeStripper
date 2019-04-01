@@ -66,10 +66,6 @@
       <HintPath>..\packages\Google.Protobuf.3.7.0\lib\net45\Google.Protobuf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.9.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.9.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.AspNet.TelemetryCorrelation, Version=1.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.5\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
     </Reference>
@@ -281,6 +277,10 @@
     <Compile Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.Designer.cs">
       <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904010759299_addedGender.cs" />
+    <Compile Include="Migrations\201904010759299_addedGender.Designer.cs">
+      <DependentUpon>201904010759299_addedGender.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
@@ -444,6 +444,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.resx">
       <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904010759299_addedGender.resx">
+      <DependentUpon>201904010759299_addedGender.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ResumeStripper.Models.Enums;
 
 namespace ResumeStripper.Models
 {
@@ -21,6 +22,9 @@ namespace ResumeStripper.Models
         [MaxLength(100)]
         [Required]
         public string Surname { get; set; }
+
+        [Required]
+        public Gender Gender { get; set; }
 
         [Required]
         [MaxLength(20)]
