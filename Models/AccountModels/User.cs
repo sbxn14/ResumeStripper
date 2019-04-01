@@ -6,11 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace ResumeStripper.Models
+namespace ResumeStripper.Models.AccountModels
 {
     [NotMapped]
     public class User
     {
+        //TODO Proper encryption instead of salted hash
         [Key]
         public int ID { get; set; }
         public string Emailaddress { get; set; }
