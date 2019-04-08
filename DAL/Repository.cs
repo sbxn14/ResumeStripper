@@ -16,6 +16,11 @@ namespace ResumeStripper.DAL
             DbSet = context.Set<T>();
         }
 
+        public T GetById(int id)
+        {
+            return DbSet.Find(id);
+        }
+
         public List<T> GetAll()
         {
             return DbSet.ToList();

@@ -12,30 +12,48 @@ namespace ResumeStripper.Controllers
 {
     public class CVController : Controller
     {
-        public readonly CvRepository Repo = new CvRepository(new StripperContext());
+        protected readonly CvRepository Repo = new CvRepository(new StripperContext());
+        //protected readonly StripperContext context = new StripperContext();
+
+        private string _currentUrl = "";
 
         [HttpGet]
         [WhitespaceFilter]
         [CompressFilter]
         public ActionResult Index()
         {
-            MessageViewModel model = (MessageViewModel)TempData["Message"];
-            if (model != null)
+            if (TempData["ViewD"] != null)
             {
-                string filename = (string)TempData["file"];
+                ViewData = (ViewDataDictionary)TempData["ViewD"];
 
-                if (filename.Contains(":"))
+                if (!string.IsNullOrEmpty((string)TempData["CurrentURL"]))
                 {
-                    //Makes filename Microsoft Edge compatible if needed
-                    filename = Path.GetFileName(filename);
+                    //if there is a current url saved, reopen PDF
+                    ViewBag.JavaScriptFunction = "newPDFArrived('" + (string)TempData["CurrentURL"] + "');";
                 }
 
-                //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
-                model.ServerPath = "http://192.168.86.27:8081/" + filename;
-                ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
-                return View(model);
+                MessageViewModel m = (MessageViewModel)TempData["exportForm"];
+                return View(m);
             }
-            return View(new MessageViewModel());
+
+            MessageViewModel model = (MessageViewModel)TempData["Message"];
+
+            //if model is null somehow, return to the index view
+            if (model == null) return View(new MessageViewModel());
+
+            string filename = (string)TempData["file"];
+
+            if (filename.Contains(":"))
+            {
+                //Makes filename Microsoft Edge compatible if needed
+                filename = Path.GetFileName(filename);
+            }
+
+            //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
+            model.ServerPath = "http://127.0.0.1:8081/" + filename;
+            TempData["CurrentURL"] = model.ServerPath;
+            ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
+            return View(model);
         }
 
         [ValidateAntiForgeryToken]
@@ -63,12 +81,11 @@ namespace ResumeStripper.Controllers
                         Path = pdf.FileName
                     };
 
-                    //TODO CALL EXTRACTION METHOD if we go that route
-
                     TempData["Message"] = mod;
                 }
                 else
                 {
+                    //TODO: Technically not needed, can be removed probably
                     ViewBag.FileStatus = "Invalid File Format.";
                     return RedirectToAction("Index");
                 }
@@ -80,6 +97,13 @@ namespace ResumeStripper.Controllers
         [HttpPost]
         public ActionResult Export(MessageViewModel model, string submitter)
         {
+            if (!ModelState.IsValid)
+            {
+                //validation failed
+                TempData["exportForm"] = model;
+                TempData["ViewD"] = ViewData;
+                return RedirectToAction("Index");
+            }
             if (model.ResultCv == null)
             {
                 return RedirectToAction("Index");
@@ -97,6 +121,9 @@ namespace ResumeStripper.Controllers
                 //TODO: improve saving, more specific instead of just saving the entire thing in the database as is.
                 //Save (for now) the complete CV-model in the Database
                 Repo.Add(cv);
+                //context.Cvs.Add(cv);
+                //context.SaveChanges();
+                Repo.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -104,8 +131,7 @@ namespace ResumeStripper.Controllers
                 {
                     foreach (var validationError in validationErrors.ValidationErrors)
                     {
-                        System.Console.WriteLine(@"Property: {0} Error: {1}", validationError.PropertyName,
-                            validationError.ErrorMessage);
+                        ModelState.AddModelError(validationError.PropertyName, validationError.ErrorMessage);
                     }
                 }
             }
@@ -154,7 +180,7 @@ namespace ResumeStripper.Controllers
         {
             byte[] thePdf = (byte[])TempData["bytes"];
             string name = (string)TempData["pdfName"];
-            
+
             return File(thePdf, "application/pdf", name);
         }
 
@@ -163,6 +189,7 @@ namespace ResumeStripper.Controllers
             if (disposing)
             {
                 Repo.Dispose();
+                //context.Dispose();
             }
             base.Dispose(disposing);
         }

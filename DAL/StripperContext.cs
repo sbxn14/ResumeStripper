@@ -2,7 +2,6 @@
 using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace ResumeStripper.DAL
 {
@@ -12,7 +11,7 @@ namespace ResumeStripper.DAL
         //passes the connection string saved in the web.config to the DbContext
         public StripperContext() : base("MySqlCon")
         {
-            Database.SetInitializer<StripperContext>(new DropCreateDatabaseIfModelChanges<StripperContext>());
+            Database.SetInitializer<StripperContext>(new CreateDatabaseIfNotExists<StripperContext>());
         }
 
         public DbSet<CV> Cvs { get; set; }
@@ -26,11 +25,5 @@ namespace ResumeStripper.DAL
         public DbSet<Reference> References { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Hobby> Hobbies { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            //prevents data to be saved as (For example) "Skills" instead of "Skill"
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-        }
     }
 }

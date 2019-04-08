@@ -203,7 +203,6 @@
                         <div class="card" height="1000px">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume applicant</h4>
-                                @Html.ActionLink("Download PDF", "Download", "CV", new { @class = "btn sample btn-sample btn-resume" })
                                 @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
