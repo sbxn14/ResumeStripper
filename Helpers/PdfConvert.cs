@@ -24,6 +24,8 @@ namespace ResumeStripper.Helpers
 
     public class PdfOutput
     {
+        public bool ReturnBytes { get; set; }
+        public byte[] OutputArray { get; set; }
         public String OutputFilePath { get; set; }
         public Stream OutputStream { get; set; }
         public Action<PdfDocument, byte[]> OutputCallback { get; set; }
@@ -274,6 +276,13 @@ namespace ResumeStripper.Helpers
                             process.ErrorDataReceived -= errorHandler;
                         }
                     }
+                }
+
+                if (woutput.ReturnBytes)
+                {
+                    //if ReturnBytes = true, then return pdf as byte[]
+                    byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
+                    woutput.OutputArray = pdfFileBytes;
                 }
 
                 if (woutput.OutputStream != null)

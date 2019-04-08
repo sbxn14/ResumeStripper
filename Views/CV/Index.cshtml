@@ -1,9 +1,5 @@
 ﻿@model ResumeStripper.Models.Viewmodels.MessageViewModel
 
-@{
-    ViewBag.Title = "Resume Stripper";
-}
-
 @Styles.Render("~/Content/customcss")
 @Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
 @Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
@@ -15,6 +11,136 @@
 @Styles.Render("~/Scripts/textlayer/text_layer_builder.css")
 @Scripts.Render("~/Scripts/PDFSCRIPT.js")
 @Scripts.Render("~/Scripts/js/ChangeElementScript.js")
+
+<script type="text/javascript">
+    function addLicense() {
+        @{
+                                            Model.ResultCv.Licenses.Add(new ResumeStripper.Models.License());
+                                        }
+        var i = document.getElementById("LicenseFields").getElementsByClassName("licenseRow").length;
+        var labelNr = i + 1;
+        var fields = $('#LicenseFields');
+        var template = '<div class="licenseRow" style="margin-bottom: 15px" id="LicenseRow_' + i + '"><input name="ResultCv.Licenses.Index" type="hidden" value="' + i + '" /><label id="LicenseLabel' + i + '">License ' + labelNr + '</label><select required class="form-control" data-val="true" data-val-required="Please select a licensetype or remove this field!" id="ResultCv_Licenses_' + i + '__Type" name="ResultCv.Licenses[' + i + '].Type"><option value="">Select Type</option><option selected="selected" value="0">None</option><option value="1">A</option><option value="2">A1</option><option value="3">A2</option><option value="4">AM</option><option value="5">B</option><option value="6">BE</option><option value="7">B+</option><option value="8">C</option><option value="9">CE</option><option value="10">C1</option><option value="11">C1E</option><option value="12">D</option><option value="13">DE</option><option value="14">D1</option><option value="15">D1E</option><option value="16">T</option></select><input type="button" class="btn sample btn-sample btn-sm btn-resume" value="Remove License ' + labelNr + '" onclick="removeElement(LicenseRow_' + i + '.id)" /></div>';
+        $(template).appendTo(fields);
+    }
+    function removeElement(id) {
+        var element = document.getElementById(id);
+        element.parentNode.removeChild(element);
+        return false;
+    }
+    function addEducation() {
+        @{
+                                            Model.ResultCv.Educations.Add(new ResumeStripper.Models.Experiences.EducationExperience());
+                                        }
+        var i = document.getElementById("EducationFields").getElementsByClassName("eduRow").length;
+        var labelNr = i + 1;
+        var fields = $('#EducationFields');
+        var template = '<div class="eduRow" style="margin-bottom: 15px" id="ResultCv_Educations_' + i + '"><input name="ResultCv.Educations.Index" type="hidden" value="' + i + '" /><label id="EducationLabel' + i + '">Education ' + labelNr + '</label><input required class="form-control" id="ResultCv_Educations_' + i + '__Name" name="ResultCv.Educations[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name Education" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__LevelOfEducation" name="ResultCv.Educations[' + i + '].LevelOfEducation" onfocus="changeText(this.id)" placeholder="Level of Education" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__OrganizationName" name="ResultCv.Educations[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Name Institute" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__LocationOrganization" name="ResultCv.Educations[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Location Institute" type="text" value=""><input required class="form-control" type="Date" min="1900-01-01" max="2025-12-31" required id="ResultCv_Educations_' + i + '__BeginDate" name="ResultCv.Educations[' + i + '].BeginDate" onfocus="changeText(this.id)" type="text" placeholder="Begin Date"><input required class="form-control" type="Date" min="1900-01-01" max="2025-12-31" required id="ResultCv_Educations_' + i + '__EndDate" name="ResultCv.Educations[' + i + '].EndDate" onfocus="changeText(this.id)" type="text" placeholder="End Date"> <label for="ResultCv_Educations_' + i + '__Diploma" style="margin-right:5px;">Diploma</label><input id="ResultCv_Educations_' + i + '__Diploma" name="ResultCv.Educations[' + i + '].Diploma" type="checkbox" value="true"><input name="ResultCv.Educations[' + i + '].Diploma" type="hidden" value="false"><br /><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Educations_' + i + '.id)">Remove Education ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addWork() {
+        @{
+                                            Model.ResultCv.WorkExperiences.Add(new ResumeStripper.Models.Experiences.WorkExperience());
+                                        }
+        var i = document.getElementById("WorkFields").getElementsByClassName("workRow").length;
+        var labelNr = i + 1;
+        var fields = $('#WorkFields');
+        var template = '<div class="workRow" style="margin-bottom: 15px" id="ResultCv_WorkExperiences_' + i + '"><input name="ResultCv.WorkExperiences.Index" type="hidden" value="' + i + '" /><label id="WorkExperienceLabel' + i + '">Work Experience ' + labelNr + '</label><input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__JobTitle" name="ResultCv.WorkExperiences[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__OrganizationName" name="ResultCv.WorkExperiences[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__LocationOrganization" name="ResultCv.WorkExperiences[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Company Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_WorkExperiences_' + i + '__TaskDescription" name="ResultCv.WorkExperiences[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Job Description" rows="2"></textarea> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_WorkExperiences_' + i + '__BeginDate" name="ResultCv.WorkExperiences[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_WorkExperiences_' + i + '__EndDate" name="ResultCv.WorkExperiences[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_WorkExperiences_' + i + '.id)">Remove Work Experience ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addCourse() {
+        @{
+                                            Model.ResultCv.Courses.Add(new ResumeStripper.Models.Experiences.CourseExperience());
+                                        }
+        var i = document.getElementById("CourseFields").getElementsByClassName("courseRow").length;
+        var labelNr = i + 1;
+        var fields = $('#CourseFields');
+        var template = '<div class="courseRow" style="margin-bottom: 15px" style="margin-bottom: 15px" id="ResultCv_Courses_' + i + '"><input name="ResultCv.Courses.Index" type="hidden" value="' + i + '" /><label id="CourseLabel' + i + '">Course ' + labelNr + '</label><input required class="form-control" id="ResultCv_Courses_' + i + '__Name" name="ResultCv.Courses[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Course Name" type="text" value=""> <input required class="form-control" id="ResultCv_Courses_' + i + '__OrganizationName" name="ResultCv.Courses[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Institute Name" type="text" value=""> <input required class="form-control" id="ResultCv_Courses_' + i + '__LocationOrganization" name="ResultCv.Courses[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Institute Location" type="text" value=""> <input required value="" class="form-control" required type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_Courses_' + i + '__Year" name="ResultCv.Courses[' + i + '].Year" onfocus="changeText(this.id)" placeholder="Year" type="text"><label style="margin-right:5px;" for="ResultCv_Courses_' + i + '__Certificate">Certificate</label><input data-val="true" data-val-required="Het veld Certificate is vereist." id="ResultCv_Courses_' + i + '__Certificate" name="ResultCv.Courses[' + i + '].Certificate" type="checkbox" value="true"><input name="ResultCv.Courses[' + i + '].Certificate" type="hidden" value="false"><br /><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Courses_' + i + '.id)">Remove Course ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addSideline() {
+        @{
+                                            Model.ResultCv.SideLines.Add(new ResumeStripper.Models.Experiences.SidelineExperience());
+                                        }
+        var i = document.getElementById("SidelineFields").getElementsByClassName("sidelineRow").length;
+        var labelNr = i + 1;
+        var fields = $('#SidelineFields');
+        var template = '<div class="sidelineRow" style="margin-bottom: 15px" id="ResultCv_Sidelines_' + i + '"><input name="ResultCv.Sidelines.Index" type="hidden" value="' + i + '" /><label id="SidelineLabel' + i + '">Sideline ' + labelNr + '</label><input required class="form-control" id="ResultCv_SideLines_' + i + '__JobTitle" name="ResultCv.SideLines[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_SideLines_' + i + '__OrganizationName" name="ResultCv.SideLines[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Organization Name" type="text" value=""> <input required class="form-control" id="ResultCv_SideLines_' + i + '__LocationOrganization" name="ResultCv.SideLines[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Organization Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_SideLines_' + i + '__TaskDescription" name="ResultCv.SideLines[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Task Description" rows="2"></textarea> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_SideLines_' + i + '__BeginDate" name="ResultCv.SideLines[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_SideLines_' + i + '__EndDate" name="ResultCv.SideLines[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Sidelines_' + i + '.id)">Remove Sideline ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addLanguage() {
+        @{
+                                            Model.ResultCv.Languages.Add(new ResumeStripper.Models.Language());
+                                        }
+        var i = document.getElementById("LanguageFields").getElementsByClassName("languageRow").length;
+        var labelNr = i + 1;
+
+        var fields = $('#LanguageFields');
+        var template = '<div class="languageRow" style="margin-bottom: 15px" id="ResultCv_Languages_' + i + '"><input name="ResultCv.Languages.Index" type="hidden" value="' + i + '" /><label id="LanguageLabel' + i + '">Language ' + labelNr + '</label><input required class="form-control" id="ResultCv_Languages_' + i + '__Name" name="ResultCv.Languages[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="changeLanguageLevelView(this, ' + i + ')" data-text-swap="Show Simple Options">Show Detailed Options</button><div id="simpleLanguage' + i + '"><label for="ResultCv_Languages_' + i + '__Level">Level</label> <select class="form-control" data-val="true" data-val-required="Het veld Level is vereist." id="ResultCv_Languages_' + i + '__Level" name="ResultCv.Languages[' + i + '].Level"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select></div><div id="detailedLanguage' + i + '" style="display:none"><input type="hidden" id="ResultCv_Languages_' + i + '__isSimple" name="ResultCv.Languages[' + i + '].isSimple" value="false" data-val="false"><label for="ResultCv_Languages_' + i + '__LevelOfListening">LevelOfListening</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfListening is vereist." id="ResultCv_Languages_' + i + '__LevelOfListening" name="ResultCv.Languages[' + i + '].LevelOfListening"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfSpeaking">LevelOfSpeaking</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfSpeaking is vereist." id="ResultCv_Languages_' + i + '__LevelOfSpeaking" name="ResultCv.Languages[' + i + '].LevelOfSpeaking"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfWriting">LevelOfWriting</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfWriting is vereist." id="ResultCv_Languages_' + i + '__LevelOfWriting" name="ResultCv.Languages[' + i + '].LevelOfWriting"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select></div><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Languages_' + i + '.id)">Remove Language ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function changeLanguageLevelView(el, i) {
+        var ele = $(el);
+        var x = document.getElementById("simpleLanguage" + i);
+        var y = document.getElementById("detailedLanguage" + i);
+        if (ele.text() === ele.data("text-swap")) {
+            ele.text(ele.data("text-original"));
+            //simple is viewed
+            x.style.display = "block";
+            y.style.display = "none";
+        } else {
+            ele.data("text-original", ele.text());
+            ele.text(ele.data("text-swap"));
+            //detailed is viewed
+            x.style.display = "none";
+            y.style.display = "block";
+        }
+    }
+    function addSkill() {
+        @{
+                                            Model.ResultCv.Skills.Add(new ResumeStripper.Models.Skill());
+                                        }
+        var i = document.getElementById("SkillFields").getElementsByClassName("skillRow").length;
+        var labelNr = i + 1;
+        var fields = $('#SkillFields');
+        var template = '<div class="skillRow" style="margin-bottom: 15px" id="ResultCv_Skills_' + i + '"><input name="ResultCv.Skills.Index" type="hidden" value="' + i + '" /><label id="SkillLabel' + i + '">Skill ' + labelNr + '</label><input required class="form-control" id="ResultCv_Skills_' + i + '__Name" name="ResultCv.Skills[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Skill Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Skills_' + i + '.id)">Remove Skill ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addCompetence() {
+        @{
+                                            Model.ResultCv.Competences.Add(new ResumeStripper.Models.Competence());
+                                        }
+        var i = document.getElementById("CompetenceFields").getElementsByClassName("competenceRow").length;
+        var labelNr = i + 1;
+        var fields = $('#CompetenceFields');
+        var template = '<div class="competenceRow" style="margin-bottom: 15px" id="ResultCv_Competences_' + i + '"><input name="ResultCv.Competences.Index" type="hidden" value="' + i + '" /><label id="CompetenceLabel' + i + '">Competence ' + labelNr + '</label><input required class="form-control" id="ResultCv_Competences_' + i + '__Name" name="ResultCv.Competences[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Competence Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume"  onclick="removeElement(ResultCv_Competences_' + i + '.id)">Remove Competence ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addHobby() {
+        @{
+                                            Model.ResultCv.Hobbies.Add(new ResumeStripper.Models.Hobby());
+                                        }
+        var i = document.getElementById("HobbyFields").getElementsByClassName("hobbyRow").length;
+        var labelNr = i + 1;
+        var fields = $('#HobbyFields');
+        var template = '<div class="hobbyRow" style="margin-bottom: 15px" id="ResultCv_Hobbies_' + i + '"><input name="ResultCv.Hobbies.Index" type="hidden" value="' + i + '" /><label id="HobbyLabel' + i + '">Hobby ' + labelNr + '</label><input required class="form-control" id="ResultCv_Hobbies_' + i + '__Name" name="ResultCv.Hobbies[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Hobby Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Hobbies_' + i + '.id)">Remove Hobby ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+    function addReference() {
+        @{
+                                            Model.ResultCv.References.Add(new ResumeStripper.Models.Reference());
+                                        }
+        var i = document.getElementById("ReferenceFields").getElementsByClassName("referenceRow").length;
+        var labelNr = i + 1;
+        var fields = $('#ReferenceFields');
+        var template = '<div class="referenceRow" style="margin-bottom: 15px" id="ResultCv_References_' + i + '"><input name="ResultCv.References.Index" type="hidden" value="' + i + '" /><label id="ReferenceLabel' + i + '">Reference ' + labelNr + '</label><input required class="form-control" id="ResultCv_References_' + i + '__Name" name="ResultCv.References[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__JobTitle" name="ResultCv.References[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__CompanyName" name="ResultCv.References[' + i + '].CompanyName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__Email" name="ResultCv.References[' + i + '].Email" onfocus="changeText(this.id)" placeholder="Emailaddress" type="email" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__PhoneNumber" name="ResultCv.References[' + i + '].PhoneNumber" onfocus="changeText(this.id)" placeholder="Phonenumber" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_References_' + i + '.id)">Remove Reference ' + labelNr + '</button></div>';
+        $(template).appendTo(fields);
+    }
+</script>
+
+@{
+    ViewBag.Title = "Resume Stripper";
+}
 
 <div class="wrapper">
     <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
@@ -38,7 +164,6 @@
             </ul>
         </div>
     </div>
-
     <div class="main-panel">
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
@@ -78,10 +203,11 @@
                         <div class="card" height="1000px">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume applicant</h4>
+                                @Html.ActionLink("Download PDF", "Download", "CV", new { @class = "btn sample btn-sample btn-resume" })
                                 @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
-                                    <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" />
+                                    <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" accept="application/pdf" />
                                     @ViewBag.FileStatus
                                 }
                                 <hr>
@@ -93,7 +219,7 @@
                                             @if (ViewBag.JavaScriptFunction != null)
                                             {
                                                 <script type="text/javascript">
-                                                @Html.Raw(ViewBag.JavaScriptFunction)
+                                                    @Html.Raw(ViewBag.JavaScriptFunction)
                                                 </script>
                                             }
                                             <div id="container"></div>
@@ -132,18 +258,30 @@
                                 <br />
                                 <h3>Personal Information</h3>
                                 <br />
-                                @Html.TextBoxFor(m => m.ResultCv.Name, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "First Name", required = "required" })
+                                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                                 <br />
-                                @Html.TextBoxFor(m => m.ResultCv.Prefix, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Prefix" })
+                                @Html.ValidationMessageFor(m => m.ResultCv.Name, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Name)
+                                @Html.TextBoxFor(m => m.ResultCv.Name, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
-                                @Html.TextBoxFor(m => m.ResultCv.Surname, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Last Name", required = "required" })
+                                @Html.ValidationMessageFor(m => m.ResultCv.Prefix, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Prefix)
+                                @Html.TextBoxFor(m => m.ResultCv.Prefix, new { @class = "form-control", onfocus = "changeText(this.id)" })
+                                <br />
+                                @Html.ValidationMessageFor(m => m.ResultCv.Surname, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Surname)
+                                @Html.TextBoxFor(m => m.ResultCv.Surname, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
                                 @Html.LabelFor(m => m.ResultCv.Gender)
                                 @Html.EnumDropDownListFor(m => m.ResultCv.Gender, new { @class = "form-control", required = "required" })
                                 <br />
-                                @Html.TextBoxFor(m => m.ResultCv.Residence, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Residence", required = "required" })
+                                @Html.ValidationMessageFor(m => m.ResultCv.Residence, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Residence)
+                                @Html.TextBoxFor(m => m.ResultCv.Residence, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
-                                @Html.TextBoxFor(m => m.ResultCv.Country, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Country", required = "required" })
+                                @Html.ValidationMessageFor(m => m.ResultCv.Country, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Country)
+                                @Html.TextBoxFor(m => m.ResultCv.Country, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
                                 @Html.LabelFor(m => m.ResultCv.DateOfBirth)
                                 @Html.TextBoxFor(m => m.ResultCv.DateOfBirth, new { @class = "form-control", onfocus = "changeText(this.id)", @Value = "", type = "Date", min = "1900-01-01", max = "2025-12-31", id = "dobpicker" })
@@ -153,7 +291,9 @@
                                 <input class="btn sample btn-sample btn-sm btn-resume" type="button" id="addLicenseBtn" onclick="addLicense()" value="Add License" />
                                 <br />
                                 <br />
-                                @Html.TextAreaFor(m => m.ResultCv.Profile, new { @class = "form-control", onfocus = "changeText(this.id)", placeholder = "Profile", maxlength = "20000" })
+                                @Html.ValidationMessageFor(m => m.ResultCv.Profile, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ResultCv.Profile)
+                                @Html.TextAreaFor(m => m.ResultCv.Profile, new { @class = "form-control", onfocus = "changeText(this.id)", maxlength = "20000" })
                                 <br />
                                 <h3>Educations</h3>
                                 <hr />
@@ -206,131 +346,7 @@
                                         margin-bottom: 15px
                                     }
                                 </style>
-                                <script type="text/javascript">
-                                    function addLicense() {
-                                        @{
-                                            Model.ResultCv.Licenses.Add(new ResumeStripper.Models.License());
-                                        }
-                                        var i = document.getElementById("LicenseFields").getElementsByClassName("licenseRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#LicenseFields');
-                                        var template = '<div class="licenseRow" style="margin-bottom: 15px" id="LicenseRow_' + i + '"><input name="ResultCv.Licenses.Index" type="hidden" value="' + i + '" /><label id="LicenseLabel' + i + '">License ' + labelNr + '</label><select required class="form-control" data-val="true" data-val-required="Het veld Type is vereist." id="ResultCv_Licenses_' + i + '__Type" name="ResultCv.Licenses[' + i + '].Type"><option value="">Select Type</option><option selected="selected" value="0">None</option><option value="1">A</option><option value="2">A1</option><option value="3">A2</option><option value="4">AM</option><option value="5">B</option><option value="6">BE</option><option value="7">B+</option><option value="8">C</option><option value="9">CE</option><option value="10">C1</option><option value="11">C1E</option><option value="12">D</option><option value="13">DE</option><option value="14">D1</option><option value="15">D1E</option><option value="16">T</option></select><input type="button" class="btn sample btn-sample btn-sm btn-resume" value="Remove License ' + labelNr + '" onclick="removeElement(LicenseRow_' + i + '.id)" /></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function removeElement(id) {
-                                        var element = document.getElementById(id);
-                                        element.parentNode.removeChild(element);
-                                        return false;
-                                    }
-                                    function addEducation() {
-                                        @{
-                                            Model.ResultCv.Educations.Add(new ResumeStripper.Models.Experiences.EducationExperience());
-                                        }
-                                        var i = document.getElementById("EducationFields").getElementsByClassName("eduRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#EducationFields');
-                                        var template = '<div class="eduRow" style="margin-bottom: 15px" id="ResultCv_Educations_' + i + '"><input name="ResultCv.Educations.Index" type="hidden" value="' + i + '" /><label id="EducationLabel' + i + '">Education ' + labelNr + '</label><input required class="form-control" id="ResultCv_Educations_' + i + '__Name" name="ResultCv.Educations[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name Education" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__LevelOfEducation" name="ResultCv.Educations[' + i + '].LevelOfEducation" onfocus="changeText(this.id)" placeholder="Level of Education" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__OrganizationName" name="ResultCv.Educations[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Name Institute" type="text" value=""> <input required class="form-control" id="ResultCv_Educations_' + i + '__LocationOrganization" name="ResultCv.Educations[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Location Institute" type="text" value=""><input required class="form-control" type="Date" min="1900-01-01" max="2025-12-31" required id="ResultCv_Educations_' + i + '__BeginDate" name="ResultCv.Educations[' + i + '].BeginDate" onfocus="changeText(this.id)" type="text" placeholder="Begin Date"><input required class="form-control" type="Date" min="1900-01-01" max="2025-12-31" required id="ResultCv_Educations_' + i + '__EndDate" name="ResultCv.Educations[' + i + '].EndDate" onfocus="changeText(this.id)" type="text" placeholder="End Date"> <label for="ResultCv_Educations_' + i + '__Diploma" style="margin-right:5px;">Diploma</label><input id="ResultCv_Educations_' + i + '__Diploma" name="ResultCv.Educations[' + i + '].Diploma" type="checkbox" value="true"><input name="ResultCv.Educations[' + i + '].Diploma" type="hidden" value="false"><br /><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Educations_' + i + '.id)">Remove Education ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addWork() {
-                                        @{
-                                            Model.ResultCv.WorkExperiences.Add(new ResumeStripper.Models.Experiences.WorkExperience());
-                                        }
-                                        var i = document.getElementById("WorkFields").getElementsByClassName("workRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#WorkFields');
-                                        var template = '<div class="workRow" style="margin-bottom: 15px" id="ResultCv_WorkExperiences_' + i + '"><input name="ResultCv.WorkExperiences.Index" type="hidden" value="' + i + '" /><label id="WorkExperienceLabel' + i + '">Work Experience ' + labelNr + '</label><input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__JobTitle" name="ResultCv.WorkExperiences[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__OrganizationName" name="ResultCv.WorkExperiences[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input required class="form-control" id="ResultCv_WorkExperiences_' + i + '__LocationOrganization" name="ResultCv.WorkExperiences[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Company Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_WorkExperiences_' + i + '__TaskDescription" name="ResultCv.WorkExperiences[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Job Description" rows="2"></textarea> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_WorkExperiences_' + i + '__BeginDate" name="ResultCv.WorkExperiences[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_WorkExperiences_' + i + '__EndDate" name="ResultCv.WorkExperiences[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_WorkExperiences_' + i + '.id)">Remove Work Experience ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addCourse() {
-                                        @{
-                                            Model.ResultCv.Courses.Add(new ResumeStripper.Models.Experiences.CourseExperience());
-                                        }
-                                        var i = document.getElementById("CourseFields").getElementsByClassName("courseRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#CourseFields');
-                                        var template = '<div class="courseRow" style="margin-bottom: 15px" style="margin-bottom: 15px" id="ResultCv_Courses_' + i + '"><input name="ResultCv.Courses.Index" type="hidden" value="' + i + '" /><label id="CourseLabel' + i + '">Course ' + labelNr + '</label><input required class="form-control" id="ResultCv_Courses_' + i + '__Name" name="ResultCv.Courses[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Course Name" type="text" value=""> <input required class="form-control" id="ResultCv_Courses_' + i + '__OrganizationName" name="ResultCv.Courses[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Institute Name" type="text" value=""> <input required class="form-control" id="ResultCv_Courses_' + i + '__LocationOrganization" name="ResultCv.Courses[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Institute Location" type="text" value=""> <input required value="" class="form-control" required type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_Courses_' + i + '__Year" name="ResultCv.Courses[' + i + '].Year" onfocus="changeText(this.id)" placeholder="Year" type="text"><label style="margin-right:5px;" for="ResultCv_Courses_' + i + '__Certificate">Certificate</label><input data-val="true" data-val-required="Het veld Certificate is vereist." id="ResultCv_Courses_' + i + '__Certificate" name="ResultCv.Courses[' + i + '].Certificate" type="checkbox" value="true"><input name="ResultCv.Courses[' + i + '].Certificate" type="hidden" value="false"><br /><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Courses_' + i + '.id)">Remove Course ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addSideline() {
-                                        @{
-                                            Model.ResultCv.SideLines.Add(new ResumeStripper.Models.Experiences.SidelineExperience());
-                                        }
-                                        var i = document.getElementById("SidelineFields").getElementsByClassName("sidelineRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#SidelineFields');
-                                        var template = '<div class="sidelineRow" style="margin-bottom: 15px" id="ResultCv_Sidelines_' + i + '"><input name="ResultCv.Sidelines.Index" type="hidden" value="' + i + '" /><label id="SidelineLabel' + i + '">Sideline ' + labelNr + '</label><input required class="form-control" id="ResultCv_SideLines_' + i + '__JobTitle" name="ResultCv.SideLines[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_SideLines_' + i + '__OrganizationName" name="ResultCv.SideLines[' + i + '].OrganizationName" onfocus="changeText(this.id)" placeholder="Organization Name" type="text" value=""> <input required class="form-control" id="ResultCv_SideLines_' + i + '__LocationOrganization" name="ResultCv.SideLines[' + i + '].LocationOrganization" onfocus="changeText(this.id)" placeholder="Organization Location" type="text" value=""> <textarea class="form-control" cols="20" id="ResultCv_SideLines_' + i + '__TaskDescription" name="ResultCv.SideLines[' + i + '].TaskDescription" onfocus="changeText(this.id)" placeholder="Task Description" rows="2"></textarea> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_SideLines_' + i + '__BeginDate" name="ResultCv.SideLines[' + i + '].BeginDate" onfocus="changeText(this.id)" placeholder="Begin Date" type="text"> <input required value="" class="form-control" required  type="Date" min="1900-01-01" max="2025-12-31" id="ResultCv_SideLines_' + i + '__EndDate" name="ResultCv.SideLines[' + i + '].EndDate" onfocus="changeText(this.id)" placeholder="End Date" type="text"><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Sidelines_' + i + '.id)">Remove Sideline ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addLanguage() {
-                                        @{
-                                            Model.ResultCv.Languages.Add(new ResumeStripper.Models.Language());
-                                        }
-                                        var i = document.getElementById("LanguageFields").getElementsByClassName("languageRow").length;
-                                        var labelNr = i + 1;
 
-                                        var fields = $('#LanguageFields');
-                                        var template = '<div class="languageRow" style="margin-bottom: 15px" id="ResultCv_Languages_' + i + '"><input name="ResultCv.Languages.Index" type="hidden" value="' + i + '" /><label id="LanguageLabel' + i + '">Language ' + labelNr + '</label><input required class="form-control" id="ResultCv_Languages_' + i + '__Name" name="ResultCv.Languages[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="changeLanguageLevelView(this, ' + i + ')" data-text-swap="Show Simple Options">Show Detailed Options</button><div id="simpleLanguage' + i + '"><label for="ResultCv_Languages_' + i + '__Level">Level</label> <select class="form-control" data-val="true" data-val-required="Het veld Level is vereist." id="ResultCv_Languages_' + i + '__Level" name="ResultCv.Languages[' + i + '].Level"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select></div><div id="detailedLanguage' + i + '" style="display:none"><input type="hidden" id="ResultCv_Languages_' + i + '__isSimple" name="ResultCv.Languages[' + i + '].isSimple" value="false" data-val="false"><label for="ResultCv_Languages_' + i + '__LevelOfListening">LevelOfListening</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfListening is vereist." id="ResultCv_Languages_' + i + '__LevelOfListening" name="ResultCv.Languages[' + i + '].LevelOfListening"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfSpeaking">LevelOfSpeaking</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfSpeaking is vereist." id="ResultCv_Languages_' + i + '__LevelOfSpeaking" name="ResultCv.Languages[' + i + '].LevelOfSpeaking"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select> <label for="ResultCv_Languages_' + i + '__LevelOfWriting">LevelOfWriting</label> <select class="form-control" data-val="true" data-val-required="Het veld LevelOfWriting is vereist." id="ResultCv_Languages_' + i + '__LevelOfWriting" name="ResultCv.Languages[' + i + '].LevelOfWriting"><option selected="selected" value="' + i + '">Basic</option><option value="1">Good</option><option value="2">Very Good</option><option value="3">Native</option></select></div><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Languages_' + i + '.id)">Remove Language ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function changeLanguageLevelView(el, i) {
-                                        var ele = $(el);
-                                        var x = document.getElementById("simpleLanguage" + i);
-                                        var y = document.getElementById("detailedLanguage" + i);
-                                        if (ele.text() === ele.data("text-swap")) {
-                                            ele.text(ele.data("text-original"));
-                                            //simple is viewed
-                                            x.style.display = "block";
-                                            y.style.display = "none";
-                                        } else {
-                                            ele.data("text-original", ele.text());
-                                            ele.text(ele.data("text-swap"));
-                                            //detailed is viewed
-                                            x.style.display = "none";
-                                            y.style.display = "block";
-                                        }
-                                    }
-                                    function addSkill() {
-                                        @{
-                                            Model.ResultCv.Skills.Add(new ResumeStripper.Models.Skill());
-                                        }
-                                        var i = document.getElementById("SkillFields").getElementsByClassName("skillRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#SkillFields');
-                                        var template = '<div class="skillRow" style="margin-bottom: 15px" id="ResultCv_Skills_' + i + '"><input name="ResultCv.Skills.Index" type="hidden" value="' + i + '" /><label id="SkillLabel' + i + '">Skill ' + labelNr + '</label><input required class="form-control" id="ResultCv_Skills_' + i + '__Name" name="ResultCv.Skills[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Skill Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Skills_' + i + '.id)">Remove Skill ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addCompetence() {
-                                        @{
-                                            Model.ResultCv.Competences.Add(new ResumeStripper.Models.Competence());
-                                        }
-                                        var i = document.getElementById("CompetenceFields").getElementsByClassName("competenceRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#CompetenceFields');
-                                        var template = '<div class="competenceRow" style="margin-bottom: 15px" id="ResultCv_Competences_' + i + '"><input name="ResultCv.Competences.Index" type="hidden" value="' + i + '" /><label id="CompetenceLabel' + i + '">Competence ' + labelNr + '</label><input required class="form-control" id="ResultCv_Competences_' + i + '__Name" name="ResultCv.Competences[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Competence Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume"  onclick="removeElement(ResultCv_Competences_' + i + '.id)">Remove Competence ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addHobby() {
-                                        @{
-                                            Model.ResultCv.Hobbies.Add(new ResumeStripper.Models.Hobby());
-                                        }
-                                        var i = document.getElementById("HobbyFields").getElementsByClassName("hobbyRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#HobbyFields');
-                                        var template = '<div class="hobbyRow" style="margin-bottom: 15px" id="ResultCv_Hobbies_' + i + '"><input name="ResultCv.Hobbies.Index" type="hidden" value="' + i + '" /><label id="HobbyLabel' + i + '">Hobby ' + labelNr + '</label><input required class="form-control" id="ResultCv_Hobbies_' + i + '__Name" name="ResultCv.Hobbies[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Hobby Name" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_Hobbies_' + i + '.id)">Remove Hobby ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                    function addReference() {
-                                        @{
-                                            Model.ResultCv.References.Add(new ResumeStripper.Models.Reference());
-                                        }
-                                        var i = document.getElementById("ReferenceFields").getElementsByClassName("referenceRow").length;
-                                        var labelNr = i + 1;
-                                        var fields = $('#ReferenceFields');
-                                        var template = '<div class="referenceRow" style="margin-bottom: 15px" id="ResultCv_References_' + i + '"><input name="ResultCv.References.Index" type="hidden" value="' + i + '" /><label id="ReferenceLabel' + i + '">Reference ' + labelNr + '</label><input required class="form-control" id="ResultCv_References_' + i + '__Name" name="ResultCv.References[' + i + '].Name" onfocus="changeText(this.id)" placeholder="Name" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__JobTitle" name="ResultCv.References[' + i + '].JobTitle" onfocus="changeText(this.id)" placeholder="Job Title" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__CompanyName" name="ResultCv.References[' + i + '].CompanyName" onfocus="changeText(this.id)" placeholder="Company Name" type="text" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__Email" name="ResultCv.References[' + i + '].Email" onfocus="changeText(this.id)" placeholder="Emailaddress" type="email" value=""> <input required class="form-control" id="ResultCv_References_' + i + '__PhoneNumber" name="ResultCv.References[' + i + '].PhoneNumber" onfocus="changeText(this.id)" placeholder="Phonenumber" type="text" value=""><button type="button" class="btn sample btn-sample btn-sm btn-resume" onclick="removeElement(ResultCv_References_' + i + '.id)">Remove Reference ' + labelNr + '</button></div>';
-                                        $(template).appendTo(fields);
-                                    }
-                                </script>
                                 <div id="EducationFields">
                                 </div>
                                 <input class="btn sample btn-sample btn-sm btn-resume" type="button" id="addEducationBtn" onclick="addEducation()" value="Add Education" />

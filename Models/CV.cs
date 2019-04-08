@@ -1,9 +1,10 @@
-﻿using ResumeStripper.Models.Experiences;
+﻿using ResumeStripper.Models.Enums;
+using ResumeStripper.Models.Experiences;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ResumeStripper.Models.Enums;
 
 namespace ResumeStripper.Models
 {
@@ -12,35 +13,36 @@ namespace ResumeStripper.Models
         [Key]
         public int ID { get; set; }
 
-        [MaxLength(100)]
-        [Required]
+        [Required(ErrorMessage = "Name is required!")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name should be atleast 2 characters!")]
         public string Name { get; set; }
 
-        [MaxLength(10)]
+        [StringLength(100, MinimumLength = 2)]
         public string Prefix { get; set; }
 
-        [MaxLength(100)]
-        [Required]
+        [Required(ErrorMessage = "Surname is required!")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Surname should be atleast 2 characters!")]
         public string Surname { get; set; }
 
         [Required]
         public Gender Gender { get; set; }
 
-        [Required]
-        [MaxLength(20)]
+        [Required(ErrorMessage = "Residence is required!")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Residence should be atleast 2 characters!")]
         public string Residence { get; set; }
 
-        [Required]
-        [MaxLength(20)]
+        [Required(ErrorMessage = "Country is required!")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Country should be atleast 2 characters!")]
         public string Country { get; set; }
 
         [Column("DateOfBirth")]
+        [DisplayName("Date of Birth")]
         public DateTime DateOfBirth { get; set; }
 
         //List of license enum, since a person can have multiple licenses, can be null
         public virtual List<License> Licenses { get; set; }
 
-        [MaxLength(20000)]
+        [StringLength(20000, ErrorMessage = "Profile is too long, it can only be 20000 characters!")]
         public string Profile { get; set; }
 
         public virtual List<EducationExperience> Educations { get; set; }
@@ -227,6 +229,23 @@ namespace ResumeStripper.Models
             char[] a = s.ToCharArray();
             a[0] = char.ToUpper(a[0]);
             return new string(a);
+        }
+
+        public void SetLanguageSetting()
+        {
+            foreach (Language l in Languages)
+            {
+                if (l.LevelOfListening.Equals(LanguageLevel.Basic) && l.LevelOfSpeaking.Equals(LanguageLevel.Basic) &&
+                    l.LevelOfWriting.Equals(LanguageLevel.Basic))
+                {
+                    //probably using simple mode
+                    l.IsSimple = !l.Level.Equals(LanguageLevel.Basic);
+                }
+                else
+                {
+                    l.IsSimple = false;
+                }
+            }
         }
     }
 }

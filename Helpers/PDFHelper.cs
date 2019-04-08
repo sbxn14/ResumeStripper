@@ -1,10 +1,7 @@
-﻿using PdfExtract;
-using ResumeStripper.Models;
+﻿using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace ResumeStripper.Helpers
@@ -150,44 +147,6 @@ namespace ResumeStripper.Helpers
             <br />
             [RROW]";
 
-        public CV ExtractData(string url)
-        {
-            CV result = new CV();
-            string PDFText = "";
-            //get plain text from PDF
-            using (var pdfStream = File.OpenRead(url))
-            using (var extractor = new Extractor())
-            {
-                PDFText = extractor.ExtractToString(pdfStream);
-            }
-
-            if (!PDFText.Equals(""))
-            {
-                //if extracted text is not empty
-                //TODO Find way to extract relevant data
-                string[] array = PDFText.Split(null);
-                List<string> resultWords = new List<string>();
-
-                foreach (string s in array)
-                {
-                    if (Regex.Match(s, FirstnameOptionalPrefixLastname).Success)
-                    {
-                        //if word matches the regex, add to list for further analyzing
-                        resultWords.Add(s);
-                    }
-                }
-
-                //TODO connection to database comparing the words.
-            }
-            else
-            {
-                //return that pdf is empty/has no text
-                return null;
-            }
-
-            return result;
-        }
-
         public byte[] GeneratePdf(CV cv)
         {
             //retrieves basic template
@@ -218,8 +177,8 @@ namespace ResumeStripper.Helpers
 
             string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
             string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
-
-            MemoryStream resultStream = new MemoryStream();
+            
+            PdfOutput output = new PdfOutput { ReturnBytes = true };
 
             PdfConvert.ConvertHtmlToPdf(new PdfDocument
             {
@@ -227,12 +186,9 @@ namespace ResumeStripper.Helpers
                 HeaderUrl = headUrl,
                 FooterUrl = footUrl,
             },
-                new PdfOutput
-                {
-                    OutputStream = resultStream
-                });
+                output);
 
-            return resultStream.ToArray();
+            return output.OutputArray;
         }
 
         private void GetTemplate()
@@ -355,10 +311,20 @@ namespace ResumeStripper.Helpers
                 Template = Template.Replace("[EROW]", EducationPiece);
 
                 //replace all parts with CV information
+                if (!cv.IsAnonymous)
+                {
+                    //if CV is not anonymous
+                    Template = Template.Replace("[INSTITUTENAME]", e.OrganizationName);
+                    Template = Template.Replace("[INSTITUTELOCATION]", e.LocationOrganization);
+                }
+                else
+                {
+                    //if CV is anonymous
+                    Template = Template.Replace("[INSTITUTENAME]", "***");
+                    Template = Template.Replace("[INSTITUTELOCATION]", "***");
+                }
                 Template = Template.Replace("[EDUCATIONNAME]", e.Name);
                 Template = Template.Replace("[EDUCATIONLEVEL]", e.LevelOfEducation);
-                Template = Template.Replace("[INSTITUTENAME]", e.OrganizationName);
-                Template = Template.Replace("[INSTITUTELOCATION]", e.LocationOrganization);
                 Template = Template.Replace("[EDUBEGIN]", e.BeginDate.Date.ToShortDateString());
 
                 DateTime current = DateTime.Today;
@@ -391,9 +357,21 @@ namespace ResumeStripper.Helpers
                 Template = Template.Replace("[CROW]", CoursePiece);
 
                 //replace all parts with CV information
+                if (!cv.IsAnonymous)
+                {
+                    //if CV is not anonymous
+                    Template = Template.Replace("[COURSEINSTITUTENAME]", e.OrganizationName);
+                    Template = Template.Replace("[COURSEINSTITUTELOCATION]", e.LocationOrganization);
+                }
+                else
+                {
+                    //if CV is anonymous
+                    Template = Template.Replace("[COURSEINSTITUTENAME]", "***");
+                    Template = Template.Replace("[COURSEINSTITUTELOCATION]", "***");
+                }
+
                 Template = Template.Replace("[COURSENAME]", e.Name);
-                Template = Template.Replace("[COURSEINSTITUTENAME]", e.OrganizationName);
-                Template = Template.Replace("[COURSEINSTITUTELOCATION]", e.LocationOrganization);
+
                 Template = Template.Replace("[COURSEYEAR]", e.Year.Date.Year.ToString());
 
                 string result = "";
@@ -414,9 +392,20 @@ namespace ResumeStripper.Helpers
                 Template = Template.Replace("[WROW]", WorkPiece);
 
                 //replace all parts with CV information
+                if (!cv.IsAnonymous)
+                {
+                    //if CV is not anonymous
+                    Template = Template.Replace("[COMPANYNAME]", e.OrganizationName);
+                    Template = Template.Replace("[COMPANYLOCATION]", e.LocationOrganization);
+                }
+                else
+                {
+                    //if CV is anonymous
+                    Template = Template.Replace("[COMPANYNAME]", "***");
+                    Template = Template.Replace("[COMPANYLOCATION]", "***");
+                }
+
                 Template = Template.Replace("[WORKJOB]", e.JobTitle);
-                Template = Template.Replace("[COMPANYNAME]", e.OrganizationName);
-                Template = Template.Replace("[COMPANYLOCATION]", e.LocationOrganization);
                 Template = Template.Replace("[WORKDESCRIPTION]", e.TaskDescription);
                 Template = Template.Replace("[WORKBEGIN]", e.BeginDate.Date.ToShortDateString());
 
@@ -444,9 +433,20 @@ namespace ResumeStripper.Helpers
                 Template = Template.Replace("[SROW]", SidelinePiece);
 
                 //replace all parts with CV information
+                if (!cv.IsAnonymous)
+                {
+                    //if CV is not anonymous
+                    Template = Template.Replace("[ORGANIZATIONNAME]", e.OrganizationName);
+                    Template = Template.Replace("[ORGANIZATIONLOCATION]", e.LocationOrganization);
+                }
+                else
+                {
+                    //if CV is anonymous
+                    Template = Template.Replace("[ORGANIZATIONNAME]", "***");
+                    Template = Template.Replace("[ORGANIZATIONLOCATION]", "***");
+                }
+
                 Template = Template.Replace("[SIDELINEJOB]", e.JobTitle);
-                Template = Template.Replace("[ORGANIZATIONNAME]", e.OrganizationName);
-                Template = Template.Replace("[ORGANIZATIONLOCATION]", e.LocationOrganization);
                 Template = Template.Replace("[SIDELINEDESCRIPTION]", e.TaskDescription);
                 Template = Template.Replace("[SIDELINEBEGIN]", e.BeginDate.Date.ToShortDateString());
 
@@ -619,8 +619,8 @@ namespace ResumeStripper.Helpers
             //TODO: these can be moved if anonymous variants are created maybe
             SetUpResidence(cv);
             SetUpCountry(cv);
-            SetUpDateOfBirth(cv);
             SetUpLicenses(cv);
+            SetUpDateOfBirth(cv);
         }
 
         private void SetUpName(CV cv)
@@ -673,22 +673,18 @@ namespace ResumeStripper.Helpers
 
         private void SetUpAnonymousName(CV cv)
         {
-            //TODO: Keep First Name
-            //deletes anything to do with name
-            Template = Template.Replace(@"[FIRST] [PRE] [LAST]", "Curriculum vitae");
-            Template = Template.Replace(@"<h4 class=""CVTitle""><i>Curriculum vitae</i></h4>", "");
-            Template = Template.Replace(@"<span><b>First Name:</b></span>
-                                                    <br />", "");
-            Template = Template.Replace(@"<span class=""answer"">[FIRST]</span>
-                                                    <br />", "");
+            //only displays the first name
+            cv.Name = cv.CapitalizeFirstLetter(cv.Name);
+            Template = Template.Replace(@" [PRE] [LAST]", "");
+            Template = Template.Replace(@"[FIRST]", cv.Name);
             Template = Template.Replace(@"<span><b>Prefix:</b></span>
-                                                    <br />", "");
+                                                        <br />", "");
             Template = Template.Replace(@"<span class=""answer"">[PRE]</span>
-                                                    <br />", "");
+                                                        <br />", "");
             Template = Template.Replace(@"<span><b>Last Name:</b></span>
-                                                    <br />", "");
+                                                        <br />", "");
             Template = Template.Replace(@"<span class=""answer"">[LAST]</span>
-                                                    <br />", "");
+                                                        <br />", "");
         }
 
         private void SetUpResidence(CV cv)
@@ -732,12 +728,24 @@ namespace ResumeStripper.Helpers
         private void SetUpDateOfBirth(CV cv)
         {
             //DATE OF BIRTH
-            if (cv.DateOfBirth != DateTime.MinValue)
+            if (!cv.IsAnonymous)
             {
-                Template = Template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
+                //CV is not anonymous
+                if (cv.DateOfBirth != DateTime.MinValue)
+                {
+                    Template = Template.Replace("[DOB]", cv.DateOfBirth.Date.ToShortDateString());
+                }
+                else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
+                {
+                    Template = Template.Replace(@"<span><b>Date of Birth:</b></span>
+                                                        <br />", "");
+                    Template = Template.Replace(@"<span class=""answer"">[DOB]</span>
+                                                        <br />", "");
+                }
             }
-            else //if date equals 1/1/0001 00:00:00 AM. aka if there was no dob entered
+            else
             {
+                //CV is anonymous
                 Template = Template.Replace(@"<span><b>Date of Birth:</b></span>
                                                         <br />", "");
                 Template = Template.Replace(@"<span class=""answer"">[DOB]</span>
@@ -848,6 +856,8 @@ namespace ResumeStripper.Helpers
             Template = Template.Replace("[SROW]", "");
             Template = Template.Replace("[LROW]", "");
             Template = Template.Replace("[RROW]", "");
+
+            Template = Template.Replace(@"\r\n", "");
 
             //just cleanup of empty paragraphs and spans if any
             Template = Template.Replace("<p></p>", "");

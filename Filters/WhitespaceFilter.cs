@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ResumeStripper.Filters
@@ -26,7 +23,7 @@ namespace ResumeStripper.Filters
         private class HelperClass : Stream
         {
             private readonly Stream _base;
-            StringBuilder _s = new StringBuilder();
+            private StringBuilder _s = new StringBuilder();
 
             public HelperClass(Stream responseStream)
             {
@@ -81,7 +78,7 @@ namespace ResumeStripper.Filters
                 throw new NotSupportedException();
             }
 
-            #endregion
+            #endregion Other Members
         }
     }
 }

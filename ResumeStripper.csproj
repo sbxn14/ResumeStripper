@@ -88,8 +88,11 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PdfExtract, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\pdf-extract.1.0.1.0\lib\net45\PdfExtract.dll</HintPath>
+    <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -240,9 +243,6 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="WkHtmlToXSharp, Version=1.2.32.0, Culture=neutral, PublicKeyToken=bc70fce929bf608f, processorArchitecture=MSIL">
-      <HintPath>..\packages\WkHtmlToXSharp.1.2.32\lib\net40-client\WkHtmlToXSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -252,7 +252,7 @@
     <Compile Include="Controllers\CVController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DAL\CVRepository.cs" />
-    <Compile Include="DAL\DatabaseInitializer.cs" />
+    <Compile Include="DAL\Repository.cs" />
     <Compile Include="DAL\StripperContext.cs" />
     <Compile Include="Filters\CompressFilter.cs" />
     <Compile Include="Filters\WhitespaceFilter.cs" />
@@ -262,28 +262,9 @@
     <Compile Include="Helpers\Base64Converter.cs" />
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
-    <Compile Include="Migrations\201903111327050_InitialCreate.cs" />
-    <Compile Include="Migrations\201903111327050_InitialCreate.Designer.cs">
-      <DependentUpon>201903111327050_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903121131188_blijkbaarietsveranderd.cs" />
-    <Compile Include="Migrations\201903121131188_blijkbaarietsveranderd.Designer.cs">
-      <DependentUpon>201903121131188_blijkbaarietsveranderd.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903131310430_ChangedRequiredOfSomeProperties.cs" />
-    <Compile Include="Migrations\201903131310430_ChangedRequiredOfSomeProperties.Designer.cs">
-      <DependentUpon>201903131310430_ChangedRequiredOfSomeProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.cs" />
-    <Compile Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.Designer.cs">
-      <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904010759299_addedGender.cs" />
-    <Compile Include="Migrations\201904010759299_addedGender.Designer.cs">
-      <DependentUpon>201904010759299_addedGender.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels\Company.cs" />
+    <Compile Include="Models\AccountModels\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
     <Compile Include="Models\Enums\DriversLicense.cs" />
@@ -416,9 +397,9 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\CV\Index.cshtml" />
-    <Content Include="Views\Template.cshtml" />
     <Content Include="Views\CV\Export.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
+    <Content Include="Views\Company\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -435,23 +416,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201903111327050_InitialCreate.resx">
-      <DependentUpon>201903111327050_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903121131188_blijkbaarietsveranderd.resx">
-      <DependentUpon>201903121131188_blijkbaarietsveranderd.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903131310430_ChangedRequiredOfSomeProperties.resx">
-      <DependentUpon>201903131310430_ChangedRequiredOfSomeProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903141114389_addedSimpleNDetailedViewLanguage.resx">
-      <DependentUpon>201903141114389_addedSimpleNDetailedViewLanguage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904010759299_addedGender.resx">
-      <DependentUpon>201904010759299_addedGender.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

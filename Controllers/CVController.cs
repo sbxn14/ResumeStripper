@@ -2,7 +2,6 @@
 using ResumeStripper.Filters;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models;
-using ResumeStripper.Models.Enums;
 using ResumeStripper.Models.Viewmodels;
 using System.Data.Entity.Validation;
 using System.IO;
@@ -13,7 +12,7 @@ namespace ResumeStripper.Controllers
 {
     public class CVController : Controller
     {
-        public readonly StripperContext Db = new StripperContext();
+        public readonly CvRepository Repo = new CvRepository(new StripperContext());
 
         [HttpGet]
         [WhitespaceFilter]
@@ -27,13 +26,12 @@ namespace ResumeStripper.Controllers
 
                 if (filename.Contains(":"))
                 {
-                    //edge filename
+                    //Makes filename Microsoft Edge compatible if needed
                     filename = Path.GetFileName(filename);
                 }
 
                 //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
                 model.ServerPath = "http://192.168.86.27:8081/" + filename;
-                //model.ServerPath = "ftp://192.168.86.27/" + filename;
                 ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
                 return View(model);
             }
@@ -91,26 +89,14 @@ namespace ResumeStripper.Controllers
             //removes any accidental whitespaces at beginning and end of every value in the CV
             cv.TrimEverything();
 
-            foreach (Language l in cv.Languages)
-            {
-                if (l.LevelOfListening.Equals(LanguageLevel.Basic) && l.LevelOfSpeaking.Equals(LanguageLevel.Basic) &&
-                    l.LevelOfWriting.Equals(LanguageLevel.Basic))
-                {
-                    //probably using simple mode
-                    l.IsSimple = !l.Level.Equals(LanguageLevel.Basic);
-                }
-                else
-                {
-                    l.IsSimple = false;
-                }
-            }
+            //checks if Languages are using simple or detailed input
+            cv.SetLanguageSetting();
 
             try
             {
-                //TODO: improve saving, more specific instead of just saving the entire thing in the database as is. 
+                //TODO: improve saving, more specific instead of just saving the entire thing in the database as is.
                 //Save (for now) the complete CV-model in the Database
-                Db.Cvs.Add(cv);
-                Db.SaveChanges();
+                Repo.Add(cv);
             }
             catch (DbEntityValidationException dbEx)
             {
@@ -124,6 +110,7 @@ namespace ResumeStripper.Controllers
                 }
             }
 
+            //checks based on submitter name (which button was pressed) if CV should be anonymous or not
             if (submitter.Equals("Generate Anonymous CV"))
             {
                 //requires anonymous PDF
@@ -152,19 +139,22 @@ namespace ResumeStripper.Controllers
 
             TempData["pdfName"] = resultName;
             //generate PDF and generate view that shows that PDF instead of redirect to index
-            string url = Server.MapPath("~/PDFs/") + resultName;
+            //string url = Server.MapPath("~/PDFs/") + resultName;
 
             PdfHelper helper = new PdfHelper();
+
             byte[] newPdf = helper.GeneratePdf(cv);
             TempData["bytes"] = newPdf;
+            //TempData["url"] = url;
+
             return View();
-            //return RedirectToAction("Download");
         }
 
         public ActionResult Download()
         {
             byte[] thePdf = (byte[])TempData["bytes"];
             string name = (string)TempData["pdfName"];
+            
             return File(thePdf, "application/pdf", name);
         }
 
@@ -172,7 +162,7 @@ namespace ResumeStripper.Controllers
         {
             if (disposing)
             {
-                Db.Dispose();
+                Repo.Dispose();
             }
             base.Dispose(disposing);
         }

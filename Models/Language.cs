@@ -8,6 +8,8 @@ namespace ResumeStripper.Models
         [Key]
         public int ID { get; set; }
 
+        [Required(ErrorMessage = "Language name is required!")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Language name should be atleast 2 characters!")]
         public string Name { get; set; }
 
         //Level is used if CV doesn't separate listening, speaking and writing

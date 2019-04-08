@@ -1,9 +1,6 @@
-﻿using System;
+﻿using ResumeStripper.Models.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
-using ResumeStripper.Models.Enums;
 
 namespace ResumeStripper.Models.AccountModels
 {
