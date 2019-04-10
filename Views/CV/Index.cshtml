@@ -156,7 +156,7 @@
                     </a>
                 </li>
                 <li class="active-pro">
-                    <a href="#">
+                    <a href="/User/LogOut">
                         <i class="pe-7s-door-lock"></i>
                         <p>Log out</p>
                     </a>
@@ -185,9 +185,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <p>Log out</p>
-                            </a>
+                            @Html.ActionLink("Logout", "LogOut", "User", null, null)
                         </li>
                         <li class="separator hidden-lg"></li>
                     </ul>
@@ -250,8 +248,8 @@
                             @using (Html.BeginForm("Export", "CV", FormMethod.Post, new { enctype = "multipart/form-data", id = "exportForm", autocomplete = "off" }))
                             {
                                 @Html.AntiForgeryToken()
-                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this);" type="submit" value="Generate CV" name="submitter" />
-                                <input class="btn sample btn-sample btn-resume" onclick="BeginSubmit(this);" type="submit" value="Generate Anonymous CV" name="submitter" />
+                                <input class="btn btn-primary btn-xs" onclick="BeginSubmit(this);" type="submit" value="Generate CV" name="submitter" />
+                                <input class="btn btn-primary btn-xs" onclick="BeginSubmit(this);" type="submit" value="Generate Anonymous CV" name="submitter" />
                                 <br />
                                 <br />
                                 <br />
@@ -260,14 +258,17 @@
                                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Name, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Name)
                                 @Html.TextBoxFor(m => m.ResultCv.Name, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Prefix, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Prefix)
                                 @Html.TextBoxFor(m => m.ResultCv.Prefix, new { @class = "form-control", onfocus = "changeText(this.id)" })
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Surname, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Surname)
                                 @Html.TextBoxFor(m => m.ResultCv.Surname, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
@@ -275,10 +276,12 @@
                                 @Html.EnumDropDownListFor(m => m.ResultCv.Gender, new { @class = "form-control", required = "required" })
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Residence, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Residence)
                                 @Html.TextBoxFor(m => m.ResultCv.Residence, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Country, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Country)
                                 @Html.TextBoxFor(m => m.ResultCv.Country, new { @class = "form-control", onfocus = "changeText(this.id)", required = "required" })
                                 <br />
@@ -291,6 +294,7 @@
                                 <br />
                                 <br />
                                 @Html.ValidationMessageFor(m => m.ResultCv.Profile, "", new { @class = "text-danger" })
+                                <br />
                                 @Html.LabelFor(m => m.ResultCv.Profile)
                                 @Html.TextAreaFor(m => m.ResultCv.Profile, new { @class = "form-control", onfocus = "changeText(this.id)", maxlength = "20000" })
                                 <br />

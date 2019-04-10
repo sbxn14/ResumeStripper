@@ -19,7 +19,8 @@ namespace ResumeStripper
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.min.js"));
+                      "~/Scripts/bootstrap.min.js",
+                      "~/Scripts/chartist.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/customcss").Include(
                       "~/Content/css/animate.min.css",
@@ -27,6 +28,12 @@ namespace ResumeStripper
                       "~/Content/css/light-bootstrap-dashboard.css",
                       "~/Content/css/pe-icon-7-stroke.css",
                       "~/Content/css/demo.css"));
+
+            bundles.Add(new StyleBundle("~/Content/logincss").Include(
+                "~/Content/css/bootstrap.min.css",
+                "~/Content/css/login/css/main.css",
+                //"~/Content/css/login/css/demo.css",
+                "~/Content/css/bootstrap.min.css"));
         }
     }
 }

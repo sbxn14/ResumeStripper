@@ -1,46 +1,105 @@
-﻿@model ResumeStripper.Models.AccountModels.ViewModels.RegisterViewModel
+﻿@using System.Collections
+@model ResumeStripper.Models.AccountModels.ViewModels.RegisterViewModel
 @{
     Layout = null;
 }
 <!DOCTYPE html>
 
-@Styles.Render("~/Content/customcss")
+@*@Styles.Render("~/Content/customcss")*@
 @Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
 @Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
 @Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js")
 @Scripts.Render("~/bundles/bootstrap")
+@Styles.Render("~/Content/logincss")
+<link rel="icon" type="image/ico" sizes="96x96" href="~/Content/img/favicon.ico">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
+    <title>EHV Talent - Register</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 </head>
 <body>
-    <div style="width: 200px; margin-left: 100px;">
-        @using (Html.BeginForm("RegisterUser", "User", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
+    <!-- WRAPPER -->
+    <div id="wrapper" style="margin-top: 200px;">
+        <div class="vertical-align-wrap">
+            <div class="vertical-align-middle">
+                <div class="auth-box">
+                    <div class="left">
+                        <div class="content">
+                            <div class="header">
+                                <div class="logo text-center">
+                                    <img width="70%" src="~/Content/css/login/img/ehv-talent-logo.png"
+                                         alt="EHV Talent Logo">
+                                </div>
+                            </div>
+                            <!-- form starts here -->
+                            @using (Html.BeginForm("RegisterUser", "User", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
 
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            <br />
-            @Html.LabelFor(m => m.Email)
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-            <br />
-            @Html.LabelFor(m => m.Password)
-            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", type = "password" })
-            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-            <br />
-            @Html.LabelFor(m => m.ConfirmPassword)
-            @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", type = "password" })
-            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
-            <br />
-            @Html.LabelFor(m => m.Role)
-            @Html.EnumDropDownListFor(m => m.Role, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })
-            <br />
-            <input type="submit" class="btn sample btn-sample btn-resume" />
-        }
+                                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                <br />
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Emailaddress" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", type = "password", placeholder = "Password" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", type = "password", placeholder = "Confirm Password" })
+                                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @{
+                                        List<string> compNames = new List<string>();
+
+                                        foreach (var c in Model.Companies)
+                                        {
+                                            compNames.Add(c.Name);
+                                        }
+
+                                        var compList = new SelectList(compNames);
+                                    }
+
+
+                                    @Html.DropDownListFor(m => m.Company.Name, compList, "Select a Company!", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Companies, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.EnumDropDownListFor(m => m.Role, "Select a Role!", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })
+                                </div>
+                                <br />
+                                <input type="submit" value="Register" class="btn btn-primary btn-lg btn-block" />
+                            }
+                            <!-- form ends here -->
+                            <BR>
+                            <div class="bottom">
+                                <span class="helper-text">
+                                    @Html.ActionLink("Login", "Login", "User", null, null)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="overlay"></div>
+                        <div class="content text">
+
+                            <h1 class="heading">RESUME STRIPPER</h1>
+                            <p>Powered by EHV Talent</p>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- END WRAPPER -->
 </body>
 </html>

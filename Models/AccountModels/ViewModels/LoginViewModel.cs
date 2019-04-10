@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ResumeStripper.Models.AccountModels.ViewModels
 {
@@ -9,7 +10,7 @@ namespace ResumeStripper.Models.AccountModels.ViewModels
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-        public string ReturnUrl { get; set; }
+        [DisplayName("Remember Me?")]
         public bool IsRemember { get; set; }
     }
 }

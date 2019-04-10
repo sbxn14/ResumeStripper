@@ -1,0 +1,47 @@
+﻿@model ResumeStripper.Models.AccountModels.ViewModels.EHVAdminPanelViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@Scripts.Render("~/bundles/bootstrap")
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EHV Admin Panel</title>
+</head>
+<body>
+    <!--TODO: Ability to set package of a company-->
+    <!--Begin Add/Remove/Edit Company section (LEFT Panel)-->
+    <div style="float: left;">
+        <div id="UserList">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Emailaddress</th>
+                    <th>User Role</th>
+                    <th>Company Name</th>
+                    <th>Company Location</th>
+                    <th>Company Sector</th>
+                </tr>
+                @foreach (var u in Model.Users)
+                {
+                    <tr id="@u.">
+                        <td>@u.Emailaddress</td>
+                        <td>@u.Role.ToString()</td>
+                        <td>@u.UserCompany.Name</td>
+                        <td>@u.UserCompany.Location</td>
+                        <td>@u.UserCompany.Sector</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <!--End Add/Remove/Edit Company section-->
+    <!--Begin Add/Remove/Edit Users/Admin Section (RIGHT Panel)-->
+    <div style="float: right;">
+
+    </div>
+    <!--End Add/Remove/Edit Users/Admin Section-->
+</body>
+</html>

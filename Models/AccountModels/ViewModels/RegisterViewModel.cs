@@ -1,4 +1,6 @@
 ﻿using ResumeStripper.Models.Enums;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ResumeStripper.Models.AccountModels.ViewModels
@@ -6,7 +8,7 @@ namespace ResumeStripper.Models.AccountModels.ViewModels
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Please enter an emailaddress!")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Please enter an valid emailaddress!")]
         public string Email { get; set; }
         //checks if password matches the Regex requirements
         [Required(ErrorMessage = "Please enter a password!")]
@@ -14,9 +16,13 @@ namespace ResumeStripper.Models.AccountModels.ViewModels
         public string Password { get; set; }
         [Required(ErrorMessage = "Please enter a confirmation password!")]
         [Compare("Password", ErrorMessage = "Your passwords don't match! Please try again!")]
+        [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
-
+        [Required(ErrorMessage = "Please select a company!")]
         public Company Company { get; set; }
-        public UserRoles Role { get; set; }
+        [Required(ErrorMessage = "Please select a role!")]
+        public UserRole Role { get; set; }
+
+        public List<Company> Companies { get; set; }
     }
 }

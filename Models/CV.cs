@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ResumeStripper.Models.AccountModels;
 
 namespace ResumeStripper.Models
 {
@@ -54,6 +55,9 @@ namespace ResumeStripper.Models
         public virtual List<SidelineExperience> SideLines { get; set; }
         public virtual List<Reference> References { get; set; }
         public virtual List<Skill> Skills { get; set; }
+
+        //to see which company made this CV
+        public virtual Company Company { get; set; }
 
         [NotMapped]
         public bool IsAnonymous { get; set; }

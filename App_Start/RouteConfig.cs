@@ -12,7 +12,9 @@ namespace ResumeStripper
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "CV", action = "Index", id = UrlParameter.Optional }
+                //defaults: new { controller = "CV", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "User", action = "Register", id = UrlParameter.Optional }
+
             );
         }
     }

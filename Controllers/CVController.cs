@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace ResumeStripper.Controllers
 {
+    [Authorize]
     public class CVController : Controller
     {
         protected readonly CvRepository Repo = new CvRepository(new StripperContext());
@@ -20,6 +21,7 @@ namespace ResumeStripper.Controllers
         [HttpGet]
         [WhitespaceFilter]
         [CompressFilter]
+        [Authorize]
         public ActionResult Index()
         {
             if (TempData["ViewD"] != null)
@@ -95,6 +97,7 @@ namespace ResumeStripper.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize]
         public ActionResult Export(MessageViewModel model, string submitter)
         {
             if (!ModelState.IsValid)
