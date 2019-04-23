@@ -1,5 +1,6 @@
 ﻿using MySql.Data.Entity;
 using ResumeStripper.Models;
+using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.Experiences;
 using System.Data.Entity;
 
@@ -11,7 +12,7 @@ namespace ResumeStripper.DAL
         //passes the connection string saved in the web.config to the DbContext
         public StripperContext() : base("MySqlCon")
         {
-            Database.SetInitializer<StripperContext>(new CreateDatabaseIfNotExists<StripperContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<StripperContext>());
         }
 
         public DbSet<CV> Cvs { get; set; }
@@ -25,5 +26,7 @@ namespace ResumeStripper.DAL
         public DbSet<Reference> References { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Hobby> Hobbies { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

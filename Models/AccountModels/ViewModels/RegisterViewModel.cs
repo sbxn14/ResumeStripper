@@ -24,5 +24,8 @@ namespace ResumeStripper.Models.AccountModels.ViewModels
         public UserRole Role { get; set; }
 
         public List<Company> Companies { get; set; }
+
+        public UserRole CurrentUserRole { get; set; }
+        public string CurrentCompanyName { get; set; }
     }
 }

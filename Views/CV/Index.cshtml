@@ -1,4 +1,5 @@
-﻿@model ResumeStripper.Models.Viewmodels.MessageViewModel
+﻿@using ResumeStripper.Models.Enums
+@model ResumeStripper.Models.Viewmodels.StripperViewModel
 
 @Styles.Render("~/Content/customcss")
 @Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
@@ -150,9 +151,33 @@
             </div>
             <ul class="nav">
                 <li class="active">
-                    <a href="dashboard.html">
+                    <a href="/CV/Index">
                         <i class="pe-7s-graph"></i>
-                        <p>Dashboard</p>
+                        <p>Stripper</p>
+                    </a>
+                </li>
+                @if (Model.CurrentUser.Role == UserRole.EHVAdmin)
+                {
+                    <li>
+                        <a href="/Home/EhvPanel">
+                            <i class="pe-7s-tools"></i>
+                            <p>EHV Admin Panel</p>
+                        </a>
+                    </li>
+                }
+                else if (Model.CurrentUser.Role == UserRole.CompanyAdmin)
+                {
+                    <li>
+                        <a href="/Home/CompanyPanel">
+                            <i class="pe-7s-tools"></i>
+                            <p>Admin Panel</p>
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a href="/User/AccountProfile">
+                        <i class="pe-7s-user"></i>
+                        <p>Account</p>
                     </a>
                 </li>
                 <li class="active-pro">
@@ -250,7 +275,6 @@
                                 @Html.AntiForgeryToken()
                                 <input class="btn btn-primary btn-xs" onclick="BeginSubmit(this);" type="submit" value="Generate CV" name="submitter" />
                                 <input class="btn btn-primary btn-xs" onclick="BeginSubmit(this);" type="submit" value="Generate Anonymous CV" name="submitter" />
-                                <br />
                                 <br />
                                 <br />
                                 <h3>Personal Information</h3>

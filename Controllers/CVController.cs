@@ -2,6 +2,7 @@
 using ResumeStripper.Filters;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models;
+using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.Viewmodels;
 using System.Data.Entity.Validation;
 using System.IO;
@@ -14,9 +15,6 @@ namespace ResumeStripper.Controllers
     public class CVController : Controller
     {
         protected readonly CvRepository Repo = new CvRepository(new StripperContext());
-        //protected readonly StripperContext context = new StripperContext();
-
-        private string _currentUrl = "";
 
         [HttpGet]
         [WhitespaceFilter]
@@ -24,6 +22,16 @@ namespace ResumeStripper.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            User u = null;
+
+            if (TempData["CurrentUser"] != null)
+            {
+                //set user from tempdata
+                u = (User)TempData["CurrentUser"];
+                //save user again in tempdata for further use
+                TempData["CurrentUser"] = u;
+            }
+
             if (TempData["ViewD"] != null)
             {
                 ViewData = (ViewDataDictionary)TempData["ViewD"];
@@ -34,14 +42,20 @@ namespace ResumeStripper.Controllers
                     ViewBag.JavaScriptFunction = "newPDFArrived('" + (string)TempData["CurrentURL"] + "');";
                 }
 
-                MessageViewModel m = (MessageViewModel)TempData["exportForm"];
+                StripperViewModel m = (StripperViewModel)TempData["exportForm"];
+                m.CurrentUser = u;
                 return View(m);
             }
 
-            MessageViewModel model = (MessageViewModel)TempData["Message"];
+            StripperViewModel model = (StripperViewModel)TempData["Message"];
 
-            //if model is null somehow, return to the index view
-            if (model == null) return View(new MessageViewModel());
+            //if model is null somehow, return to the index view but keep user
+            if (model == null)
+            {
+                StripperViewModel m = new StripperViewModel { CurrentUser = u };
+                TempData["CurrentUser"] = u;
+                return View(m);
+            }
 
             string filename = (string)TempData["file"];
 
@@ -51,6 +65,9 @@ namespace ResumeStripper.Controllers
                 filename = Path.GetFileName(filename);
             }
 
+            model.CurrentUser = u;
+            //saves user in tempdata for further use cross-controller
+            TempData["CurrentUser"] = u;
             //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
             model.ServerPath = "http://127.0.0.1:8081/" + filename;
             TempData["CurrentURL"] = model.ServerPath;
@@ -78,7 +95,7 @@ namespace ResumeStripper.Controllers
 
                     TempData["file"] = pdf.FileName;
 
-                    MessageViewModel mod = new MessageViewModel
+                    StripperViewModel mod = new StripperViewModel
                     {
                         Path = pdf.FileName
                     };
@@ -98,7 +115,7 @@ namespace ResumeStripper.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         [Authorize]
-        public ActionResult Export(MessageViewModel model, string submitter)
+        public ActionResult Export(StripperViewModel model, string submitter)
         {
             if (!ModelState.IsValid)
             {

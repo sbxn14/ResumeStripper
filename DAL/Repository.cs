@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using ResumeStripper.Helpers;
 
 namespace ResumeStripper.DAL
 {
@@ -11,8 +12,8 @@ namespace ResumeStripper.DAL
 
         public Repository(StripperContext context)
         {
-            this._context = context;
-            DbSet = context.Set<T>();
+            _context = context;
+            DbSet = _context.Set<T>();
         }
 
         public T GetById(int id)
@@ -49,6 +50,7 @@ namespace ResumeStripper.DAL
 
         public void Dispose()
         {
+            ContextHelper.DisposeContext();
             _context.Dispose();
         }
     }

@@ -1,11 +1,11 @@
 ﻿using ResumeStripper.Models.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResumeStripper.Models.AccountModels
 {
     public class User
     {
-        //TODO Proper encryption instead of salted hash
         [Key]
         public int ID { get; set; }
         public string Emailaddress { get; set; }

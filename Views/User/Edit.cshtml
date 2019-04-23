@@ -1,0 +1,247 @@
+﻿@using ResumeStripper.Models.Enums
+@model ResumeStripper.Models.AccountModels.ViewModels.EditUserViewModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EHV Edit User</title>
+    @Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/logincss")
+</head>
+<body>
+    <!-- WRAPPER -->
+    <div id="wrapper" style="margin-top: 180px;">
+        <div class="vertical-align-wrap">
+            <div class="vertical-align-middle">
+                <div class="auth-box">
+                    <div class="left">
+                        <div class="content">
+                            <div class="header">
+                                <div class="logo text-center">
+                                    <img width="70%" src="~/Content/css/login/img/ehv-talent-logo.png"
+                                         alt="EHV Talent Logo">
+                                    <h3 class="title">Editing @Model.Emailaddress</h3>
+                                </div>
+                            </div>
+                            <!-- form starts here -->
+                            @using (Html.BeginForm("EditUser", "User", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                ;
+                                <br />
+                                @Html.HiddenFor(m=>m.Emailaddress)
+                                <div class="form-group">
+                                    @{
+                                        List<string> compNames = new List<string>();
+
+                                        foreach (var c in Model.Companies)
+                                        {
+                                            compNames.Add(c.Name);
+                                        }
+
+                                        var compList = new SelectList(compNames);
+                                    }
+
+                                    <label>User Company</label>
+                                    @Html.DropDownListFor(m => m.UserCompany.Name, compList, "Select a Company!", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Companies, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    <label>User Role</label>
+                                    @if (Model.CurrentUserRole == UserRole.CompanyAdmin)
+                                    {
+                                        var roleSelectList = Enum.GetValues(typeof(UserRole)).Cast<UserRole>().Where(e => e != UserRole.EHVAdmin && e != UserRole.EHVUser).Select(e => new SelectListItem()
+                                        {
+                                            Value = ((int)e).ToString(),
+                                            Text = e.ToString()
+                                        });
+
+                                        @Html.DropDownListFor(m => m.Role, roleSelectList, "Select a Role!", new { @class = "form-control" })
+                                    }
+                                    else
+                                    {
+                                        @Html.EnumDropDownListFor(m => m.Role, "Select a Role!", new { @class = "form-control" })
+                                    }
+                                    @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })
+                                </div>
+                                <br />
+                                <input type="submit" value="Confirm" class="btn btn-primary btn-lg btn-block" />
+                            }
+                            <!-- form ends here -->
+                            <BR />
+                            <div class="bottom">
+                                <span class="helper-text">
+                                    @Html.ActionLink("Return to EHV Panel", "EhvPanel", "Home")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="overlay"></div>
+                        <div class="content text">
+
+                            <h1 class="heading">RESUME STRIPPER</h1>
+                            <p>Powered by EHV Talent</p>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END WRAPPER -->
+    @*<div class="wrapper">
+            <div class="sidebar" data-color="orange" data-image="~/Content/img/sidebar.jpg">
+                <div class="sidebar-wrapper">
+                    <div class="logo">
+                        <img class="sidebar-logo" src="~/Content/img/logo-glow.png" alt="EHV Talent" width="100%" />
+                    </div>
+                    <ul class="nav">
+                        <li>
+                            <a href="/CV/Index">
+                                <i class="pe-7s-graph"></i>
+                                <p>Stripper</p>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="/Home/EhvPanel">
+                                <i class="pe-7s-tools"></i>
+                                <p>EHV Admin Panel</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="pe-7s-user"></i>
+                                <p>Account</p>
+                            </a>
+                        </li>
+                        <li class="active-pro">
+                            <a href="/User/LogOut">
+                                <i class="pe-7s-door-lock"></i>
+                                <p>Log out</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="main-panel">
+                <nav class="navbar navbar-default navbar-fixed">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                    data-target="#navigation-example-2">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#">Dashboard</a>
+                        </div>
+                        <div class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <a href="">
+                                        <p>My account</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Logout", "LogOut", "User", null, null)
+                                </li>
+                                <li class="separator hidden-lg"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="content all-icons">
+                    <div class="container-fluid">
+                        <div class="row">
+                             Left half
+                            <div class="col-md-6">
+                                <div class="card" style="min-height: 775px;">
+                                    <div class="header">
+                                        <h4 style="display: inline-block;" class="title">Editing @Model.Emailaddress</h4>
+                                        <hr>
+                                    </div>
+
+                                    @using (Html.BeginForm("EditUserEHV", "User", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                        ;
+                                        <br />
+                                        <div class="form-group">
+                                            @{
+                                                List<string> compNames = new List<string>();
+
+                                                foreach (var c in Model.Companies)
+                                                {
+                                                    compNames.Add(c.Name);
+                                                }
+
+                                                var compList = new SelectList(compNames);
+                                            }
+
+                                            <label>User Company</label>
+                                            @Html.DropDownListFor(m => m.UserCompany.Name, compList, "Select a Company!", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Companies, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group">
+                                            <label>User Role</label>
+                                            @Html.EnumDropDownListFor(m => m.Role, "Select a Role!", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger" })
+                                        </div>
+                                        <br />
+                                        <input type="submit" value="Confirm" class="btn btn-primary btn-lg btn-block" />
+                                    }
+                                    <br />
+                                    @Html.ActionLink("Return to EHV Panel", "EhvPanel", "Home")
+                                </div>
+                            </div>
+                        </div>
+
+                        <footer class="footer">
+                            <div class="container-fluid">
+                                <nav class="pull-left">
+                                    <ul>
+                                        <li>
+                                            <a href="#">
+                                                Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                My account
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                EHV Talent
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                EHV Projects
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <p class="copyright pull-right">
+                                    &copy;
+                                    <script>
+                                        document.write(new Date().getFullYear())
+                                    </script>
+                                    <a href="http://www.ehv.nl">EHV Talent</a>
+                                </p>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</body>
+</html>

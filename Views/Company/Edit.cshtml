@@ -1,29 +1,19 @@
-﻿@model ResumeStripper.Models.AccountModels.ViewModels.CompanyRegisterViewModel
-@{
-    Layout = null;
-}
+﻿@using ResumeStripper.Models.Enums
+@model ResumeStripper.Models.AccountModels.ViewModels.EditCompanyViewModel
+
 <!DOCTYPE html>
-
-@*@Styles.Render("~/Content/customcss")*@
-@Styles.Render("https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css")
-@Scripts.Render("https://code.jquery.com/jquery-3.3.1.min.js")
-@Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js")
-@Scripts.Render("~/bundles/bootstrap")
-@Styles.Render("~/Content/logincss")
-<link rel="icon" type="image/ico" sizes="96x96" href="~/Content/img/favicon.ico">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
-
 
 <html>
 <head>
-    <title>EHV Talent - Company Register</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width" />
+    <title>EHV Edit Company</title>
+    @Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.min.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/logincss")
 </head>
 <body>
     <!-- WRAPPER -->
-    <div id="wrapper" style="margin-top: 200px;">
+    <div id="wrapper" style="margin-top: 180px;">
         <div class="vertical-align-wrap">
             <div class="vertical-align-middle">
                 <div class="auth-box">
@@ -33,14 +23,15 @@
                                 <div class="logo text-center">
                                     <img width="70%" src="~/Content/css/login/img/ehv-talent-logo.png"
                                          alt="EHV Talent Logo">
+                                    <h3 class="title">Editing @Model.Name</h3>
                                 </div>
                             </div>
                             <!-- form starts here -->
-                            @using (Html.BeginForm("RegisterCompany", "Company", FormMethod.Post))
+                            @using (Html.BeginForm("EditCompany", "Company", FormMethod.Post))
                             {
                                 @Html.AntiForgeryToken()
-
                                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                ;
                                 <br />
                                 <div class="form-group">
                                     @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Company Name" })
@@ -55,17 +46,20 @@
                                     @Html.ValidationMessageFor(m => m.Sector, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group">
-                                    @Html.EnumDropDownListFor(m => m.Package, "Select a Package!", new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(m => m.Package, "", new { @class = "text-danger" })
+                                    @if (Model.CurrentUserRole == UserRole.EHVAdmin)
+                                    {
+                                        @Html.EnumDropDownListFor(m => m.Package, "Select a Package!", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.Package, "", new { @class = "text-danger" })
+                                    }
                                 </div>
                                 <br />
-                                <input type="submit" value="Register Company" class="btn btn-primary btn-lg btn-block" />
+                                <input type="submit" value="Confirm" class="btn btn-primary btn-lg btn-block" />
                             }
                             <!-- form ends here -->
-                            <BR>
+                            <BR />
                             <div class="bottom">
                                 <span class="helper-text">
-                                    @Html.ActionLink("Back to EHV Admin Panel", "EhvPanel", "Home", null, null)
+                                    @Html.ActionLink("Return to EHV Panel", "EhvPanel", "Home")
                                 </span>
                             </div>
                         </div>
@@ -83,6 +77,5 @@
             </div>
         </div>
     </div>
-    <!-- END WRAPPER -->
 </body>
 </html>

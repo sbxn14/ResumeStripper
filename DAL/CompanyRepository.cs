@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using ResumeStripper.Models.AccountModels;
+﻿using ResumeStripper.Models.AccountModels;
+using System.Linq;
 
 namespace ResumeStripper.DAL
 {
@@ -15,6 +15,16 @@ namespace ResumeStripper.DAL
         public Company GetByName(string companyName)
         {
             return DbSet.FirstOrDefault(c => c.Name == companyName);
+        }
+
+        public void UpdateCompany(Company company)
+        {
+            Company fullCompany = GetById(company.Id);
+
+            if (fullCompany != null)
+            {
+                _context.Entry(fullCompany).CurrentValues.SetValues(company);
+            }
         }
     }
 }

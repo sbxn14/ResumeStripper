@@ -267,11 +267,15 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Z.EntityFramework.Plus.EF6, Version=1.8.25.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Plus.EF6.1.8.25\lib\net45\Z.EntityFramework.Plus.EF6.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Attributes\CustomRoleAuthorizeAttribute.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\CVController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -287,34 +291,20 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Base64Converter.cs" />
+    <Compile Include="Helpers\ContextHelper.cs" />
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
-    <Compile Include="Migrations\201904081132409_Initial.cs" />
-    <Compile Include="Migrations\201904081132409_Initial.Designer.cs">
-      <DependentUpon>201904081132409_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904090745362_addedUser.cs" />
-    <Compile Include="Migrations\201904090745362_addedUser.Designer.cs">
-      <DependentUpon>201904090745362_addedUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904090749058_addedUser1.cs" />
-    <Compile Include="Migrations\201904090749058_addedUser1.Designer.cs">
-      <DependentUpon>201904090749058_addedUser1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904090814235_addedUser2.cs" />
-    <Compile Include="Migrations\201904090814235_addedUser2.Designer.cs">
-      <DependentUpon>201904090814235_addedUser2.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels\Company.cs" />
     <Compile Include="Models\AccountModels\ViewModels\CompanyAdminPanelViewModel.cs" />
     <Compile Include="Models\AccountModels\ViewModels\CompanyRegisterViewModel.cs" />
-    <Compile Include="Models\AccountModels\ViewModels\CompanyViewModel.cs" />
+    <Compile Include="Models\AccountModels\ViewModels\DetailsViewModel.cs" />
+    <Compile Include="Models\AccountModels\ViewModels\EditCompanyViewModel.cs" />
     <Compile Include="Models\AccountModels\ViewModels\DashboardViewModel.cs" />
     <Compile Include="Models\AccountModels\ViewModels\EHVAdminPanelViewModel.cs" />
     <Compile Include="Models\AccountModels\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\AccountModels\ViewModels\RegisterViewModel.cs" />
-    <Compile Include="Models\AccountModels\ViewModels\UserViewModel.cs" />
+    <Compile Include="Models\AccountModels\ViewModels\EditUserViewModel.cs" />
     <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
     <Compile Include="Models\Enums\DriversLicense.cs" />
@@ -334,7 +324,7 @@
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Helpers\PdfConvert.cs" />
     <Compile Include="Models\AccountModels\User.cs" />
-    <Compile Include="Models\Viewmodels\MessageViewModel.cs" />
+    <Compile Include="Models\Viewmodels\StripperViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -515,6 +505,11 @@
     <Content Include="Views\Home\EhvPanel.cshtml" />
     <Content Include="Views\Home\CompanyPanel.cshtml" />
     <Content Include="Views\Company\Register.cshtml" />
+    <Content Include="Views\User\AccountProfile.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Company\Edit.cshtml" />
+    <Content Include="Views\User\Details.cshtml" />
+    <Content Include="Views\Company\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -531,20 +526,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201904081132409_Initial.resx">
-      <DependentUpon>201904081132409_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904090745362_addedUser.resx">
-      <DependentUpon>201904090745362_addedUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904090749058_addedUser1.resx">
-      <DependentUpon>201904090749058_addedUser1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904090814235_addedUser2.resx">
-      <DependentUpon>201904090814235_addedUser2.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

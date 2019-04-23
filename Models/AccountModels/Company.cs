@@ -14,7 +14,10 @@ namespace ResumeStripper.Models.AccountModels
         public string Sector { get; set; }
         //package determines how much Users a company can have, or maybe how many CV's they can convert per month
         public virtual StripperPackage Package { get; set; }
-        public virtual List<User> Users { get; set; }
+
+        [NotMapped]
+        public List<User> Users { get; set; }
+
         public virtual List<CV> Cvs { get; set; }
 
         public Company()
@@ -28,6 +31,30 @@ namespace ResumeStripper.Models.AccountModels
             Location = location;
             Sector = sector;
             Package = package;
+        }
+
+        public int GetPackageUserCount()
+        {
+            int returnValue = 0;
+
+            switch (Package)
+            {
+                case StripperPackage.A:
+                    returnValue = 5;
+                    break;
+                case StripperPackage.B:
+                    returnValue = 10;
+                    break;
+                case StripperPackage.C:
+                    returnValue = 100;
+                    break;
+                case StripperPackage.EHV:
+                    //will be set to infinite anyway, temporary
+                    returnValue = 999;
+                    break;
+            }
+
+            return returnValue;
         }
 
         //TODO: something with company colours and logo since they are recurring. also incorporate in generating CV and every view

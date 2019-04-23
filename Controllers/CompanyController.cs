@@ -1,6 +1,8 @@
 ﻿using ResumeStripper.DAL;
+using ResumeStripper.Helpers;
 using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.AccountModels.ViewModels;
+using System;
 using System.Data.Entity.Validation;
 using System.Web.Mvc;
 
@@ -9,7 +11,7 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        protected static readonly StripperContext Context = new StripperContext();
+        protected static readonly StripperContext Context = ContextHelper.GetContext();
         protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
 
         [Authorize]
@@ -31,7 +33,6 @@ namespace ResumeStripper.Controllers
             }
             return View(model);
         }
-
         [Authorize]
         public ActionResult RegisterCompany(CompanyRegisterViewModel model)
         {
@@ -89,37 +90,124 @@ namespace ResumeStripper.Controllers
                 return RedirectToAction("Register");
             }
             //TODO: return message that registration was succesful!
-            return RedirectToAction("Register");
+            return RedirectToAction("EhvPanel", "Home");
+        }
+
+        [Authorize(Roles = "")]
+        public ActionResult Edit(string id)
+        {
+            if (TempData["ViewD"] != null)
+            {
+                ViewData = (ViewDataDictionary)TempData["ViewD"];
+                return View();
+            }
+
+            //retrieves relevant admin account from tempdata
+            User u = (User)TempData["CurrentUser"];
+            //and places it back for further use
+            TempData["CurrentUser"] = u;
+
+            //gets userId from actionlink ID
+            int companyId = Convert.ToInt32(id.Replace("Edit", ""));
+
+            TempData["compID"] = companyId;
+
+            Company c = CompanyRepo.GetById(companyId);
+
+            EditCompanyViewModel model = new EditCompanyViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Location = c.Location,
+                Sector = c.Sector,
+                Package = c.Package,
+                CurrentUserRole = u.Role
+            };
+
+            return View(model);
         }
 
         [Authorize]
-        public ActionResult DeleteCompany(string name)
+        public ActionResult EditCompany(EditCompanyViewModel model)
         {
-            //TODO: check over this and see if it works
-            Company model = CompanyRepo.GetByName(name);
+            if (ModelState.IsValid)
+            {
+                if (model.Id == 0)
+                {
+                    model.Id = (int)TempData["compID"];
+                }
+
+                Company c = new Company
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Location = model.Location,
+                    Sector = model.Sector,
+                    Package = model.Package
+                };
+
+                CompanyRepo.UpdateCompany(c);
+                CompanyRepo.SaveChanges();
+
+                //saves bool in tempdata to force a refresh of context and repositories in panel action,
+                //else it will retrieve old data from the database instead of the updated data.
+                TempData["UpdateHappened"] = true;
+                return RedirectToAction("EhvPanel", "Home");
+            }
+
+            TempData["ViewD"] = ViewData;
+            return RedirectToAction("Edit", "Company");
+        }
+
+        public ActionResult Details(string id)
+        {
+            //retrieves relevant admin account from tempdata
+            User u = (User)TempData["CurrentUser"];
+            //and places it back for further use
+            TempData["CurrentUser"] = u;
+
+            //gets userId from actionlink ID
+            int companyId = Convert.ToInt32(id.Replace("Details", ""));
+
+            Company c = CompanyRepo.GetById(companyId);
+
+            DetailsViewModel model = new DetailsViewModel
+            {
+                Company = c,
+                CurrentUserRole = u.Role
+            };
+
+            return View(model);
+        }
+
+        public ActionResult Remove(string id)
+        {
+            //gets userId from actionlink ID
+            int companyId = Convert.ToInt32(id.Replace("Remove", ""));
+
+            Company c = CompanyRepo.GetById(companyId);
+
+            if (c.Name.Equals("EHV Talent B.V."))
+            {
+                //unable to delete EHV Talent B.V. like this, return with error
+                const string returnError = "You cannot delete EHV Talent B.V.";
+                TempData["CompanyReturnError"] = returnError;
+                //return Json(new { success = false, responseText = returnError }, JsonRequestBehavior.AllowGet);
+                return RedirectToAction("EhvPanel", "Home");
+            }
 
             try
             {
-                CompanyRepo.Delete(model);
+                CompanyRepo.Delete(c);
                 CompanyRepo.SaveChanges();
             }
-            catch (DbEntityValidationException dbEx)
+            catch (Exception e)
             {
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        ModelState.AddModelError(validationError.PropertyName, validationError.ErrorMessage);
-                    }
-                }
-
-                //Something went wrong, consider Modelstate invalid and return values to Register View
-                //save model and return to register view
+                Console.WriteLine(e.Message);
+                //Something went wrong, return to panel
                 TempData["ViewD"] = ViewData;
-                //TODO: return to ehv panel
-                return RedirectToAction("Register");
+                return RedirectToAction("EhvPanel", "Home");
             }
-
             return RedirectToAction("EhvPanel", "Home");
         }
     }
