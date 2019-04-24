@@ -1,13 +1,25 @@
 ﻿using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System;
-using System.IO;
 using System.Web;
 
 namespace ResumeStripper.Helpers
 {
     public class PdfHelper
     {
+        //bool for testing, necessary for httpcontext
+        private bool isTesting = false;
+
+        public PdfHelper()
+        {
+
+        }
+
+        public PdfHelper(bool isTesting)
+        {
+            this.isTesting = isTesting;
+        }
+
         public string FirstnameOptionalPrefixLastname =
             @"([A-Z][a-z'-]+)\s?([a-z'-]*\s?[a-z'-]*\s?[a-z'-]*\s?)?([A-Z][A-Za-z'-]+)";
 
@@ -175,9 +187,23 @@ namespace ResumeStripper.Helpers
             //cleans any unneeded or missing segments from the template
             CleanUpTemplate();
 
-            string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
-            string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
-            
+            string headUrl = "";
+            string footUrl = "";
+
+            if (isTesting)
+            {
+                using (new FakeHttpContext.FakeHttpContext())
+                {
+                    headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
+                    footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
+                }
+            }
+            else
+            {
+                headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
+                footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
+            }
+
             PdfOutput output = new PdfOutput { ReturnBytes = true };
 
             PdfConvert.ConvertHtmlToPdf(new PdfDocument

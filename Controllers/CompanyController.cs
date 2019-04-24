@@ -11,8 +11,19 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        protected static readonly StripperContext Context = ContextHelper.GetContext();
+        protected static StripperContext Context = ContextHelper.GetContext();
         protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
+
+        public CompanyController()
+        {
+            Context = ContextHelper.GetContext();
+        }
+
+        public CompanyController(StripperContext context)
+        {
+            //constructor for testing
+            Context = context;
+        }
 
         [Authorize]
         public ActionResult Index()
@@ -58,7 +69,6 @@ namespace ResumeStripper.Controllers
                     Sector = model.Sector,
                     Package = model.Package
                 };
-
                 try
                 {
                     CompanyRepo.Add(c);

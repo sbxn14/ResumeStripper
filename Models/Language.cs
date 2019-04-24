@@ -24,5 +24,14 @@ namespace ResumeStripper.Models
         {
             IsSimple = true;
         }
+
+        //for testing
+        public Language(string name, LanguageLevel listen, LanguageLevel speaking, LanguageLevel writing)
+        {
+            Name = name;
+            LevelOfListening = listen;
+            LevelOfSpeaking = speaking;
+            LevelOfWriting = writing;
+        }
     }
 }

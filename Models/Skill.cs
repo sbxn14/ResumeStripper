@@ -20,6 +20,7 @@ namespace ResumeStripper.Models
 
         public Skill(string name)
         {
+            //for testing
             Name = name;
         }
     }

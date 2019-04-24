@@ -30,5 +30,15 @@ namespace ResumeStripper.Models.Experiences
         public WorkExperience()
         {
         }
+
+        public WorkExperience(string jobTitle, string taskDescription, DateTime beginDate, DateTime endDate, string organizationname, string location)
+        {
+            OrganizationName = organizationname;
+            LocationOrganization = location;
+            JobTitle = jobTitle;
+            TaskDescription = taskDescription;
+            BeginDate = beginDate;
+            EndDate = endDate;
+        }
     }
 }

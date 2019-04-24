@@ -80,7 +80,6 @@ namespace ResumeStripper.Models
         {
             //sets bool to true
             IsAnonymous = true;
-            //TODO: eventueel veranderen van persoonlijke waardes naar "***" of iets dergelijks
         }
 
         public void TrimEverything()

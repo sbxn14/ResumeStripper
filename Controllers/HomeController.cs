@@ -1,5 +1,4 @@
-﻿using ResumeStripper.Attributes;
-using ResumeStripper.DAL;
+﻿using ResumeStripper.DAL;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.AccountModels.ViewModels;
@@ -104,7 +103,7 @@ namespace ResumeStripper.Controllers
 
             return View(model);
         }
-        
+
         [Authorize] //only for Company administrators
         public ActionResult CompanyPanel()
         {

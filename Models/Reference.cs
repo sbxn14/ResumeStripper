@@ -39,6 +39,7 @@ namespace ResumeStripper.Models
 
         public Reference(string name, string companyName, string jobTitle, string email, string phoneNumber)
         {
+            //for testing
             Name = name;
             CompanyName = companyName;
             JobTitle = jobTitle;

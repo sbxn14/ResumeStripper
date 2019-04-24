@@ -4,19 +4,33 @@ using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.AccountModels.ViewModels;
 using ResumeStripper.Models.Enums;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using ResumeStripper.Managers;
 
 namespace ResumeStripper.Controllers
 {
     [Authorize]
     public class UserController : Controller
     {
-        protected static readonly StripperContext Context = ContextHelper.GetContext();
+        protected static StripperContext Context;
         protected readonly UserRepository UserRepo = new UserRepository(Context);
         protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
+
+        public UserController()
+        {
+            StripperContext cont = ContextHelper.GetContext();
+        }
+
+        public UserController(StripperContext context)
+        {
+            //constructor for testing
+            Context = context;
+        }
 
         // GET: User
         public ActionResult Index()
@@ -51,16 +65,15 @@ namespace ResumeStripper.Controllers
             {
                 model = new RegisterViewModel
                 {
-                    Companies = CompanyRepo.GetAll()
+                    Companies = GetAllCompanies()
                 };
             }
             else if (model.Companies == null)
             {
-                model.Companies = CompanyRepo.GetAll();
+                model.Companies = GetAllCompanies();
             }
 
             model.CurrentUserRole = u.Role;
-            //model.CurrentUserRole = UserRole.EHVAdmin;
             model.CurrentCompanyName = u.UserCompany.Name;
 
             return View(model);
@@ -105,13 +118,15 @@ namespace ResumeStripper.Controllers
         {
             if (ModelState.IsValid)
             {
-                //TODO: Company registering/login to assign Company to any registered users if needed
                 //create instance of (Password)Hasher
                 var hasher = new Hasher();
 
-                var user = UserRepo.GetUserByEmail(model.Email);
+                //var user = UserRepo.GetUserByEmail(model.Email);
+                UserManager uManager = new UserManager(UserRepo);
 
-                if (user != null)
+                //check if user exists
+                //if (user != null)
+                if(uManager.CheckIfUserExists(model.Email))
                 {
                     //email has already an user in database, generate error and return to Register view
                     ModelState.AddModelError("", "Your chosen emailaddress is already taken!");
@@ -125,18 +140,20 @@ namespace ResumeStripper.Controllers
                 //retrieve full company information
                 model.Company = CompanyRepo.GetByName(model.Company.Name);
 
-                //generates salt and hashes password
-                var salt = hasher.GenerateSalt();
-                var password = hasher.Encrypt(model.Password, salt);
+                ////generates salt and hashes password
+                //var salt = hasher.GenerateSalt();
+                //var password = hasher.Encrypt(model.Password, salt);
 
-                User u = new User
-                {
-                    Emailaddress = model.Email,
-                    Password = password,
-                    Salt = salt,
-                    Role = model.Role,
-                    UserCompany = model.Company
-                };
+                //User u = new User
+                //{
+                //    Emailaddress = model.Email,
+                //    Password = password,
+                //    Salt = salt,
+                //    Role = model.Role,
+                //    UserCompany = model.Company
+                //};
+
+                User u = uManager.FillUser(model);
 
                 try
                 {
@@ -168,8 +185,6 @@ namespace ResumeStripper.Controllers
                 TempData["ViewD"] = ViewData;
                 return RedirectToAction("Register");
             }
-            //TODO: return message that registration was succesful!
-
             //retrieves relevant admin account from tempdata
             User cu = (User)TempData["CurrentUser"];
             //and places it back for further use
@@ -295,7 +310,7 @@ namespace ResumeStripper.Controllers
                 Emailaddress = user.Emailaddress,
                 Role = user.Role,
                 UserCompany = user.UserCompany,
-                Companies = CompanyRepo.GetAll(),
+                Companies = GetAllCompanies(),
                 CurrentUserRole = u.Role
             };
 
@@ -415,6 +430,21 @@ namespace ResumeStripper.Controllers
             }
             //shouldnt ever get here tbh
             return null;
+        }
+
+        public List<Company> GetAllCompanies()
+        {
+            return CompanyRepo.GetAll();
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return UserRepo.GetAll();
+        }
+
+        public List<User> GetAllUsersOfCompany(int id)
+        {
+            return UserRepo.GetAllByCompanyId(id);
         }
     }
 }

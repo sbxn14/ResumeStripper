@@ -18,5 +18,15 @@ namespace ResumeStripper.Models.AccountModels
         public User()
         {
         }
+
+        //for testing
+        public User(string emailaddress, string password, string salt, UserRole role, Company userCompany)
+        {
+            Emailaddress = emailaddress;
+            Password = password;
+            Salt = salt;
+            Role = role;
+            UserCompany = userCompany;
+        }
     }
 }

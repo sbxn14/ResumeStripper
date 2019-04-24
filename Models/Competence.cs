@@ -22,6 +22,7 @@ namespace ResumeStripper.Models
 
         public Competence(string name)
         {
+            //for testing
             Name = name;
         }
     }

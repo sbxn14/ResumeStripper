@@ -30,5 +30,16 @@ namespace ResumeStripper.Models.Experiences
         public EducationExperience()
         {
         }
+
+        public EducationExperience(string name, string levelOfEducation, bool diploma, DateTime beginDate, DateTime endDate, string organizationname, string location)
+        {
+            OrganizationName = organizationname;
+            LocationOrganization = location;
+            Name = name;
+            LevelOfEducation = levelOfEducation;
+            Diploma = diploma;
+            BeginDate = beginDate;
+            EndDate = endDate;
+        }
     }
 }

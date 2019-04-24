@@ -27,6 +27,7 @@ namespace ResumeStripper.Models.AccountModels
 
         public Company(string name, string location, string sector, StripperPackage package)
         {
+            //for testing
             Name = name;
             Location = location;
             Sector = sector;

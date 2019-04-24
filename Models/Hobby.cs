@@ -21,6 +21,7 @@ namespace ResumeStripper.Models
 
         public Hobby(string name)
         {
+            //for testing
             Name = name;
         }
     }

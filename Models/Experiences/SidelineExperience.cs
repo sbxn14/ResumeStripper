@@ -30,5 +30,15 @@ namespace ResumeStripper.Models.Experiences
         public SidelineExperience()
         {
         }
+
+        public SidelineExperience(string jobTitle, string taskDescription, DateTime beginDate, DateTime endDate, string organizationname, string location)
+        {
+            OrganizationName = organizationname;
+            LocationOrganization = location;
+            JobTitle = jobTitle;
+            TaskDescription = taskDescription;
+            BeginDate = beginDate;
+            EndDate = endDate;
+        }
     }
 }

@@ -15,5 +15,20 @@ namespace ResumeStripper.Models.Experiences
         public DateTime Year { get; set; }
 
         public bool Certificate { get; set; }
+
+        public CourseExperience()
+        {
+
+        }
+
+        //for testing
+        public CourseExperience(string name, string location, DateTime year, string organizationname)
+        {
+            Name = name;
+            OrganizationName = organizationname;
+            LocationOrganization = location;
+            Certificate = true;
+            Year = year;
+        }
     }
 }
