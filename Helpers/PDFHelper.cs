@@ -1,7 +1,6 @@
 ﻿using ResumeStripper.Models;
 using ResumeStripper.Models.Experiences;
 using System;
-using System.IO;
 using System.Web;
 
 namespace ResumeStripper.Helpers
@@ -175,9 +174,12 @@ namespace ResumeStripper.Helpers
             //cleans any unneeded or missing segments from the template
             CleanUpTemplate();
 
-            string headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
-            string footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
-            
+            string headUrl = "";
+            string footUrl = "";
+
+            headUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Header.html");
+            footUrl = HttpContext.Current.Server.MapPath("~/Views/Shared/Footer.html");
+
             PdfOutput output = new PdfOutput { ReturnBytes = true };
 
             PdfConvert.ConvertHtmlToPdf(new PdfDocument
@@ -323,6 +325,7 @@ namespace ResumeStripper.Helpers
                     Template = Template.Replace("[INSTITUTENAME]", "***");
                     Template = Template.Replace("[INSTITUTELOCATION]", "***");
                 }
+
                 Template = Template.Replace("[EDUCATIONNAME]", e.Name);
                 Template = Template.Replace("[EDUCATIONLEVEL]", e.LevelOfEducation);
                 Template = Template.Replace("[EDUBEGIN]", e.BeginDate.Date.ToShortDateString());
