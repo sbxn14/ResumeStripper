@@ -36,6 +36,11 @@ namespace ResumeStripper.DAL
             DbSet.Add(entity);
         }
 
+        public void Update(T entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Delete(T entity)
         {
             DbSet.Remove(entity);

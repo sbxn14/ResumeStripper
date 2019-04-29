@@ -3,6 +3,7 @@ using ResumeStripper.Filters;
 using ResumeStripper.Helpers;
 using ResumeStripper.Models;
 using ResumeStripper.Models.AccountModels;
+using ResumeStripper.Models.Enums;
 using ResumeStripper.Models.Viewmodels;
 using System.Data.Entity.Validation;
 using System.IO;
@@ -12,14 +13,27 @@ using System.Web.Mvc;
 namespace ResumeStripper.Controllers
 {
     [Authorize]
-    public class CVController : Controller
+    public class CvController : Controller
     {
-        protected readonly CvRepository Repo = new CvRepository(new StripperContext());
+        protected readonly ICvRepository Repo;
+        private readonly bool _isTesting = false;
+
+        public CvController()
+        {
+            StripperContext context = ContextHelper.GetContext();
+            Repo = new CvRepository(context);
+        }
+
+        public CvController(ICvRepository repo)
+        {
+            //for testing
+            Repo = repo;
+            _isTesting = true;
+        }
 
         [HttpGet]
         [WhitespaceFilter]
         [CompressFilter]
-        [Authorize]
         public ActionResult Index()
         {
             User u = null;
@@ -44,7 +58,19 @@ namespace ResumeStripper.Controllers
 
                 StripperViewModel m = (StripperViewModel)TempData["exportForm"];
                 m.CurrentUser = u;
+
                 return View(m);
+            }
+
+            if (_isTesting)
+            {
+                //for testing
+                if (u == null)
+                {
+                    //fills u with a random user with test  values
+                    u = new User(1, "test@test.com", "password", "salt", UserRole.CompanyAdmin, new Company
+                        (1, "testName", "testLocation", "testSector", StripperPackage.B));
+                }
             }
 
             StripperViewModel model = (StripperViewModel)TempData["Message"];
@@ -68,10 +94,13 @@ namespace ResumeStripper.Controllers
             model.CurrentUser = u;
             //saves user in tempdata for further use cross-controller
             TempData["CurrentUser"] = u;
+
             //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
             model.ServerPath = "http://127.0.0.1:8081/" + filename;
             TempData["CurrentURL"] = model.ServerPath;
+
             ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
+
             return View(model);
         }
 
@@ -81,33 +110,43 @@ namespace ResumeStripper.Controllers
         {
             //select file button has been pressed
             //if (Request.Files.Count > 0)
-            if (pdf.ContentLength > 0)
+            if (pdf.ContentLength <= 0) return RedirectToAction("Index");
+
+            string extension = Path.GetExtension(pdf.FileName)?.ToUpper();
+
+            //checks if file is pdf, if not will give error
+            if (extension != null && extension.Equals(".PDF"))
             {
-                string extension = Path.GetExtension(pdf.FileName)?.ToUpper();
-                //checks if file is pdf, if not will give error
-                if (extension != null && extension.Equals(".PDF"))
+                //empty PDF, return to index
+                if (pdf.ContentLength <= 0)
                 {
-                    //empty PDF, return to index
-                    if (pdf.ContentLength <= 0)
-                    {
-                        return RedirectToAction("Index");
-                    }
-
-                    TempData["file"] = pdf.FileName;
-
-                    StripperViewModel mod = new StripperViewModel
-                    {
-                        Path = pdf.FileName
-                    };
-
-                    TempData["Message"] = mod;
-                }
-                else
-                {
-                    //TODO: Technically not needed, can be removed probably
-                    ViewBag.FileStatus = "Invalid File Format.";
                     return RedirectToAction("Index");
                 }
+
+                string mappedPath = Server.MapPath(@"~/PDFs");
+
+                string newName = GenerateFileName(mappedPath) + ".pdf";
+
+                string newPath = Path.Combine(mappedPath, newName);
+
+                TempData["tempFile"] = newPath;
+                TempData["file"] = newName;
+
+                //save pdf to temporary new path with generated file name
+                pdf.SaveAs(newPath);
+
+                StripperViewModel mod = new StripperViewModel
+                {
+                    FileName = newName
+                };
+
+                TempData["Message"] = mod;
+            }
+            else
+            {
+                //TODO: Technically not needed, can be removed probably
+                ViewBag.FileStatus = "Invalid File Format.";
+                return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
         }
@@ -185,13 +224,14 @@ namespace ResumeStripper.Controllers
 
             TempData["pdfName"] = resultName;
             //generate PDF and generate view that shows that PDF instead of redirect to index
-            //string url = Server.MapPath("~/PDFs/") + resultName;
 
             PdfHelper helper = new PdfHelper();
 
             byte[] newPdf = helper.GeneratePdf(cv);
             TempData["bytes"] = newPdf;
-            //TempData["url"] = url;
+
+            //and delete temporary file
+            System.IO.File.Delete((string)TempData["tempFile"]);
 
             return View();
         }
@@ -212,6 +252,33 @@ namespace ResumeStripper.Controllers
                 //context.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public void DeleteTempFile()
+        {
+            string file = (string)TempData["tempFile"];
+
+            System.IO.File.Delete(file);
+        }
+
+        public string GenerateFileName(string path)
+        {
+            //generate random name
+            string name = RandomHelper.RandomString(20);
+
+            //get all files from folder
+            DirectoryInfo dInfo = new DirectoryInfo(path);
+            FileInfo[] files = dInfo.GetFiles("*.pdf");
+
+            foreach (FileInfo f in files)
+            {
+                if (f.Name.Equals(name))
+                {
+                    //name already exists in folder, so run method again
+                    GenerateFileName(path);
+                }
+            }
+            //if name didn't exist, return name
+            return name;
         }
     }
 }

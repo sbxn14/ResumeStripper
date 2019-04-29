@@ -2,6 +2,7 @@
 using ResumeStripper.Helpers;
 using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.AccountModels.ViewModels;
+using ResumeStripper.Models.Enums;
 using System;
 using System.Data.Entity.Validation;
 using System.Web.Mvc;
@@ -11,18 +12,24 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        protected static StripperContext Context = ContextHelper.GetContext();
-        protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
+        protected ICompanyRepository CompanyRepo;
 
         public CompanyController()
         {
-            Context = ContextHelper.GetContext();
+            StripperContext context = ContextHelper.GetContext();
+            CompanyRepo = new CompanyRepository(context);
         }
 
         public CompanyController(StripperContext context)
         {
-            //constructor for testing
-            Context = context;
+            //for testing
+            CompanyRepo = new CompanyRepository(context);
+        }
+
+        public CompanyController(ICompanyRepository crep)
+        {
+            //for testing
+            CompanyRepo = crep;
         }
 
         [Authorize]
@@ -42,7 +49,7 @@ namespace ResumeStripper.Controllers
                 //if there was a RegisterViewModel saved in Tempdata, return Register view with previous inputted values 
                 model = (CompanyRegisterViewModel)TempData["regMod"];
             }
-            return View(model);
+            return View(model ?? new CompanyRegisterViewModel());
         }
         [Authorize]
         public ActionResult RegisterCompany(CompanyRegisterViewModel model)
@@ -103,7 +110,7 @@ namespace ResumeStripper.Controllers
             return RedirectToAction("EhvPanel", "Home");
         }
 
-        [Authorize(Roles = "")]
+        [Authorize]
         public ActionResult Edit(string id)
         {
             if (TempData["ViewD"] != null)
@@ -123,6 +130,15 @@ namespace ResumeStripper.Controllers
             TempData["compID"] = companyId;
 
             Company c = CompanyRepo.GetById(companyId);
+
+            if (u == null)
+            {
+                //for testing
+                u = new User
+                {
+                    Role = UserRole.EHVAdmin
+                };
+            }
 
             EditCompanyViewModel model = new EditCompanyViewModel
             {
@@ -156,7 +172,7 @@ namespace ResumeStripper.Controllers
                     Package = model.Package
                 };
 
-                CompanyRepo.UpdateCompany(c);
+                CompanyRepo.Update(c);
                 CompanyRepo.SaveChanges();
 
                 //saves bool in tempdata to force a refresh of context and repositories in panel action,
@@ -180,6 +196,15 @@ namespace ResumeStripper.Controllers
             int companyId = Convert.ToInt32(id.Replace("Details", ""));
 
             Company c = CompanyRepo.GetById(companyId);
+
+            if (u == null)
+            {
+                //for testing
+                u = new User
+                {
+                    Role = UserRole.EHVAdmin
+                };
+            }
 
             DetailsViewModel model = new DetailsViewModel
             {

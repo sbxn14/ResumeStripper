@@ -14,8 +14,7 @@ namespace ResumeStripper
                 url: "{controller}/{action}/{id}",
                 //defaults: new { controller = "CV", action = "Index", id = UrlParameter.Optional }
                 defaults: new { controller = "User", action = "Login", id = UrlParameter.Optional }
-
-            );
+                );
         }
     }
 }

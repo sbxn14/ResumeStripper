@@ -11,9 +11,49 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        protected static StripperContext Context = ContextHelper.GetContext();
-        protected UserRepository UserRepo = new UserRepository(Context);
-        protected CompanyRepository CompanyRepo = new CompanyRepository(Context);
+        protected IUserRepository UserRepo;
+        protected ICompanyRepository CompanyRepo;
+
+        private readonly bool _isTesting = false;
+
+        public HomeController()
+        {
+            StripperContext Context = ContextHelper.GetContext();
+            UserRepo = new UserRepository(Context);
+            CompanyRepo = new CompanyRepository(Context);
+        }
+
+        public HomeController(StripperContext context)
+        {
+            //for testing
+            UserRepo = new UserRepository(context);
+            CompanyRepo = new CompanyRepository(context);
+            _isTesting = true;
+        }
+
+        public HomeController(IUserRepository uRep, ICompanyRepository cRep)
+        {
+            //for testing
+            UserRepo = uRep;
+            CompanyRepo = cRep;
+            _isTesting = true;
+        }
+
+        public HomeController(StripperContext context, IUserRepository uRep)
+        {
+            //for testing
+            UserRepo = uRep;
+            CompanyRepo = new CompanyRepository(context);
+            _isTesting = true;
+        }
+
+        public HomeController(StripperContext context, ICompanyRepository cRep)
+        {
+            //for testing
+            UserRepo = new UserRepository(context);
+            CompanyRepo = cRep;
+            _isTesting = true;
+        }
 
         //dashboard
         [Authorize]
@@ -25,13 +65,26 @@ namespace ResumeStripper.Controllers
             //places it back in tempdata for further use
             TempData["CurrentUser"] = u;
 
+            if (u == null)
+            {
+                //for testing
+                u = new User
+                {
+                    Emailaddress = "Testmail@mail.com",
+                    UserCompany = new Company
+                    {
+                        Name = "TestCompany"
+                    }
+                };
+            }
+
             DashboardViewModel model = new DashboardViewModel()
             {
                 Emailaddress = u.Emailaddress,
                 Company = u.UserCompany
             };
 
-            return View(model);
+            return View(model ?? new DashboardViewModel());
         }
 
         [Authorize] //only for EHV administrators
@@ -41,6 +94,8 @@ namespace ResumeStripper.Controllers
             User u = (User)TempData["CurrentUser"];
             //and places it back for further use
             TempData["CurrentUser"] = u;
+
+            if (u == null) u = new User { Role = UserRole.EHVAdmin };
 
             //checks if user is allowed to view EHVpanel
             if (u.Role != UserRole.EHVAdmin)
@@ -56,17 +111,21 @@ namespace ResumeStripper.Controllers
                     return Redirect(Request.UrlReferrer.ToString());
                 }
                 //else just return to the stripper
-                return RedirectToAction("Index", "CV");
+                return RedirectToAction("Index", "Cv");
             }
 
-            //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated
-            if (TempData["UpdateHappened"] != null)
+            //if not testing
+            if (!_isTesting)
             {
-                if ((bool)TempData["UpdateHappened"])
+                //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated
+                if (TempData["UpdateHappened"] != null)
                 {
-                    Context = new StripperContext();
-                    UserRepo = new UserRepository(Context);
-                    CompanyRepo = new CompanyRepository(Context);
+                    if ((bool)TempData["UpdateHappened"])
+                    {
+                        StripperContext context = new StripperContext();
+                        UserRepo = new UserRepository(context);
+                        CompanyRepo = new CompanyRepository(context);
+                    }
                 }
             }
 
@@ -112,6 +171,17 @@ namespace ResumeStripper.Controllers
             //and places it back for further use
             TempData["CurrentUser"] = u;
 
+            if (_isTesting)
+            {
+                //for testing
+                if (u == null)
+                {
+                    //fills u with a random user with test  values
+                    u = new User(1, "test@test.com", "password", "salt", UserRole.CompanyAdmin, new Company
+                        (1, "testName", "testLocation", "testSector", StripperPackage.B));
+                }
+            }
+
             //checks if user is allowed to view Companypanel
             if (u.Role != UserRole.CompanyAdmin)
             {
@@ -126,17 +196,21 @@ namespace ResumeStripper.Controllers
                     return Redirect(Request.UrlReferrer.ToString());
                 }
                 //else just return to the stripper
-                return RedirectToAction("Index", "CV");
+                return RedirectToAction("Index", "Cv");
             }
 
-            //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated
-            if (TempData["UpdateHappened"] != null)
+            //if not testing
+            if (!_isTesting)
             {
-                if ((bool)TempData["UpdateHappened"])
+                //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated
+                if (TempData["UpdateHappened"] != null)
                 {
-                    Context = new StripperContext();
-                    UserRepo = new UserRepository(Context);
-                    CompanyRepo = new CompanyRepository(Context);
+                    if ((bool)TempData["UpdateHappened"])
+                    {
+                        StripperContext context = new StripperContext();
+                        UserRepo = new UserRepository(context);
+                        CompanyRepo = new CompanyRepository(context);
+                    }
                 }
             }
 

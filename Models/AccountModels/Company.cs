@@ -25,9 +25,10 @@ namespace ResumeStripper.Models.AccountModels
 
         }
 
-        public Company(string name, string location, string sector, StripperPackage package)
+        public Company(int id, string name, string location, string sector, StripperPackage package)
         {
             //for testing
+            Id = id;
             Name = name;
             Location = location;
             Sector = sector;

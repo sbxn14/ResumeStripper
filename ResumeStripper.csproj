@@ -282,12 +282,15 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
-    <Compile Include="Controllers\CVController.cs" />
+    <Compile Include="Controllers\CvController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DAL\CompanyRepository.cs" />
     <Compile Include="DAL\CVRepository.cs" />
+    <Compile Include="DAL\ICompanyRepository.cs" />
+    <Compile Include="DAL\ICVRepository.cs" />
     <Compile Include="DAL\IRepository.cs" />
+    <Compile Include="DAL\IUserRepository.cs" />
     <Compile Include="DAL\Repository.cs" />
     <Compile Include="DAL\StripperContext.cs" />
     <Compile Include="DAL\UserRepository.cs" />
@@ -299,6 +302,7 @@
     <Compile Include="Helpers\ContextHelper.cs" />
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
+    <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels\Company.cs" />
