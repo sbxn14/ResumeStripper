@@ -287,9 +287,9 @@
     <Compile Include="Helpers\Base64Converter.cs" />
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
-    <Compile Include="Migrations\201904081132409_Initial.cs" />
-    <Compile Include="Migrations\201904081132409_Initial.Designer.cs">
-      <DependentUpon>201904081132409_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201904291242434_initialmigration.cs" />
+    <Compile Include="Migrations\201904291242434_initialmigration.Designer.cs">
+      <DependentUpon>201904291242434_initialmigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels\Company.cs" />
@@ -452,8 +452,8 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201904081132409_Initial.resx">
-      <DependentUpon>201904081132409_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201904291242434_initialmigration.resx">
+      <DependentUpon>201904291242434_initialmigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
