@@ -10,7 +10,7 @@ namespace ResumeStripper.DAL
     public class StripperContext : DbContext
     {
         //passes the connection string saved in the web.config to the DbContext
-        public StripperContext() : base("MySqlCon")
+        public StripperContext() : base("testCon")
         {
             Database.SetInitializer(new CreateDatabaseIfNotExists<StripperContext>());
         }
