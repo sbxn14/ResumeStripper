@@ -21,15 +21,15 @@ namespace ResumeStripper.Controllers
 
         public UserController()
         {
-            StripperContext Context = ContextHelper.GetContext();
-            UserRepo = new UserRepository(Context);
-            CompanyRepo = new CompanyRepository(Context);
+            StripperContext context = ContextHelper.GetContext();
+            UserRepo = new UserRepository(context);
+            CompanyRepo = new CompanyRepository(context);
         }
 
-        public UserController(UserRepository urep, CompanyRepository crep)
+        public UserController(StripperContext context)
         {
-            UserRepo = urep;
-            CompanyRepo = crep;
+            UserRepo = new UserRepository(context);
+            CompanyRepo = new CompanyRepository(context);
         }
 
         // GET: User

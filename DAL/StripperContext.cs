@@ -10,23 +10,23 @@ namespace ResumeStripper.DAL
     public class StripperContext : DbContext
     {
         //passes the connection string saved in the web.config to the DbContext
-        public StripperContext() : base("MySqlCon")
+        public StripperContext() : base("testCon")
         {
             Database.SetInitializer(new CreateDatabaseIfNotExists<StripperContext>());
         }
 
-        public DbSet<CV> Cvs { get; set; }
-        public DbSet<WorkExperience> WorkExperiences { get; set; }
-        public DbSet<EducationExperience> EducationExperiences { get; set; }
-        public DbSet<SidelineExperience> SidelineExperiences { get; set; }
-        public DbSet<CourseExperience> CourseExperiences { get; set; }
-        public DbSet<Competence> Competences { get; set; }
-        public DbSet<Skill> Skills { get; set; }
-        public DbSet<License> Licenses { get; set; }
-        public DbSet<Reference> References { get; set; }
-        public DbSet<Language> Languages { get; set; }
-        public DbSet<Hobby> Hobbies { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Company> Companies { get; set; }
+        public IDbSet<CV> Cvs { get; set; }
+        public IDbSet<WorkExperience> WorkExperiences { get; set; }
+        public IDbSet<EducationExperience> EducationExperiences { get; set; }
+        public IDbSet<SidelineExperience> SidelineExperiences { get; set; }
+        public IDbSet<CourseExperience> CourseExperiences { get; set; }
+        public IDbSet<Competence> Competences { get; set; }
+        public IDbSet<Skill> Skills { get; set; }
+        public IDbSet<License> Licenses { get; set; }
+        public IDbSet<Reference> References { get; set; }
+        public IDbSet<Language> Languages { get; set; }
+        public IDbSet<Hobby> Hobbies { get; set; }
+        public virtual IDbSet<User> Users { get; set; }
+        public virtual IDbSet<Company> Companies { get; set; }
     }
 }
