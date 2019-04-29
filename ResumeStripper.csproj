@@ -287,6 +287,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DAL\CompanyRepository.cs" />
     <Compile Include="DAL\CVRepository.cs" />
+    <Compile Include="DAL\ICompanyRepository.cs" />
     <Compile Include="DAL\IRepository.cs" />
     <Compile Include="DAL\Repository.cs" />
     <Compile Include="DAL\StripperContext.cs" />

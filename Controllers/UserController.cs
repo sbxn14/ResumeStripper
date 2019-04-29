@@ -17,7 +17,7 @@ namespace ResumeStripper.Controllers
     public class UserController : Controller
     {
         protected UserRepository UserRepo;
-        protected CompanyRepository CompanyRepo;
+        protected ICompanyRepository CompanyRepo;
 
         public UserController()
         {

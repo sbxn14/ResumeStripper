@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using ResumeStripper.Models.AccountModels;
+﻿using ResumeStripper.Models.AccountModels;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
 namespace ResumeStripper.DAL
 {
-    public class CompanyRepository : IRepository<Company>
+    public class CompanyRepository : ICompanyRepository
     {
         private readonly StripperContext _context;
 
@@ -31,6 +31,7 @@ namespace ResumeStripper.DAL
         }
 
         public IDbSet<Company> DbSet { get; set; }
+
         public Company GetById(int id)
         {
             throw new System.NotImplementedException();
