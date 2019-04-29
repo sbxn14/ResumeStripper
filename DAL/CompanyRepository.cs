@@ -1,4 +1,5 @@
 ﻿using ResumeStripper.Models.AccountModels;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ResumeStripper.DAL

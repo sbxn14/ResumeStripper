@@ -26,7 +26,7 @@ namespace ResumeStripper.DAL
         public DbSet<Reference> References { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Hobby> Hobbies { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Company> Companies { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Company> Companies { get; set; }
     }
 }

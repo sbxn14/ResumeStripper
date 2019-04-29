@@ -1,20 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using ResumeStripper.Helpers;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using ResumeStripper.Helpers;
+using ResumeStripper.Models.AccountModels;
 
 namespace ResumeStripper.DAL
 {
     public class Repository<T> where T : class
     {
-        private readonly StripperContext _context;
-        protected DbSet<T> DbSet { get; set; }
+        public virtual StripperContext _context { get; set; }
+        protected virtual DbSet<T> DbSet { get; set; }
 
         public Repository(StripperContext context)
         {
             _context = context;
             DbSet = _context.Set<T>();
         }
+
+        //public Repository(StripperContext context, DbSet<T> set)
+        //{
+        //    //for testing
+        //    _context = context;
+        //    DbSet = (DbSet<T) set;
+        //}
 
         public T GetById(int id)
         {

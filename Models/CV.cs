@@ -1,11 +1,11 @@
-﻿using ResumeStripper.Models.Enums;
+﻿using ResumeStripper.Models.AccountModels;
+using ResumeStripper.Models.Enums;
 using ResumeStripper.Models.Experiences;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ResumeStripper.Models.AccountModels;
 
 namespace ResumeStripper.Models
 {
@@ -228,9 +228,28 @@ namespace ResumeStripper.Models
 
         public string CapitalizeFirstLetter(string s)
         {
-            //capitalizes first letter
+            int position = 0;
+            
             char[] a = s.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
+
+            if (!char.IsLetter(a[position]))
+            {
+                //if first character happens to be a number and not a letter
+
+            }
+
+            foreach (char c in a)
+            {
+                if (char.IsLetter(c))
+                {
+                    //change the first letter in a word to a capital letter, skipping any numbers or special characters
+                    a[position] = char.ToUpper(a[position]);
+                    //break once first letter has been capitalized
+                    break;
+                }
+                //add one to position if characters happened to NOT be a letter
+                position++;
+            }
             return new string(a);
         }
 

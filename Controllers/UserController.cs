@@ -1,35 +1,35 @@
 ﻿using ResumeStripper.DAL;
 using ResumeStripper.Helpers;
+using ResumeStripper.Managers;
 using ResumeStripper.Models.AccountModels;
 using ResumeStripper.Models.AccountModels.ViewModels;
 using ResumeStripper.Models.Enums;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using ResumeStripper.Managers;
 
 namespace ResumeStripper.Controllers
 {
     [Authorize]
     public class UserController : Controller
     {
-        protected static StripperContext Context;
-        protected readonly UserRepository UserRepo = new UserRepository(Context);
-        protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
+        protected UserRepository UserRepo;
+        protected CompanyRepository CompanyRepo;
 
         public UserController()
         {
-            StripperContext cont = ContextHelper.GetContext();
+            StripperContext Context = ContextHelper.GetContext();
+            UserRepo = new UserRepository(Context);
+            CompanyRepo = new CompanyRepository(Context);
         }
 
-        public UserController(StripperContext context)
+        public UserController(UserRepository urep, CompanyRepository crep)
         {
-            //constructor for testing
-            Context = context;
+            UserRepo = urep;
+            CompanyRepo = crep;
         }
 
         // GET: User
@@ -126,7 +126,7 @@ namespace ResumeStripper.Controllers
 
                 //check if user exists
                 //if (user != null)
-                if(uManager.CheckIfUserExists(model.Email))
+                if (uManager.CheckIfUserExists(model.Email))
                 {
                     //email has already an user in database, generate error and return to Register view
                     ModelState.AddModelError("", "Your chosen emailaddress is already taken!");
@@ -228,14 +228,15 @@ namespace ResumeStripper.Controllers
                             "",
                             FormsAuthentication.FormsCookiePath);
 
-                        Response.Cookies.Add
-                        (
-                            new HttpCookie
-                            (
-                                FormsAuthentication.FormsCookieName,
-                                FormsAuthentication.Encrypt(ticket)
-                            )
-                        );
+
+                        //make cookie and for XSRF Protection put HttpOnly on true
+                        HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
+                        {
+                            HttpOnly = true
+                        };
+
+                        Response.Cookies.Add(cookie);
+
                         //save user in tempdata for cross-controller transport
                         TempData["CurrentUser"] = user;
 
@@ -420,7 +421,7 @@ namespace ResumeStripper.Controllers
                         return RedirectToAction("CompanyPanel", "Home");
                 }
             }
-            
+
             switch (cu.Role)
             {
                 case UserRole.EHVAdmin:
