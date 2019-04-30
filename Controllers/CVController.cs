@@ -12,9 +12,26 @@ using System.Web.Mvc;
 namespace ResumeStripper.Controllers
 {
     [Authorize]
-    public class CVController : Controller
+    public class CvController : Controller
     {
-        protected readonly CvRepository Repo = new CvRepository(new StripperContext());
+        protected ICvRepository Repo;
+
+        public CvController()
+        {
+            Repo = new CvRepository(ContextHelper.GetContext());
+        }
+
+        public CvController(StripperContext context)
+        {
+            //for testing
+            Repo = new CvRepository(context);
+        }
+
+        public CvController(ICvRepository repo)
+        {
+            //for testing
+            Repo = repo;
+        }
 
         [HttpGet]
         [WhitespaceFilter]
@@ -141,8 +158,6 @@ namespace ResumeStripper.Controllers
                 //TODO: improve saving, more specific instead of just saving the entire thing in the database as is.
                 //Save (for now) the complete CV-model in the Database
                 Repo.Add(cv);
-                //context.Cvs.Add(cv);
-                //context.SaveChanges();
                 Repo.SaveChanges();
             }
             catch (DbEntityValidationException dbEx)

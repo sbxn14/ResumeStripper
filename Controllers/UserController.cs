@@ -16,7 +16,7 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        protected UserRepository UserRepo;
+        protected IUserRepository UserRepo;
         protected ICompanyRepository CompanyRepo;
 
         public UserController()
@@ -26,10 +26,25 @@ namespace ResumeStripper.Controllers
             CompanyRepo = new CompanyRepository(context);
         }
 
-        public UserController(StripperContext context)
+        public UserController(StripperContext context, ICompanyRepository rep)
         {
+            //for testing
             UserRepo = new UserRepository(context);
+            CompanyRepo = rep;
+        }
+
+        public UserController(StripperContext context, IUserRepository rep)
+        {
+            //for testing
             CompanyRepo = new CompanyRepository(context);
+            UserRepo = rep;
+        }
+
+        public UserController(IUserRepository urep, ICompanyRepository crep)
+        {
+            //for testing
+            CompanyRepo = crep;
+            UserRepo = urep;
         }
 
         // GET: User
@@ -73,8 +88,11 @@ namespace ResumeStripper.Controllers
                 model.Companies = GetAllCompanies();
             }
 
-            model.CurrentUserRole = u.Role;
-            model.CurrentCompanyName = u.UserCompany.Name;
+            if (u != null)
+            {
+                model.CurrentUserRole = u.Role;
+                model.CurrentCompanyName = u.UserCompany.Name;
+            }
 
             return View(model);
         }
@@ -82,7 +100,13 @@ namespace ResumeStripper.Controllers
         [AllowAnonymous]
         public ActionResult Login()
         {
-            var cookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+            HttpCookie cookie = null;
+
+            //the if not null is for testing purposes
+            if (Request.Cookies != null)
+            {
+                cookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+            }
 
             if (cookie != null)
             {
@@ -140,19 +164,7 @@ namespace ResumeStripper.Controllers
                 //retrieve full company information
                 model.Company = CompanyRepo.GetByName(model.Company.Name);
 
-                ////generates salt and hashes password
-                //var salt = hasher.GenerateSalt();
-                //var password = hasher.Encrypt(model.Password, salt);
-
-                //User u = new User
-                //{
-                //    Emailaddress = model.Email,
-                //    Password = password,
-                //    Salt = salt,
-                //    Role = model.Role,
-                //    UserCompany = model.Company
-                //};
-
+                //fills the new user, encrypts password etc
                 User u = uManager.FillUser(model);
 
                 try
@@ -185,18 +197,23 @@ namespace ResumeStripper.Controllers
                 TempData["ViewD"] = ViewData;
                 return RedirectToAction("Register");
             }
+
             //retrieves relevant admin account from tempdata
             User cu = (User)TempData["CurrentUser"];
             //and places it back for further use
             TempData["CurrentUser"] = cu;
 
-            switch (cu.Role)
+            if (cu != null)
             {
-                case UserRole.EHVAdmin:
-                    return RedirectToAction("EhvPanel", "Home");
-                case UserRole.CompanyAdmin:
-                    return RedirectToAction("CompanyPanel", "Home");
+                switch (cu.Role)
+                {
+                    case UserRole.EHVAdmin:
+                        return RedirectToAction("EhvPanel", "Home");
+                    case UserRole.CompanyAdmin:
+                        return RedirectToAction("CompanyPanel", "Home");
+                }
             }
+
             return RedirectToAction("Register", "User");
         }
 
@@ -228,7 +245,6 @@ namespace ResumeStripper.Controllers
                             "",
                             FormsAuthentication.FormsCookiePath);
 
-
                         //make cookie and for XSRF Protection put HttpOnly on true
                         HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
                         {
@@ -241,7 +257,7 @@ namespace ResumeStripper.Controllers
                         TempData["CurrentUser"] = user;
 
                         //go to dashboard
-                        return RedirectToAction("Index", "CV");
+                        return RedirectToAction("Index", "Cv");
                     }
                     //password doesn't match stored password, add error and return login view
                     ModelState.AddModelError("", mainError);
@@ -305,6 +321,18 @@ namespace ResumeStripper.Controllers
 
             User user = UserRepo.GetById(userId);
 
+            UserRole current;
+
+            if (u == null)
+            {
+                //for testing
+                current = UserRole.CompanyUser;
+            }
+            else
+            {
+                current = u.Role;
+            }
+
             EditUserViewModel model = new EditUserViewModel
             {
                 Id = user.ID,
@@ -312,7 +340,7 @@ namespace ResumeStripper.Controllers
                 Role = user.Role,
                 UserCompany = user.UserCompany,
                 Companies = GetAllCompanies(),
-                CurrentUserRole = u.Role
+                CurrentUserRole = current
             };
 
             return View(model);
@@ -335,7 +363,7 @@ namespace ResumeStripper.Controllers
                 newUser.UserCompany = model.UserCompany;
                 newUser.Role = model.Role;
 
-                UserRepo.UpdateUser(newUser);
+                UserRepo.Update(newUser);
 
                 //saves bool in tempdata to force a refresh of context and repositories in panel action,
                 //else it will retrieve old data from the database instead of the updated data.
@@ -346,12 +374,15 @@ namespace ResumeStripper.Controllers
                 //and places it back for further use
                 TempData["CurrentUser"] = cu;
 
-                switch (cu.Role)
+                if (cu != null)
                 {
-                    case UserRole.EHVAdmin:
-                        return RedirectToAction("EhvPanel", "Home");
-                    case UserRole.CompanyAdmin:
-                        return RedirectToAction("CompanyPanel", "Home");
+                    switch (cu.Role)
+                    {
+                        case UserRole.EHVAdmin:
+                            return RedirectToAction("EhvPanel", "Home");
+                        case UserRole.CompanyAdmin:
+                            return RedirectToAction("CompanyPanel", "Home");
+                    }
                 }
             }
             TempData["ViewD"] = ViewData;
@@ -371,12 +402,24 @@ namespace ResumeStripper.Controllers
 
             User user = UserRepo.GetById(userId);
 
+            UserRole current;
+
+            if (u == null)
+            {
+                //for testing
+                current = UserRole.CompanyUser;
+            }
+            else
+            {
+                current = u.Role;
+            }
+
             DetailsViewModel model = new DetailsViewModel
             {
                 Emailaddress = user.Emailaddress,
                 Role = user.Role,
                 Company = user.UserCompany,
-                CurrentUserRole = u.Role
+                CurrentUserRole = current
             };
 
             return View(model);
@@ -420,6 +463,12 @@ namespace ResumeStripper.Controllers
                     case UserRole.CompanyAdmin:
                         return RedirectToAction("CompanyPanel", "Home");
                 }
+            }
+
+            if (cu == null)
+            {
+                //for testing
+                return RedirectToAction("Index", "CV");
             }
 
             switch (cu.Role)

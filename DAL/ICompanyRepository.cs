@@ -7,6 +7,5 @@ namespace ResumeStripper.DAL
     public interface ICompanyRepository : IRepository<Company>
     {
         Company GetByName(string companyName);
-        void UpdateCompany(Company company);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using ResumeStripper.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResumeStripper.Models.AccountModels
 {
@@ -20,8 +19,9 @@ namespace ResumeStripper.Models.AccountModels
         }
 
         //for testing
-        public User(string emailaddress, string password, string salt, UserRole role, Company userCompany)
+        public User(int id, string emailaddress, string password, string salt, UserRole role, Company userCompany)
         {
+            ID = id;
             Emailaddress = emailaddress;
             Password = password;
             Salt = salt;

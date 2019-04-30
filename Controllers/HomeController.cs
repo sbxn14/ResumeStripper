@@ -56,7 +56,7 @@ namespace ResumeStripper.Controllers
                     return Redirect(Request.UrlReferrer.ToString());
                 }
                 //else just return to the stripper
-                return RedirectToAction("Index", "CV");
+                return RedirectToAction("Index", "Cv");
             }
 
             //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated
@@ -126,7 +126,7 @@ namespace ResumeStripper.Controllers
                     return Redirect(Request.UrlReferrer.ToString());
                 }
                 //else just return to the stripper
-                return RedirectToAction("Index", "CV");
+                return RedirectToAction("Index", "Cv");
             }
 
             //checks based on a saved TempData bool if context and repositories need to be refreshed/recreated

@@ -226,7 +226,7 @@
                         <div class="card" height="1000px">
                             <div class="header">
                                 <h4 style="display: inline-block;" class="title">Resume applicant</h4>
-                                @using (Html.BeginForm("Upload", "CV", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                @using (Html.BeginForm("Upload", "Cv", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                 {
                                     @Html.AntiForgeryToken()
                                     <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" accept="application/pdf" />
@@ -270,7 +270,7 @@
                                 </style>
                             </div>
 
-                            @using (Html.BeginForm("Export", "CV", FormMethod.Post, new { enctype = "multipart/form-data", id = "exportForm", autocomplete = "off" }))
+                            @using (Html.BeginForm("Export", "Cv", FormMethod.Post, new { enctype = "multipart/form-data", id = "exportForm", autocomplete = "off" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <input class="btn btn-primary btn-xs" onclick="BeginSubmit(this);" type="submit" value="Generate CV" name="submitter" />

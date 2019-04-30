@@ -1,70 +1,63 @@
-﻿using ResumeStripper.Models.AccountModels;
+﻿using ResumeStripper.Helpers;
+using ResumeStripper.Models.AccountModels;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace ResumeStripper.DAL
 {
     public class CompanyRepository : ICompanyRepository
     {
-        private readonly StripperContext _context;
+        public StripperContext Context { get; set; }
 
         public CompanyRepository(StripperContext context)
         {
-            _context = context;
-            DbSet = _context.Set<Company>();
+            Context = context;
         }
 
         public Company GetByName(string companyName)
         {
-            return DbSet.FirstOrDefault(c => c.Name == companyName);
+            return Context.Companies.FirstOrDefault(c => c.Name == companyName);
         }
 
-        public void UpdateCompany(Company company)
+        public void Update(Company entity)
         {
-            Company fullCompany = GetById(company.Id);
+            Company fullCompany = GetById(entity.Id);
 
             if (fullCompany != null)
             {
-                _context.Entry(fullCompany).CurrentValues.SetValues(company);
+                Context.Entry(entity).CurrentValues.SetValues(entity);
             }
         }
 
-        public IDbSet<Company> DbSet { get; set; }
-
         public Company GetById(int id)
         {
-            throw new System.NotImplementedException();
+            return Context.Companies.Find(id);
         }
 
         public List<Company> GetAll()
         {
-            return _context.Companies.ToList();
-        }
-
-        public Company Get(int id)
-        {
-            throw new System.NotImplementedException();
+            return Context.Companies.ToList();
         }
 
         public void Add(Company entity)
         {
-            throw new System.NotImplementedException();
+            Context.Companies.Add(entity);
         }
 
         public void Delete(Company entity)
         {
-            throw new System.NotImplementedException();
+            Context.Companies.Remove(entity);
         }
 
         public void SaveChanges()
         {
-            throw new System.NotImplementedException();
+            Context.SaveChanges();
         }
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            ContextHelper.DisposeContext();
+            Context.Dispose();
         }
     }
 }

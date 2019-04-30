@@ -11,18 +11,18 @@ namespace ResumeStripper.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        protected static StripperContext Context = ContextHelper.GetContext();
-        protected readonly CompanyRepository CompanyRepo = new CompanyRepository(Context);
+        protected ICompanyRepository CompanyRepo;
 
         public CompanyController()
         {
-            Context = ContextHelper.GetContext();
+            StripperContext context = ContextHelper.GetContext();
+            CompanyRepo = new CompanyRepository(context);
         }
 
-        public CompanyController(StripperContext context)
+        public CompanyController(ICompanyRepository crep)
         {
-            //constructor for testing
-            Context = context;
+            //for testing
+            CompanyRepo = crep;
         }
 
         [Authorize]
@@ -156,7 +156,7 @@ namespace ResumeStripper.Controllers
                     Package = model.Package
                 };
 
-                CompanyRepo.UpdateCompany(c);
+                CompanyRepo.Update(c);
                 CompanyRepo.SaveChanges();
 
                 //saves bool in tempdata to force a refresh of context and repositories in panel action,
