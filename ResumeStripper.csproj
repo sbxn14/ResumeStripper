@@ -272,10 +272,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\CVController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DAL\CVRepository.cs" />
     <Compile Include="DAL\Repository.cs" />
     <Compile Include="DAL\StripperContext.cs" />
@@ -292,9 +289,6 @@
       <DependentUpon>201904291242434_initialmigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountModels\Company.cs" />
-    <Compile Include="Models\AccountModels\ViewModels\LoginViewModel.cs" />
-    <Compile Include="Models\AccountModels\ViewModels\RegisterViewModel.cs" />
     <Compile Include="Models\Competence.cs" />
     <Compile Include="Models\CV.cs" />
     <Compile Include="Models\Enums\DriversLicense.cs" />
@@ -313,7 +307,6 @@
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Helpers\PdfConvert.cs" />
-    <Compile Include="Models\AccountModels\User.cs" />
     <Compile Include="Models\Viewmodels\MessageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -374,7 +367,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -415,9 +408,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -429,11 +419,6 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\CV\Index.cshtml" />
     <Content Include="Views\CV\Export.cshtml" />
-    <Content Include="Views\Company\Index.cshtml" />
-    <Content Include="Views\Company\List.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\User\Register.cshtml" />
-    <Content Include="Views\User\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
