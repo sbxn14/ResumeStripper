@@ -284,6 +284,7 @@
     <Compile Include="Helpers\Base64Converter.cs" />
     <Compile Include="Helpers\Hasher.cs" />
     <Compile Include="Helpers\PDFHelper.cs" />
+    <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Migrations\201904291242434_initialmigration.cs" />
     <Compile Include="Migrations\201904291242434_initialmigration.Designer.cs">
       <DependentUpon>201904291242434_initialmigration.cs</DependentUpon>
@@ -368,6 +369,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
+    <None Include="Properties\PublishProfiles\EHVAdmin - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

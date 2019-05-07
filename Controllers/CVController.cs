@@ -74,11 +74,22 @@ namespace ResumeStripper.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    TempData["file"] = pdf.FileName;
+                    string mappedPath = Server.MapPath(@"~/PDFs");
+                    //string newName = @"TempPDF.pdf";
 
+                    string newName = GenerateFileName(mappedPath) + ".pdf";
+
+                    string newPath = Path.Combine(mappedPath, newName);
+
+                    TempData["tempFile"] = newPath;
+                    TempData["file"] = newName;
+
+                    //save pdf to temporary new path with generated file name
+                    pdf.SaveAs(newPath);
+                    
                     MessageViewModel mod = new MessageViewModel
                     {
-                        Path = pdf.FileName
+                        FileName = newName
                     };
 
                     TempData["Message"] = mod;
@@ -171,7 +182,8 @@ namespace ResumeStripper.Controllers
 
             byte[] newPdf = helper.GeneratePdf(cv);
             TempData["bytes"] = newPdf;
-            //TempData["url"] = url;
+
+            DeleteTempFile();
 
             return View();
         }
@@ -192,6 +204,34 @@ namespace ResumeStripper.Controllers
                 //context.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public void DeleteTempFile()
+        {
+            string file = (string)TempData["tempFile"];
+
+            System.IO.File.Delete(file);
+        }
+
+        public string GenerateFileName(string path)
+        {
+            //generate random name
+            string name = RandomHelper.RandomString(20);
+
+            //get all files from folder
+            DirectoryInfo dInfo = new DirectoryInfo(path);
+            FileInfo[] files = dInfo.GetFiles("*.pdf");
+
+            foreach (FileInfo f in files)
+            {
+                if (f.Name.Equals(name))
+                {
+                    //name already exists in folder, so run method again
+                    GenerateFileName(path);
+                }
+            }
+            //if name didn't exist, return name
+            return name;
         }
     }
 }

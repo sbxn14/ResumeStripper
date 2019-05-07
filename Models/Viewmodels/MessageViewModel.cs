@@ -2,7 +2,7 @@
 {
     public class MessageViewModel
     {
-        public string Path { get; set; }
+        public string FileName { get; set; }
         public string ServerPath { get; set; }
         public CV ResultCv { get; set; }
 
