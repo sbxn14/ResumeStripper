@@ -14,6 +14,8 @@ namespace ResumeStripper.Controllers
     {
         protected readonly CvRepository Repo = new CvRepository(new StripperContext());
 
+        private const string HTTPServerIP = "http://192.168.86.30:8081/";
+
         [HttpGet]
         [WhitespaceFilter]
         [CompressFilter]
@@ -47,9 +49,10 @@ namespace ResumeStripper.Controllers
             }
 
             //TODO: een betere manier voor filehosting en al dan de manier die nu gebruikt wordt met http-server npm..
-            model.ServerPath = "http://127.0.0.1:8081/" + filename;
+            model.ServerPath = HTTPServerIP + filename;
             TempData["CurrentURL"] = model.ServerPath;
             ViewBag.JavaScriptFunction = "newPDFArrived('" + model.ServerPath + "');";
+            //ViewBag.JavaScriptFunction = "newPDFArrived('" + (string)TempData["tempFile"] + "');";
             return View(model);
         }
 
@@ -70,9 +73,8 @@ namespace ResumeStripper.Controllers
                     {
                         return RedirectToAction("Index");
                     }
-
+                    
                     string mappedPath = Server.MapPath(@"~/PDFs");
-                    //string newName = @"TempPDF.pdf";
 
                     string newName = GenerateFileName(mappedPath) + ".pdf";
 
