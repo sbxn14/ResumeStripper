@@ -195,6 +195,24 @@
             </div>
         </nav>
 
+        <script>
+            function getPdftoPdfjs(element) {
+                var file = event.target.files[0];
+                //Step 2: Read the file using file reader
+                var fileReader = new FileReader();
+
+                fileReader.onload = function () {
+                    //Step 4:turn array buffer into typed array
+                    var typedarray = new Uint8Array(this.result);
+                    //Step 5:PDFJS should be able to read this
+                    newPDFArrived(typedarray);
+                    //element.form.submit();
+                };
+                //Step 3:Read the file as ArrayBuffer
+                fileReader.readAsArrayBuffer(file);
+            }
+        </script>
+
         <div class="content all-icons">
             <div class="container-fluid">
                 <div class="row">
@@ -207,6 +225,7 @@
                                 {
                                     @Html.AntiForgeryToken()
                                     <input type="file" name="pdf" id="pdf-upload" onchange="this.form.submit()" accept="application/pdf" />
+                                    @*<input type="file" name="pdf" id="pdf-upload" onchange="getPdftoPdfjs(this)" accept="application/pdf" />*@
                                     @ViewBag.FileStatus
                                 }
                                 <hr>
